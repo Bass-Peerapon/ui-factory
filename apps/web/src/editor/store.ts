@@ -19,6 +19,8 @@ export interface EditorState {
   wireframe: boolean;
   connected: boolean;
   prototypeFrame: string | null;
+  /** Frame the canvas should pan to once. */
+  focusFrame: string | null;
   error: string | null;
 }
 
@@ -34,6 +36,7 @@ let state: EditorState = {
   wireframe: false,
   connected: false,
   prototypeFrame: null,
+  focusFrame: null,
   error: null,
 };
 const listeners = new Set<() => void>();

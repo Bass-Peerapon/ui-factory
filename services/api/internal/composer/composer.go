@@ -27,6 +27,7 @@ type RouteInput struct {
 	Prompt          string `json:"prompt"`
 	Selection       string `json:"selection"`
 	FrameHasContent bool   `json:"frameHasContent"`
+	CurrentPage     string `json:"currentPage,omitempty"`
 	Mode            string `json:"mode,omitempty"`
 }
 

@@ -1,4 +1,4 @@
-import { Background, Controls, MiniMap, ReactFlow, type NodeChange, applyNodeChanges } from "@xyflow/react";
+import { Background, Controls, ReactFlow, useReactFlow, type NodeChange, applyNodeChanges } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { useEffect, useMemo, useState } from "react";
 import { FRAME_MSG, type FromFrame } from "../shared/protocol";
@@ -11,6 +11,8 @@ const nodeTypes = { frame: FrameNode };
 export function Canvas() {
   const doc = useEditor((s) => s.doc);
   const heights = useEditor((s) => s.heights);
+  const focusFrame = useEditor((s) => s.focusFrame);
+  const { fitView } = useReactFlow();
   const [dragging, setDragging] = useState<Record<string, { x: number; y: number }>>({});
 
   const nodes = useMemo<FrameNodeType[]>(
@@ -26,6 +28,15 @@ export function Canvas() {
       }),
     [doc, dragging, heights],
   );
+
+  useEffect(() => {
+    if (!focusFrame || !nodes.some((n) => n.id === focusFrame)) return;
+    const t = setTimeout(() => {
+      void fitView({ nodes: [{ id: focusFrame }], duration: 500, padding: 0.1, maxZoom: 0.6 });
+      setState({ focusFrame: null });
+    }, 50);
+    return () => clearTimeout(t);
+  }, [focusFrame, nodes, fitView]);
 
   useEffect(() => {
     const onMsg = (e: MessageEvent) => {
@@ -92,7 +103,6 @@ export function Canvas() {
     >
       <Background gap={24} size={1} />
       <Controls showInteractive={false} />
-      <MiniMap pannable zoomable nodeColor="#94a3b8" maskColor="rgb(120 130 150 / 0.15)" bgColor="var(--ed-panel)" style={{ width: 160, height: 110 }} />
     </ReactFlow>
   );
 }

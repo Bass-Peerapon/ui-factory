@@ -4,7 +4,7 @@ import {
 } from "@json-render/core";
 import { catalog, compositionCandidates } from "@ui-factory/catalog";
 import { env } from "./env";
-import { intents, type Composer, type Intent, type RouteInput, type StructureEvent, type StructureInput } from "./types";
+import { intents, routeInstructions, routeState, type Composer, type Intent, type RouteInput, type StructureEvent, type StructureInput } from "./types";
 
 interface SystemOneResponse {
   answers: Record<string, { choice: string; confidence?: number }>;
@@ -53,12 +53,8 @@ export class JevComposer implements Composer {
   async route(input: RouteInput, signal?: AbortSignal) {
     const t0 = performance.now();
     const res = await systemOne(
-      {
-        request: input.prompt,
-        selected: input.selection,
-        current_frame: input.frameHasContent ? "has a page already" : "empty",
-      },
-      { intent: { type: "choice", instructions: "What does `request` ask the UI editor to do?", criteria: intents } },
+      routeState(input),
+      { intent: { type: "choice", instructions: routeInstructions, criteria: intents } },
       signal,
     );
     const a = res.answers.intent;

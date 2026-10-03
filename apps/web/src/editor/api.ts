@@ -82,6 +82,9 @@ export async function openProject(id: string) {
   es.addEventListener("turn", (e) => {
     const t = JSON.parse((e as MessageEvent).data) as TurnState;
     setState({ turn: t.status === "running" ? t : null });
+    // Follow the frame a new-page turn is building.
+    if (t.status === "running" && t.phase === "structure" && t.frameId && getState().selection.frameId !== t.frameId)
+      setState({ selection: { frameId: t.frameId, elementId: null }, focusFrame: t.frameId });
   });
 }
 

@@ -7,6 +7,8 @@ export interface RouteInput {
   /** Short description of what is selected, e.g. "Hero element" or "nothing". */
   selection: string;
   frameHasContent: boolean;
+  /** Brief or name of the open page, so a request about another topic routes to new_page. */
+  currentPage?: string;
 }
 
 export interface RouteResult {
@@ -33,7 +35,20 @@ export interface Composer {
 }
 
 export const intents: Record<Intent, string> = {
-  new_page: "The user wants a new page or screen created from scratch (for example a landing page, pricing page, sign-up page).",
-  edit_selection: "The user wants to change the existing page: edit, rewrite, add, remove or reorder content or elements.",
-  set_theme: "The user only wants to change the global look: colors, font, corner radius, light or dark theme.",
+  new_page:
+    'Build a different page or screen: the request names a page to create ("ทำหน้า ...", "หน้า ... สำหรับ ...", "landing page for ...", "create a pricing page"), usually about a topic other than `current_page`.',
+  edit_selection:
+    'Change the page that is already open: rewrite, shorten, add, remove, move or restyle its content or the `selected` element. Refers to existing content ("this", "นี่", "หัวข้อ", "เพิ่มปุ่ม", "ลบส่วน").',
+  set_theme: "Only change the global look of the project: colors, color tone, font, corner radius, dark or light mode.",
 };
+
+export const routeInstructions =
+  "What does `request` ask the UI editor to do? A request that names a new page to build is new_page even when a page is open.";
+
+export function routeState(input: RouteInput) {
+  return {
+    request: input.prompt,
+    selected: input.selection,
+    current_page: input.frameHasContent ? input.currentPage || "an existing page" : "empty",
+  };
+}

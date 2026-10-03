@@ -69,6 +69,11 @@ func (h *Hub) CreateProject(ctx context.Context, name string, seed *doc.Spec) (*
 		return nil, err
 	}
 	p.Frames[fid].Spec = seed
+	if seed != nil {
+		if title, ok := seed.Elements[seed.Root].Props["title"].(string); ok {
+			p.Frames[fid].Brief = "landing page: " + title
+		}
+	}
 	if err := h.store.SaveProject(ctx, p, 1); err != nil {
 		return nil, err
 	}

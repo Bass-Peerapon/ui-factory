@@ -2,6 +2,7 @@
 package pipeline
 
 import (
+	"cmp"
 	"context"
 	"errors"
 	"fmt"
@@ -103,11 +104,19 @@ func (r *Runner) dispatch(ctx context.Context, s *hub.Session, t *hub.Turn, req 
 	case hasContent:
 		selection = "the whole page " + frame.Name
 	}
-	route, err := r.Composer.Route(ctx, composer.RouteInput{Prompt: req.Text, Selection: selection, FrameHasContent: hasContent})
+	in := composer.RouteInput{Prompt: req.Text, Selection: selection, FrameHasContent: hasContent}
+	if hasContent {
+		in.CurrentPage = cmp.Or(frame.Brief, frame.Name)
+	}
+	route, err := r.Composer.Route(ctx, in)
 	if err != nil {
 		return "", err
 	}
-	slog.Info("route", "intent", route.Intent, "confidence", route.Confidence, "ms", route.MS, "composer", route.Composer)
+	conf := -1.0
+	if route.Confidence != nil {
+		conf = *route.Confidence
+	}
+	slog.Info("route", "intent", route.Intent, "confidence", conf, "ms", route.MS, "composer", route.Composer)
 
 	intent := route.Intent
 	if intent == "edit_selection" && !hasContent {

@@ -28,7 +28,7 @@ const server = createServer(async (req, res) => {
     if (req.method === "POST" && req.url === "/route") {
       const b = await readJSON(req);
       const r = await pick(b.mode).route(
-        { prompt: String(b.prompt), selection: String(b.selection ?? "nothing"), frameHasContent: !!b.frameHasContent },
+        { prompt: String(b.prompt), selection: String(b.selection ?? "nothing"), frameHasContent: !!b.frameHasContent, currentPage: b.currentPage },
         ac.signal,
       );
       return send(res, 200, { ...r, composer: pick(b.mode).name });

@@ -1,6 +1,6 @@
 import { componentDefs, placeholderProps, type ComponentName, type Spec } from "@ui-factory/catalog";
 import { geminiJSON } from "./gemini";
-import { intents, type Composer, type Intent, type RouteInput, type StructureEvent, type StructureInput } from "./types";
+import { intents, routeInstructions, routeState, type Composer, type Intent, type RouteInput, type StructureEvent, type StructureInput } from "./types";
 
 const names = Object.keys(componentDefs) as ComponentName[];
 const blockNames = names.filter((n) => componentDefs[n].kind === "block");
@@ -54,9 +54,9 @@ export class LLMComposer implements Composer {
   async route(input: RouteInput, signal?: AbortSignal) {
     const t0 = performance.now();
     const r = await geminiJSON<{ intent: Intent }>({
-      system: "Classify the request for a UI editor. Answer with one intent.\n" +
+      system: routeInstructions + " Answer with one intent.\n" +
         Object.entries(intents).map(([k, v]) => `- ${k}: ${v}`).join("\n"),
-      prompt: JSON.stringify({ request: input.prompt, selected: input.selection, current_frame: input.frameHasContent ? "has a page" : "empty" }),
+      prompt: JSON.stringify(routeState(input)),
       schema: { type: "object", properties: { intent: { type: "string", enum: Object.keys(intents) } }, required: ["intent"] },
       signal,
     });
