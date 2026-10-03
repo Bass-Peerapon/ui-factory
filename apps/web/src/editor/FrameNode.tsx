@@ -20,8 +20,9 @@ export function frameHeight(h: number | undefined) {
   return Math.min(Math.max(h ?? MIN_FRAME_HEIGHT, MIN_FRAME_HEIGHT), 8000);
 }
 
-function useOnScreen(frame: Frame, height: number) {
+function useOnScreen(frame: Frame | undefined, height: number) {
   return useStore((s) => {
+    if (!frame) return false;
     const [tx, ty, zoom] = s.transform;
     const w = DEVICES[frame.device].width;
     const x0 = frame.x * zoom + tx, y0 = frame.y * zoom + ty;
@@ -40,7 +41,7 @@ export const FrameNode = memo(function FrameNode({ data }: NodeProps<FrameNodeTy
   const rawHeight = useEditor((s) => s.heights[data.frameId]);
   const height = frameHeight(rawHeight);
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const onScreen = useOnScreen(frame!, height);
+  const onScreen = useOnScreen(frame, height);
   const active = selection.frameId === data.frameId;
   const locked = turn?.frameId === data.frameId;
 
