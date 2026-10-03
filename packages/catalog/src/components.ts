@@ -170,6 +170,181 @@ export const blocks = {
       copyright: P,
     },
   }),
+
+  // --- added in M5 ---------------------------------------------------------
+  Banner: def({
+    kind: "block",
+    description: "Thin announcement bar at the very top of a page with a short message and a link label.",
+    props: z.object({ text: str(), linkLabel: str() }),
+    placeholder: { text: P, linkLabel: P },
+  }),
+  LogoCloud: def({
+    kind: "block",
+    description: "Row of customer or partner brand names that build trust (\"trusted by\").",
+    props: z.object({ title: str(), logos: z.array(str()).min(3).max(8) }),
+    placeholder: { title: P, logos: [P, P, P, P, P] },
+  }),
+  ImageText: def({
+    kind: "block",
+    description: "Split section: image on one side, eyebrow, title, description and bullet points on the other, with an actions slot.",
+    props: z.object({
+      eyebrow: str(),
+      title: str(),
+      description: str(),
+      bullets: z.array(str()).min(0).max(5),
+      imageSide: z.enum(["left", "right"]),
+    }),
+    slots: ["actions"],
+    placeholder: { eyebrow: P, title: P, description: P, bullets: [P, P, P], imageSide: "right" },
+    maxUses: 3,
+  }),
+  Steps: def({
+    kind: "block",
+    description: "How it works: numbered steps a customer follows, each with title and description.",
+    props: z.object({
+      title: str(),
+      steps: z.array(z.object({ title: str(), description: str() })).min(2).max(5),
+    }),
+    placeholder: { title: P, steps: [{ title: P, description: P }, { title: P, description: P }, { title: P, description: P }] },
+  }),
+  ProductGrid: def({
+    kind: "block",
+    description: "E-commerce product cards with name, price, optional badge and short description.",
+    props: z.object({
+      title: str(),
+      products: z
+        .array(z.object({ name: str(), price: str(), badge: z.string(), description: str() }))
+        .min(2)
+        .max(8),
+    }),
+    placeholder: {
+      title: P,
+      products: [
+        { name: P, price: P, badge: "", description: P },
+        { name: P, price: P, badge: "", description: P },
+        { name: P, price: P, badge: "", description: P },
+        { name: P, price: P, badge: "", description: P },
+      ],
+    },
+  }),
+  Gallery: def({
+    kind: "block",
+    description: "Image gallery grid with captions, e.g. portfolio, rooms, menu photos.",
+    props: z.object({ title: str(), items: z.array(z.object({ caption: str() })).min(3).max(9) }),
+    placeholder: { title: P, items: [{ caption: P }, { caption: P }, { caption: P }, { caption: P }, { caption: P }, { caption: P }] },
+  }),
+  Team: def({
+    kind: "block",
+    description: "Team members or experts with name, role and short bio.",
+    props: z.object({
+      title: str(),
+      members: z.array(z.object({ name: str(), role: str(), bio: str() })).min(2).max(8),
+    }),
+    placeholder: { title: P, members: [{ name: P, role: P, bio: P }, { name: P, role: P, bio: P }, { name: P, role: P, bio: P }] },
+  }),
+  Timeline: def({
+    kind: "block",
+    description: "Chronological timeline: company history, event agenda or roadmap with date, title and description.",
+    props: z.object({
+      title: str(),
+      items: z.array(z.object({ date: str(), title: str(), description: str() })).min(2).max(8),
+    }),
+    placeholder: { title: P, items: [{ date: P, title: P, description: P }, { date: P, title: P, description: P }, { date: P, title: P, description: P }] },
+  }),
+  ComparisonTable: def({
+    kind: "block",
+    description:
+      "Feature comparison table between plans or products. `columns` are only the plan or product names (no header for the feature column); each row has a feature name and exactly one value per column, e.g. ✓, ✗ or a short value.",
+    props: z.object({
+      title: str(),
+      columns: z.array(str()).min(2).max(4),
+      rows: z.array(z.object({ feature: str(), values: z.array(z.string()).min(2).max(4) })).min(2).max(10),
+    }),
+    placeholder: {
+      title: P,
+      columns: [P, P, P],
+      rows: [{ feature: P, values: [P, P, P] }, { feature: P, values: [P, P, P] }, { feature: P, values: [P, P, P] }],
+    },
+  }),
+  BlogList: def({
+    kind: "block",
+    description: "List of articles or news posts with category, title, excerpt and date.",
+    props: z.object({
+      title: str(),
+      posts: z.array(z.object({ category: str(), title: str(), excerpt: str(), date: str() })).min(2).max(6),
+    }),
+    placeholder: {
+      title: P,
+      posts: [
+        { category: P, title: P, excerpt: P, date: P },
+        { category: P, title: P, excerpt: P, date: P },
+        { category: P, title: P, excerpt: P, date: P },
+      ],
+    },
+  }),
+  Quote: def({
+    kind: "block",
+    description: "One large highlighted quote from a founder, customer or press, with author and role.",
+    props: z.object({ quote: str(), author: str(), role: str() }),
+    placeholder: { quote: P, author: P, role: P },
+  }),
+  Newsletter: def({
+    kind: "block",
+    description: "Newsletter or waitlist sign-up strip. Put an email Input in `fields` and a Button in `actions`.",
+    props: z.object({ title: str(), subtitle: str() }),
+    slots: ["fields", "actions"],
+    placeholder: { title: P, subtitle: P },
+  }),
+  ContactInfo: def({
+    kind: "block",
+    description: "Contact details such as address, phone, email and opening hours, each with an icon.",
+    props: z.object({
+      title: str(),
+      items: z.array(z.object({ icon: Icon, label: str(), value: str() })).min(1).max(6),
+    }),
+    placeholder: { title: P, items: [{ icon: "phone", label: P, value: P }, { icon: "globe", label: P, value: P }, { icon: "clock", label: P, value: P }] },
+  }),
+  AuthForm: def({
+    kind: "block",
+    description: "Centered login or sign-up card for an app. Put Input and Checkbox primitives in `fields` and Buttons in `actions`.",
+    props: z.object({ title: str(), subtitle: str(), mode: z.enum(["login", "signup"]), footerText: str() }),
+    slots: ["fields", "actions"],
+    placeholder: { title: P, subtitle: P, mode: "login", footerText: P },
+  }),
+  KPIGrid: def({
+    kind: "block",
+    description: "Dashboard KPI cards for an app screen: metric label, value, change and trend direction.",
+    props: z.object({
+      title: str(),
+      items: z.array(z.object({ label: str(), value: str(), delta: str(), trend: z.enum(["up", "down", "flat"]) })).min(2).max(6),
+    }),
+    placeholder: {
+      title: P,
+      items: [
+        { label: P, value: P, delta: P, trend: "up" },
+        { label: P, value: P, delta: P, trend: "down" },
+        { label: P, value: P, delta: P, trend: "up" },
+        { label: P, value: P, delta: P, trend: "flat" },
+      ],
+    },
+  }),
+  DataTable: def({
+    kind: "block",
+    description: "Data table for an app screen (orders, users, transactions) with column headers and rows of cells.",
+    props: z.object({
+      title: str(),
+      columns: z.array(str()).min(2).max(6),
+      rows: z.array(z.array(z.string()).min(2).max(6)).min(1).max(10),
+    }),
+    placeholder: { title: P, columns: [P, P, P, P], rows: [[P, P, P, P], [P, P, P, P], [P, P, P, P], [P, P, P, P]] },
+  }),
+  EmptyState: def({
+    kind: "block",
+    description: "Empty or success state message for an app screen with an icon, title, description and an actions slot.",
+    props: z.object({ icon: Icon, title: str(), description: str() }),
+    slots: ["actions"],
+    placeholder: { icon: "sparkles", title: P, description: P },
+  }),
 };
 
 // ---------------------------------------------------------------------------

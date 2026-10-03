@@ -1,44 +1,18 @@
 import type { ReactNode } from "react";
 import { useState } from "react";
-import type { z } from "zod";
 import type { componentDefs } from "@ui-factory/catalog";
-import {
-  BarChart3, Clock, Coffee, Gift, Globe, Heart, Leaf, Lock, Phone, Shield, Smile, Sparkles, Star, Truck, Users, Zap,
-  Check, ChevronDown, ImageIcon,
-} from "lucide-react";
+import { Check, ChevronDown, ImageIcon, Sparkles } from "lucide-react";
+import { Bar, Heading, Section, SkCards, SkHeading, hasSlot, icons, type BlockProps } from "./blocks-shared";
+import { renders2, skeletons2 } from "./blocks2";
 import { cn } from "../lib/utils";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { Checkbox as CheckboxUI, Input as InputUI, Label, Textarea as TextareaUI } from "./ui/form";
 
-type Defs = typeof componentDefs;
-export type PropsOf<N extends keyof Defs> = z.infer<Defs[N]["props"]>;
 
-export interface BlockProps<N extends keyof Defs> {
-  props: PropsOf<N>;
-  slots: Record<string, ReactNode>;
-  emit: (event: string) => void;
-}
 
-const icons = {
-  sparkles: Sparkles, zap: Zap, shield: Shield, heart: Heart, star: Star, coffee: Coffee, truck: Truck, clock: Clock,
-  users: Users, chart: BarChart3, globe: Globe, lock: Lock, smile: Smile, leaf: Leaf, gift: Gift, phone: Phone,
-};
 
-const Section = ({ className, children }: { className?: string; children: ReactNode }) => (
-  <section className={cn("px-6 py-16 md:px-12 md:py-20", className)}>
-    <div className="mx-auto max-w-6xl">{children}</div>
-  </section>
-);
 
-const Heading = ({ title, subtitle }: { title: string; subtitle?: string }) => (
-  <div className="mx-auto mb-12 max-w-2xl text-center">
-    <h2 className="text-3xl font-bold tracking-tight md:text-4xl">{title}</h2>
-    {subtitle && <p className="mt-4 text-lg text-muted-foreground">{subtitle}</p>}
-  </div>
-);
-
-const hasSlot = (n: ReactNode) => n !== undefined && n !== null && !(Array.isArray(n) && n.length === 0);
 
 // ---------------------------------------------------------------------------
 // Real renders
@@ -270,24 +244,10 @@ export const BadgeBlock = ({ props }: BlockProps<"Badge">) => <Badge variant={pr
 // Skeleton variants: rendered while props.skeleton is true
 // ---------------------------------------------------------------------------
 
-const Bar = ({ className }: { className?: string }) => <div className={cn("sk h-4", className)} />;
 
-const SkCards = ({ n, className, children }: { n: number; className?: string; children: ReactNode }) => (
-  <div className={cn("grid gap-6 md:grid-cols-3", className)}>
-    {Array.from({ length: n }, (_, i) => (
-      <div key={i} className="rounded-lg border p-6">{children}</div>
-    ))}
-  </div>
-);
 
-const SkHeading = () => (
-  <div className="mx-auto mb-12 flex max-w-xl flex-col items-center gap-3">
-    <Bar className="h-8 w-2/3" />
-    <Bar className="w-1/2" />
-  </div>
-);
 
-export const skeletons: Record<keyof Defs, (p: BlockProps<never>) => ReactNode> = {
+export const skeletons: Record<keyof typeof componentDefs, (p: BlockProps<never>) => ReactNode> = {
   Page: ({ slots }) => <main className="min-h-screen">{slots.default}</main>,
   Navbar: () => (
     <div className="flex h-16 items-center justify-between border-b px-6">
@@ -370,9 +330,11 @@ export const skeletons: Record<keyof Defs, (p: BlockProps<never>) => ReactNode> 
   Textarea: () => <div className="grid gap-2"><Bar className="w-20" /><div className="sk h-24 w-full" /></div>,
   Checkbox: () => <div className="flex items-center gap-2"><div className="sk size-4" /><Bar className="w-40" /></div>,
   Badge: () => <div className="sk h-5 w-16 rounded-full" />,
+  ...skeletons2,
 };
 
-export const renders: Record<keyof Defs, (p: BlockProps<never>) => ReactNode> = {
+export const renders: Record<keyof typeof componentDefs, (p: BlockProps<never>) => ReactNode> = {
   Page, Navbar, Hero, FeatureGrid, Stats, Pricing, Testimonials, FAQ, CTA, ContactForm, Footer,
   Button: ButtonBlock, Input: InputBlock, Textarea: TextareaBlock, Checkbox: CheckboxBlock, Badge: BadgeBlock,
+  ...renders2,
 } as never;

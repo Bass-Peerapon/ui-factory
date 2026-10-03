@@ -18,7 +18,8 @@ function wrap(type: keyof typeof componentDefs) {
     const { __id, skeleton, ...props } = element.props as Record<string, unknown>;
     const Render = skeleton ? Skeleton : Real;
     const allSlots = { ...(slots ?? {}), default: children };
-    const inline = componentDefs[type].kind === "primitive";
+    // Buttons and badges flow inline; form fields take the full slot width.
+    const inline = type === "Button" || type === "Badge";
     const Tag = inline ? "span" : "div";
     return (
       <Tag

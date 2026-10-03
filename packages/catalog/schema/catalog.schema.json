@@ -700,6 +700,1153 @@
         "skeleton": true
       }
     },
+    "Banner": {
+      "kind": "block",
+      "description": "Thin announcement bar at the very top of a page with a short message and a link label.",
+      "slots": [],
+      "events": [],
+      "root": false,
+      "props": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "minLength": 1
+          },
+          "linkLabel": {
+            "type": "string",
+            "minLength": 1
+          },
+          "skeleton": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "text",
+          "linkLabel"
+        ],
+        "additionalProperties": false
+      },
+      "placeholder": {
+        "text": "…",
+        "linkLabel": "…",
+        "skeleton": true
+      }
+    },
+    "LogoCloud": {
+      "kind": "block",
+      "description": "Row of customer or partner brand names that build trust (\"trusted by\").",
+      "slots": [],
+      "events": [],
+      "root": false,
+      "props": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "logos": {
+            "minItems": 3,
+            "maxItems": 8,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "skeleton": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "title",
+          "logos"
+        ],
+        "additionalProperties": false
+      },
+      "placeholder": {
+        "title": "…",
+        "logos": [
+          "…",
+          "…",
+          "…",
+          "…",
+          "…"
+        ],
+        "skeleton": true
+      }
+    },
+    "ImageText": {
+      "kind": "block",
+      "description": "Split section: image on one side, eyebrow, title, description and bullet points on the other, with an actions slot.",
+      "slots": [
+        "actions"
+      ],
+      "events": [],
+      "root": false,
+      "props": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "eyebrow": {
+            "type": "string",
+            "minLength": 1
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "bullets": {
+            "minItems": 0,
+            "maxItems": 5,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "imageSide": {
+            "type": "string",
+            "enum": [
+              "left",
+              "right"
+            ]
+          },
+          "skeleton": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "eyebrow",
+          "title",
+          "description",
+          "bullets",
+          "imageSide"
+        ],
+        "additionalProperties": false
+      },
+      "placeholder": {
+        "eyebrow": "…",
+        "title": "…",
+        "description": "…",
+        "bullets": [
+          "…",
+          "…",
+          "…"
+        ],
+        "imageSide": "right",
+        "skeleton": true
+      }
+    },
+    "Steps": {
+      "kind": "block",
+      "description": "How it works: numbered steps a customer follows, each with title and description.",
+      "slots": [],
+      "events": [],
+      "root": false,
+      "props": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "steps": {
+            "minItems": 2,
+            "maxItems": 5,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "title",
+                "description"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "skeleton": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "title",
+          "steps"
+        ],
+        "additionalProperties": false
+      },
+      "placeholder": {
+        "title": "…",
+        "steps": [
+          {
+            "title": "…",
+            "description": "…"
+          },
+          {
+            "title": "…",
+            "description": "…"
+          },
+          {
+            "title": "…",
+            "description": "…"
+          }
+        ],
+        "skeleton": true
+      }
+    },
+    "ProductGrid": {
+      "kind": "block",
+      "description": "E-commerce product cards with name, price, optional badge and short description.",
+      "slots": [],
+      "events": [],
+      "root": false,
+      "props": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "products": {
+            "minItems": 2,
+            "maxItems": 8,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "price": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "badge": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "name",
+                "price",
+                "badge",
+                "description"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "skeleton": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "title",
+          "products"
+        ],
+        "additionalProperties": false
+      },
+      "placeholder": {
+        "title": "…",
+        "products": [
+          {
+            "name": "…",
+            "price": "…",
+            "badge": "",
+            "description": "…"
+          },
+          {
+            "name": "…",
+            "price": "…",
+            "badge": "",
+            "description": "…"
+          },
+          {
+            "name": "…",
+            "price": "…",
+            "badge": "",
+            "description": "…"
+          },
+          {
+            "name": "…",
+            "price": "…",
+            "badge": "",
+            "description": "…"
+          }
+        ],
+        "skeleton": true
+      }
+    },
+    "Gallery": {
+      "kind": "block",
+      "description": "Image gallery grid with captions, e.g. portfolio, rooms, menu photos.",
+      "slots": [],
+      "events": [],
+      "root": false,
+      "props": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "items": {
+            "minItems": 3,
+            "maxItems": 9,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "caption": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "caption"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "skeleton": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "title",
+          "items"
+        ],
+        "additionalProperties": false
+      },
+      "placeholder": {
+        "title": "…",
+        "items": [
+          {
+            "caption": "…"
+          },
+          {
+            "caption": "…"
+          },
+          {
+            "caption": "…"
+          },
+          {
+            "caption": "…"
+          },
+          {
+            "caption": "…"
+          },
+          {
+            "caption": "…"
+          }
+        ],
+        "skeleton": true
+      }
+    },
+    "Team": {
+      "kind": "block",
+      "description": "Team members or experts with name, role and short bio.",
+      "slots": [],
+      "events": [],
+      "root": false,
+      "props": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "members": {
+            "minItems": 2,
+            "maxItems": 8,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "role": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "bio": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "name",
+                "role",
+                "bio"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "skeleton": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "title",
+          "members"
+        ],
+        "additionalProperties": false
+      },
+      "placeholder": {
+        "title": "…",
+        "members": [
+          {
+            "name": "…",
+            "role": "…",
+            "bio": "…"
+          },
+          {
+            "name": "…",
+            "role": "…",
+            "bio": "…"
+          },
+          {
+            "name": "…",
+            "role": "…",
+            "bio": "…"
+          }
+        ],
+        "skeleton": true
+      }
+    },
+    "Timeline": {
+      "kind": "block",
+      "description": "Chronological timeline: company history, event agenda or roadmap with date, title and description.",
+      "slots": [],
+      "events": [],
+      "root": false,
+      "props": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "items": {
+            "minItems": 2,
+            "maxItems": 8,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "date": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "title": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "date",
+                "title",
+                "description"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "skeleton": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "title",
+          "items"
+        ],
+        "additionalProperties": false
+      },
+      "placeholder": {
+        "title": "…",
+        "items": [
+          {
+            "date": "…",
+            "title": "…",
+            "description": "…"
+          },
+          {
+            "date": "…",
+            "title": "…",
+            "description": "…"
+          },
+          {
+            "date": "…",
+            "title": "…",
+            "description": "…"
+          }
+        ],
+        "skeleton": true
+      }
+    },
+    "ComparisonTable": {
+      "kind": "block",
+      "description": "Feature comparison table between plans or products. `columns` are only the plan or product names (no header for the feature column); each row has a feature name and exactly one value per column, e.g. ✓, ✗ or a short value.",
+      "slots": [],
+      "events": [],
+      "root": false,
+      "props": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "columns": {
+            "minItems": 2,
+            "maxItems": 4,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "rows": {
+            "minItems": 2,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "feature": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "values": {
+                  "minItems": 2,
+                  "maxItems": 4,
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "feature",
+                "values"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "skeleton": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "title",
+          "columns",
+          "rows"
+        ],
+        "additionalProperties": false
+      },
+      "placeholder": {
+        "title": "…",
+        "columns": [
+          "…",
+          "…",
+          "…"
+        ],
+        "rows": [
+          {
+            "feature": "…",
+            "values": [
+              "…",
+              "…",
+              "…"
+            ]
+          },
+          {
+            "feature": "…",
+            "values": [
+              "…",
+              "…",
+              "…"
+            ]
+          },
+          {
+            "feature": "…",
+            "values": [
+              "…",
+              "…",
+              "…"
+            ]
+          }
+        ],
+        "skeleton": true
+      }
+    },
+    "BlogList": {
+      "kind": "block",
+      "description": "List of articles or news posts with category, title, excerpt and date.",
+      "slots": [],
+      "events": [],
+      "root": false,
+      "props": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "posts": {
+            "minItems": 2,
+            "maxItems": 6,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "category": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "title": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "excerpt": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "date": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "category",
+                "title",
+                "excerpt",
+                "date"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "skeleton": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "title",
+          "posts"
+        ],
+        "additionalProperties": false
+      },
+      "placeholder": {
+        "title": "…",
+        "posts": [
+          {
+            "category": "…",
+            "title": "…",
+            "excerpt": "…",
+            "date": "…"
+          },
+          {
+            "category": "…",
+            "title": "…",
+            "excerpt": "…",
+            "date": "…"
+          },
+          {
+            "category": "…",
+            "title": "…",
+            "excerpt": "…",
+            "date": "…"
+          }
+        ],
+        "skeleton": true
+      }
+    },
+    "Quote": {
+      "kind": "block",
+      "description": "One large highlighted quote from a founder, customer or press, with author and role.",
+      "slots": [],
+      "events": [],
+      "root": false,
+      "props": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "quote": {
+            "type": "string",
+            "minLength": 1
+          },
+          "author": {
+            "type": "string",
+            "minLength": 1
+          },
+          "role": {
+            "type": "string",
+            "minLength": 1
+          },
+          "skeleton": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "quote",
+          "author",
+          "role"
+        ],
+        "additionalProperties": false
+      },
+      "placeholder": {
+        "quote": "…",
+        "author": "…",
+        "role": "…",
+        "skeleton": true
+      }
+    },
+    "Newsletter": {
+      "kind": "block",
+      "description": "Newsletter or waitlist sign-up strip. Put an email Input in `fields` and a Button in `actions`.",
+      "slots": [
+        "fields",
+        "actions"
+      ],
+      "events": [],
+      "root": false,
+      "props": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "subtitle": {
+            "type": "string",
+            "minLength": 1
+          },
+          "skeleton": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "title",
+          "subtitle"
+        ],
+        "additionalProperties": false
+      },
+      "placeholder": {
+        "title": "…",
+        "subtitle": "…",
+        "skeleton": true
+      }
+    },
+    "ContactInfo": {
+      "kind": "block",
+      "description": "Contact details such as address, phone, email and opening hours, each with an icon.",
+      "slots": [],
+      "events": [],
+      "root": false,
+      "props": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "items": {
+            "minItems": 1,
+            "maxItems": 6,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "icon": {
+                  "type": "string",
+                  "enum": [
+                    "sparkles",
+                    "zap",
+                    "shield",
+                    "heart",
+                    "star",
+                    "coffee",
+                    "truck",
+                    "clock",
+                    "users",
+                    "chart",
+                    "globe",
+                    "lock",
+                    "smile",
+                    "leaf",
+                    "gift",
+                    "phone"
+                  ]
+                },
+                "label": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "value": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "icon",
+                "label",
+                "value"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "skeleton": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "title",
+          "items"
+        ],
+        "additionalProperties": false
+      },
+      "placeholder": {
+        "title": "…",
+        "items": [
+          {
+            "icon": "phone",
+            "label": "…",
+            "value": "…"
+          },
+          {
+            "icon": "globe",
+            "label": "…",
+            "value": "…"
+          },
+          {
+            "icon": "clock",
+            "label": "…",
+            "value": "…"
+          }
+        ],
+        "skeleton": true
+      }
+    },
+    "AuthForm": {
+      "kind": "block",
+      "description": "Centered login or sign-up card for an app. Put Input and Checkbox primitives in `fields` and Buttons in `actions`.",
+      "slots": [
+        "fields",
+        "actions"
+      ],
+      "events": [],
+      "root": false,
+      "props": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "subtitle": {
+            "type": "string",
+            "minLength": 1
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "login",
+              "signup"
+            ]
+          },
+          "footerText": {
+            "type": "string",
+            "minLength": 1
+          },
+          "skeleton": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "title",
+          "subtitle",
+          "mode",
+          "footerText"
+        ],
+        "additionalProperties": false
+      },
+      "placeholder": {
+        "title": "…",
+        "subtitle": "…",
+        "mode": "login",
+        "footerText": "…",
+        "skeleton": true
+      }
+    },
+    "KPIGrid": {
+      "kind": "block",
+      "description": "Dashboard KPI cards for an app screen: metric label, value, change and trend direction.",
+      "slots": [],
+      "events": [],
+      "root": false,
+      "props": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "items": {
+            "minItems": 2,
+            "maxItems": 6,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "value": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "delta": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "trend": {
+                  "type": "string",
+                  "enum": [
+                    "up",
+                    "down",
+                    "flat"
+                  ]
+                }
+              },
+              "required": [
+                "label",
+                "value",
+                "delta",
+                "trend"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "skeleton": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "title",
+          "items"
+        ],
+        "additionalProperties": false
+      },
+      "placeholder": {
+        "title": "…",
+        "items": [
+          {
+            "label": "…",
+            "value": "…",
+            "delta": "…",
+            "trend": "up"
+          },
+          {
+            "label": "…",
+            "value": "…",
+            "delta": "…",
+            "trend": "down"
+          },
+          {
+            "label": "…",
+            "value": "…",
+            "delta": "…",
+            "trend": "up"
+          },
+          {
+            "label": "…",
+            "value": "…",
+            "delta": "…",
+            "trend": "flat"
+          }
+        ],
+        "skeleton": true
+      }
+    },
+    "DataTable": {
+      "kind": "block",
+      "description": "Data table for an app screen (orders, users, transactions) with column headers and rows of cells.",
+      "slots": [],
+      "events": [],
+      "root": false,
+      "props": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "columns": {
+            "minItems": 2,
+            "maxItems": 6,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "rows": {
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "minItems": 2,
+              "maxItems": 6,
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "skeleton": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "title",
+          "columns",
+          "rows"
+        ],
+        "additionalProperties": false
+      },
+      "placeholder": {
+        "title": "…",
+        "columns": [
+          "…",
+          "…",
+          "…",
+          "…"
+        ],
+        "rows": [
+          [
+            "…",
+            "…",
+            "…",
+            "…"
+          ],
+          [
+            "…",
+            "…",
+            "…",
+            "…"
+          ],
+          [
+            "…",
+            "…",
+            "…",
+            "…"
+          ],
+          [
+            "…",
+            "…",
+            "…",
+            "…"
+          ]
+        ],
+        "skeleton": true
+      }
+    },
+    "EmptyState": {
+      "kind": "block",
+      "description": "Empty or success state message for an app screen with an icon, title, description and an actions slot.",
+      "slots": [
+        "actions"
+      ],
+      "events": [],
+      "root": false,
+      "props": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "icon": {
+            "type": "string",
+            "enum": [
+              "sparkles",
+              "zap",
+              "shield",
+              "heart",
+              "star",
+              "coffee",
+              "truck",
+              "clock",
+              "users",
+              "chart",
+              "globe",
+              "lock",
+              "smile",
+              "leaf",
+              "gift",
+              "phone"
+            ]
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "skeleton": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "icon",
+          "title",
+          "description"
+        ],
+        "additionalProperties": false
+      },
+      "placeholder": {
+        "icon": "sparkles",
+        "title": "…",
+        "description": "…",
+        "skeleton": true
+      }
+    },
     "Button": {
       "kind": "primitive",
       "description": "Button for actions. Lives in an `actions` slot.",

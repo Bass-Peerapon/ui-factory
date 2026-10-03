@@ -1,0 +1,818 @@
+{
+ "root": "page",
+ "state": {},
+ "elements": {
+  "page": {
+   "type": "Page",
+   "props": {
+    "title": "…",
+    "skeleton": true
+   },
+   "children": [
+    "navbar",
+    "hero",
+    "featuregrid",
+    "stats",
+    "pricing",
+    "testimonials",
+    "faq",
+    "cta",
+    "contactform",
+    "footer",
+    "banner",
+    "logocloud",
+    "imagetext",
+    "steps",
+    "productgrid",
+    "gallery",
+    "team",
+    "timeline",
+    "comparisontable",
+    "bloglist",
+    "quote",
+    "newsletter",
+    "contactinfo",
+    "authform",
+    "kpigrid",
+    "datatable",
+    "emptystate"
+   ]
+  },
+  "navbar": {
+   "type": "Navbar",
+   "props": {
+    "brand": "…",
+    "links": [
+     "…",
+     "…",
+     "…"
+    ],
+    "ctaLabel": "…",
+    "skeleton": true
+   },
+   "children": []
+  },
+  "hero": {
+   "type": "Hero",
+   "props": {
+    "eyebrow": "…",
+    "title": "…",
+    "subtitle": "…",
+    "align": "center",
+    "showImage": true,
+    "skeleton": true
+   },
+   "children": [],
+   "slots": {
+    "actions": [
+     "button-1",
+     "button-2"
+    ]
+   }
+  },
+  "button-1": {
+   "type": "Button",
+   "props": {
+    "label": "…",
+    "variant": "default",
+    "size": "default",
+    "skeleton": true
+   },
+   "children": []
+  },
+  "button-2": {
+   "type": "Button",
+   "props": {
+    "label": "…",
+    "variant": "default",
+    "size": "default",
+    "skeleton": true
+   },
+   "children": []
+  },
+  "featuregrid": {
+   "type": "FeatureGrid",
+   "props": {
+    "title": "…",
+    "subtitle": "…",
+    "features": [
+     {
+      "icon": "sparkles",
+      "title": "…",
+      "description": "…"
+     },
+     {
+      "icon": "zap",
+      "title": "…",
+      "description": "…"
+     },
+     {
+      "icon": "shield",
+      "title": "…",
+      "description": "…"
+     }
+    ],
+    "skeleton": true
+   },
+   "children": []
+  },
+  "stats": {
+   "type": "Stats",
+   "props": {
+    "items": [
+     {
+      "value": "…",
+      "label": "…"
+     },
+     {
+      "value": "…",
+      "label": "…"
+     },
+     {
+      "value": "…",
+      "label": "…"
+     }
+    ],
+    "skeleton": true
+   },
+   "children": []
+  },
+  "pricing": {
+   "type": "Pricing",
+   "props": {
+    "title": "…",
+    "plans": [
+     {
+      "name": "…",
+      "price": "…",
+      "period": "…",
+      "features": [
+       "…",
+       "…",
+       "…"
+      ],
+      "highlighted": false,
+      "ctaLabel": "…"
+     },
+     {
+      "name": "…",
+      "price": "…",
+      "period": "…",
+      "features": [
+       "…",
+       "…",
+       "…"
+      ],
+      "highlighted": true,
+      "ctaLabel": "…"
+     },
+     {
+      "name": "…",
+      "price": "…",
+      "period": "…",
+      "features": [
+       "…",
+       "…",
+       "…"
+      ],
+      "highlighted": false,
+      "ctaLabel": "…"
+     }
+    ],
+    "skeleton": true
+   },
+   "children": []
+  },
+  "testimonials": {
+   "type": "Testimonials",
+   "props": {
+    "title": "…",
+    "items": [
+     {
+      "quote": "…",
+      "name": "…",
+      "role": "…"
+     },
+     {
+      "quote": "…",
+      "name": "…",
+      "role": "…"
+     },
+     {
+      "quote": "…",
+      "name": "…",
+      "role": "…"
+     }
+    ],
+    "skeleton": true
+   },
+   "children": []
+  },
+  "faq": {
+   "type": "FAQ",
+   "props": {
+    "title": "…",
+    "items": [
+     {
+      "question": "…",
+      "answer": "…"
+     },
+     {
+      "question": "…",
+      "answer": "…"
+     },
+     {
+      "question": "…",
+      "answer": "…"
+     }
+    ],
+    "skeleton": true
+   },
+   "children": []
+  },
+  "cta": {
+   "type": "CTA",
+   "props": {
+    "title": "…",
+    "subtitle": "…",
+    "skeleton": true
+   },
+   "children": [],
+   "slots": {
+    "actions": [
+     "button-3"
+    ]
+   }
+  },
+  "button-3": {
+   "type": "Button",
+   "props": {
+    "label": "…",
+    "variant": "default",
+    "size": "default",
+    "skeleton": true
+   },
+   "children": []
+  },
+  "contactform": {
+   "type": "ContactForm",
+   "props": {
+    "title": "…",
+    "subtitle": "…",
+    "skeleton": true
+   },
+   "children": [],
+   "slots": {
+    "fields": [
+     "input-4",
+     "textarea-5"
+    ],
+    "actions": [
+     "button-6"
+    ]
+   }
+  },
+  "input-4": {
+   "type": "Input",
+   "props": {
+    "label": "…",
+    "placeholder": "…",
+    "inputType": "text",
+    "skeleton": true
+   },
+   "children": []
+  },
+  "textarea-5": {
+   "type": "Textarea",
+   "props": {
+    "label": "…",
+    "placeholder": "…",
+    "skeleton": true
+   },
+   "children": []
+  },
+  "button-6": {
+   "type": "Button",
+   "props": {
+    "label": "…",
+    "variant": "default",
+    "size": "default",
+    "skeleton": true
+   },
+   "children": []
+  },
+  "footer": {
+   "type": "Footer",
+   "props": {
+    "brand": "…",
+    "columns": [
+     {
+      "title": "…",
+      "links": [
+       "…",
+       "…",
+       "…"
+      ]
+     },
+     {
+      "title": "…",
+      "links": [
+       "…",
+       "…",
+       "…"
+      ]
+     }
+    ],
+    "copyright": "…",
+    "skeleton": true
+   },
+   "children": []
+  },
+  "banner": {
+   "type": "Banner",
+   "props": {
+    "text": "…",
+    "linkLabel": "…",
+    "skeleton": true
+   },
+   "children": []
+  },
+  "logocloud": {
+   "type": "LogoCloud",
+   "props": {
+    "title": "…",
+    "logos": [
+     "…",
+     "…",
+     "…",
+     "…",
+     "…"
+    ],
+    "skeleton": true
+   },
+   "children": []
+  },
+  "imagetext": {
+   "type": "ImageText",
+   "props": {
+    "eyebrow": "…",
+    "title": "…",
+    "description": "…",
+    "bullets": [
+     "…",
+     "…",
+     "…"
+    ],
+    "imageSide": "right",
+    "skeleton": true
+   },
+   "children": [],
+   "slots": {
+    "actions": [
+     "button-7"
+    ]
+   }
+  },
+  "button-7": {
+   "type": "Button",
+   "props": {
+    "label": "…",
+    "variant": "default",
+    "size": "default",
+    "skeleton": true
+   },
+   "children": []
+  },
+  "steps": {
+   "type": "Steps",
+   "props": {
+    "title": "…",
+    "steps": [
+     {
+      "title": "…",
+      "description": "…"
+     },
+     {
+      "title": "…",
+      "description": "…"
+     },
+     {
+      "title": "…",
+      "description": "…"
+     }
+    ],
+    "skeleton": true
+   },
+   "children": []
+  },
+  "productgrid": {
+   "type": "ProductGrid",
+   "props": {
+    "title": "…",
+    "products": [
+     {
+      "name": "…",
+      "price": "…",
+      "badge": "",
+      "description": "…"
+     },
+     {
+      "name": "…",
+      "price": "…",
+      "badge": "",
+      "description": "…"
+     },
+     {
+      "name": "…",
+      "price": "…",
+      "badge": "",
+      "description": "…"
+     },
+     {
+      "name": "…",
+      "price": "…",
+      "badge": "",
+      "description": "…"
+     }
+    ],
+    "skeleton": true
+   },
+   "children": []
+  },
+  "gallery": {
+   "type": "Gallery",
+   "props": {
+    "title": "…",
+    "items": [
+     {
+      "caption": "…"
+     },
+     {
+      "caption": "…"
+     },
+     {
+      "caption": "…"
+     },
+     {
+      "caption": "…"
+     },
+     {
+      "caption": "…"
+     },
+     {
+      "caption": "…"
+     }
+    ],
+    "skeleton": true
+   },
+   "children": []
+  },
+  "team": {
+   "type": "Team",
+   "props": {
+    "title": "…",
+    "members": [
+     {
+      "name": "…",
+      "role": "…",
+      "bio": "…"
+     },
+     {
+      "name": "…",
+      "role": "…",
+      "bio": "…"
+     },
+     {
+      "name": "…",
+      "role": "…",
+      "bio": "…"
+     }
+    ],
+    "skeleton": true
+   },
+   "children": []
+  },
+  "timeline": {
+   "type": "Timeline",
+   "props": {
+    "title": "…",
+    "items": [
+     {
+      "date": "…",
+      "title": "…",
+      "description": "…"
+     },
+     {
+      "date": "…",
+      "title": "…",
+      "description": "…"
+     },
+     {
+      "date": "…",
+      "title": "…",
+      "description": "…"
+     }
+    ],
+    "skeleton": true
+   },
+   "children": []
+  },
+  "comparisontable": {
+   "type": "ComparisonTable",
+   "props": {
+    "title": "…",
+    "columns": [
+     "…",
+     "…",
+     "…"
+    ],
+    "rows": [
+     {
+      "feature": "…",
+      "values": [
+       "…",
+       "…",
+       "…"
+      ]
+     },
+     {
+      "feature": "…",
+      "values": [
+       "…",
+       "…",
+       "…"
+      ]
+     },
+     {
+      "feature": "…",
+      "values": [
+       "…",
+       "…",
+       "…"
+      ]
+     }
+    ],
+    "skeleton": true
+   },
+   "children": []
+  },
+  "bloglist": {
+   "type": "BlogList",
+   "props": {
+    "title": "…",
+    "posts": [
+     {
+      "category": "…",
+      "title": "…",
+      "excerpt": "…",
+      "date": "…"
+     },
+     {
+      "category": "…",
+      "title": "…",
+      "excerpt": "…",
+      "date": "…"
+     },
+     {
+      "category": "…",
+      "title": "…",
+      "excerpt": "…",
+      "date": "…"
+     }
+    ],
+    "skeleton": true
+   },
+   "children": []
+  },
+  "quote": {
+   "type": "Quote",
+   "props": {
+    "quote": "…",
+    "author": "…",
+    "role": "…",
+    "skeleton": true
+   },
+   "children": []
+  },
+  "newsletter": {
+   "type": "Newsletter",
+   "props": {
+    "title": "…",
+    "subtitle": "…",
+    "skeleton": true
+   },
+   "children": [],
+   "slots": {
+    "fields": [
+     "input-8"
+    ],
+    "actions": [
+     "button-9"
+    ]
+   }
+  },
+  "input-8": {
+   "type": "Input",
+   "props": {
+    "label": "…",
+    "placeholder": "…",
+    "inputType": "text",
+    "skeleton": true
+   },
+   "children": []
+  },
+  "button-9": {
+   "type": "Button",
+   "props": {
+    "label": "…",
+    "variant": "default",
+    "size": "default",
+    "skeleton": true
+   },
+   "children": []
+  },
+  "contactinfo": {
+   "type": "ContactInfo",
+   "props": {
+    "title": "…",
+    "items": [
+     {
+      "icon": "phone",
+      "label": "…",
+      "value": "…"
+     },
+     {
+      "icon": "globe",
+      "label": "…",
+      "value": "…"
+     },
+     {
+      "icon": "clock",
+      "label": "…",
+      "value": "…"
+     }
+    ],
+    "skeleton": true
+   },
+   "children": []
+  },
+  "authform": {
+   "type": "AuthForm",
+   "props": {
+    "title": "…",
+    "subtitle": "…",
+    "mode": "login",
+    "footerText": "…",
+    "skeleton": true
+   },
+   "children": [],
+   "slots": {
+    "fields": [
+     "input-10",
+     "input-11",
+     "checkbox-12"
+    ],
+    "actions": [
+     "button-13"
+    ]
+   }
+  },
+  "input-10": {
+   "type": "Input",
+   "props": {
+    "label": "…",
+    "placeholder": "…",
+    "inputType": "text",
+    "skeleton": true
+   },
+   "children": []
+  },
+  "input-11": {
+   "type": "Input",
+   "props": {
+    "label": "…",
+    "placeholder": "…",
+    "inputType": "text",
+    "skeleton": true
+   },
+   "children": []
+  },
+  "checkbox-12": {
+   "type": "Checkbox",
+   "props": {
+    "label": "…",
+    "skeleton": true
+   },
+   "children": []
+  },
+  "button-13": {
+   "type": "Button",
+   "props": {
+    "label": "…",
+    "variant": "default",
+    "size": "default",
+    "skeleton": true
+   },
+   "children": []
+  },
+  "kpigrid": {
+   "type": "KPIGrid",
+   "props": {
+    "title": "…",
+    "items": [
+     {
+      "label": "…",
+      "value": "…",
+      "delta": "…",
+      "trend": "up"
+     },
+     {
+      "label": "…",
+      "value": "…",
+      "delta": "…",
+      "trend": "down"
+     },
+     {
+      "label": "…",
+      "value": "…",
+      "delta": "…",
+      "trend": "up"
+     },
+     {
+      "label": "…",
+      "value": "…",
+      "delta": "…",
+      "trend": "flat"
+     }
+    ],
+    "skeleton": true
+   },
+   "children": []
+  },
+  "datatable": {
+   "type": "DataTable",
+   "props": {
+    "title": "…",
+    "columns": [
+     "…",
+     "…",
+     "…",
+     "…"
+    ],
+    "rows": [
+     [
+      "…",
+      "…",
+      "…",
+      "…"
+     ],
+     [
+      "…",
+      "…",
+      "…",
+      "…"
+     ],
+     [
+      "…",
+      "…",
+      "…",
+      "…"
+     ],
+     [
+      "…",
+      "…",
+      "…",
+      "…"
+     ]
+    ],
+    "skeleton": true
+   },
+   "children": []
+  },
+  "emptystate": {
+   "type": "EmptyState",
+   "props": {
+    "icon": "sparkles",
+    "title": "…",
+    "description": "…",
+    "skeleton": true
+   },
+   "children": [],
+   "slots": {
+    "actions": [
+     "button-14"
+    ]
+   }
+  },
+  "button-14": {
+   "type": "Button",
+   "props": {
+    "label": "…",
+    "variant": "default",
+    "size": "default",
+    "skeleton": true
+   },
+   "children": []
+  }
+ }
+}
