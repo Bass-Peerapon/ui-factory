@@ -1,0 +1,22 @@
+{
+  "name": "@ui-factory/composer",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "start": "tsx src/server.ts",
+    "typecheck": "tsc -p ."
+  },
+  "dependencies": {
+    "@json-render/core": "0.21.0",
+    "@ui-factory/catalog": "workspace:*",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.1",
+    "tsx": "4.23.15",
+    "typescript": "5.9.3"
+  }
+}

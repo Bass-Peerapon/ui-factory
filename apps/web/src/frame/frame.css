@@ -1,0 +1,59 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Noto+Serif+Thai:wght@400;600;700&family=Mitr:wght@400;500;600&family=IBM+Plex+Mono&display=swap");
+@import "tailwindcss";
+
+/* shadcn/ui variables; values are injected per project theme by applyTheme() */
+:root {
+  --background: #ffffff;
+  --foreground: #09090b;
+  --primary: #18181b;
+  --primary-foreground: #fafafa;
+  --secondary: #f4f4f5;
+  --secondary-foreground: #18181b;
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;
+  --accent: #f4f4f5;
+  --accent-foreground: #18181b;
+  --border: #e4e4e7;
+  --input: #e4e4e7;
+  --ring: #a1a1aa;
+  --radius: 0.5rem;
+  --font: "IBM Plex Sans Thai", system-ui, sans-serif;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --font-sans: var(--font);
+}
+
+* { border-color: var(--border); }
+html, body { margin: 0; background: var(--background); color: var(--foreground); font-family: var(--font); }
+body { overflow-x: hidden; }
+
+/* editor overlays */
+[data-el-id] { position: relative; }
+body.mode-edit [data-el-id]:hover { outline: 1px dashed color-mix(in srgb, #3b82f6 70%, transparent); outline-offset: -1px; cursor: default; }
+body.mode-edit [data-el-id].is-selected { outline: 2px solid #3b82f6; outline-offset: -2px; }
+body.mode-edit [data-el-id].is-selected::before {
+  content: attr(data-el-type); position: absolute; top: 0; left: 0; z-index: 50;
+  background: #3b82f6; color: #fff; font: 500 11px/1 ui-sans-serif, system-ui; padding: 3px 6px; border-bottom-right-radius: 4px;
+}
+.sk { background: color-mix(in srgb, var(--foreground) 8%, transparent); border-radius: calc(var(--radius) - 2px); animation: sk-pulse 1.4s ease-in-out infinite; }
+@keyframes sk-pulse { 50% { opacity: 0.55; } }
+.fill-in { animation: fill-in 0.45s ease-out; }
+@keyframes fill-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }

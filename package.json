@@ -1,0 +1,11 @@
+{
+  "name": "ui-factory",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.33.0",
+  "scripts": {
+    "gen:schema": "pnpm --filter @ui-factory/catalog gen",
+    "typecheck": "pnpm -r typecheck",
+    "eval": "pnpm --filter @ui-factory/evals run eval"
+  }
+}

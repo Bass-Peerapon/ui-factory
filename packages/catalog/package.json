@@ -1,0 +1,22 @@
+{
+  "name": "@ui-factory/catalog",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "scripts": {
+    "gen": "tsx scripts/gen-schema.ts",
+    "check": "tsx scripts/check-fixtures.ts",
+    "typecheck": "tsc -p ."
+  },
+  "dependencies": {
+    "@json-render/core": "0.21.0",
+    "@json-render/react": "0.21.0",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.1",
+    "tsx": "4.23.15",
+    "typescript": "5.9.3"
+  }
+}

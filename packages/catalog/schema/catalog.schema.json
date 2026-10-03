@@ -1,0 +1,1046 @@
+{
+  "components": {
+    "Page": {
+      "kind": "layout",
+      "description": "Page root. Holds every section of one screen in vertical order.",
+      "slots": [
+        "default"
+      ],
+      "events": [],
+      "root": true,
+      "props": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "skeleton": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "title"
+        ],
+        "additionalProperties": false
+      },
+      "placeholder": {
+        "title": "…",
+        "skeleton": true
+      }
+    },
+    "Navbar": {
+      "kind": "block",
+      "description": "Top navigation bar with brand name, menu links and one call-to-action label.",
+      "slots": [],
+      "events": [],
+      "root": false,
+      "props": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "brand": {
+            "type": "string",
+            "minLength": 1
+          },
+          "links": {
+            "minItems": 1,
+            "maxItems": 6,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "ctaLabel": {
+            "type": "string",
+            "minLength": 1
+          },
+          "skeleton": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "brand",
+          "links",
+          "ctaLabel"
+        ],
+        "additionalProperties": false
+      },
+      "placeholder": {
+        "brand": "…",
+        "links": [
+          "…",
+          "…",
+          "…"
+        ],
+        "ctaLabel": "…",
+        "skeleton": true
+      }
+    },
+    "Hero": {
+      "kind": "block",
+      "description": "Hero section: eyebrow, large headline, supporting subtitle and a slot for action buttons.",
+      "slots": [
+        "actions"
+      ],
+      "events": [],
+      "root": false,
+      "props": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "eyebrow": {
+            "type": "string",
+            "minLength": 1
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "subtitle": {
+            "type": "string",
+            "minLength": 1
+          },
+          "align": {
+            "type": "string",
+            "enum": [
+              "left",
+              "center"
+            ]
+          },
+          "showImage": {
+            "type": "boolean"
+          },
+          "skeleton": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "eyebrow",
+          "title",
+          "subtitle",
+          "align",
+          "showImage"
+        ],
+        "additionalProperties": false
+      },
+      "placeholder": {
+        "eyebrow": "…",
+        "title": "…",
+        "subtitle": "…",
+        "align": "center",
+        "showImage": true,
+        "skeleton": true
+      }
+    },
+    "FeatureGrid": {
+      "kind": "block",
+      "description": "Grid of product features or benefits, each with an icon, title and short description.",
+      "slots": [],
+      "events": [],
+      "root": false,
+      "props": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "subtitle": {
+            "type": "string",
+            "minLength": 1
+          },
+          "features": {
+            "minItems": 2,
+            "maxItems": 6,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "icon": {
+                  "type": "string",
+                  "enum": [
+                    "sparkles",
+                    "zap",
+                    "shield",
+                    "heart",
+                    "star",
+                    "coffee",
+                    "truck",
+                    "clock",
+                    "users",
+                    "chart",
+                    "globe",
+                    "lock",
+                    "smile",
+                    "leaf",
+                    "gift",
+                    "phone"
+                  ]
+                },
+                "title": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "icon",
+                "title",
+                "description"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "skeleton": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "title",
+          "subtitle",
+          "features"
+        ],
+        "additionalProperties": false
+      },
+      "placeholder": {
+        "title": "…",
+        "subtitle": "…",
+        "features": [
+          {
+            "icon": "sparkles",
+            "title": "…",
+            "description": "…"
+          },
+          {
+            "icon": "zap",
+            "title": "…",
+            "description": "…"
+          },
+          {
+            "icon": "shield",
+            "title": "…",
+            "description": "…"
+          }
+        ],
+        "skeleton": true
+      }
+    },
+    "Stats": {
+      "kind": "block",
+      "description": "Row of key numbers or metrics with labels, e.g. customers served or uptime.",
+      "slots": [],
+      "events": [],
+      "root": false,
+      "props": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "items": {
+            "minItems": 2,
+            "maxItems": 4,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "label": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "value",
+                "label"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "skeleton": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "additionalProperties": false
+      },
+      "placeholder": {
+        "items": [
+          {
+            "value": "…",
+            "label": "…"
+          },
+          {
+            "value": "…",
+            "label": "…"
+          },
+          {
+            "value": "…",
+            "label": "…"
+          }
+        ],
+        "skeleton": true
+      }
+    },
+    "Pricing": {
+      "kind": "block",
+      "description": "Pricing table comparing plans with price, period, feature list and one highlighted plan.",
+      "slots": [],
+      "events": [],
+      "root": false,
+      "props": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "plans": {
+            "minItems": 1,
+            "maxItems": 4,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "price": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "period": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "features": {
+                  "minItems": 1,
+                  "maxItems": 6,
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "highlighted": {
+                  "type": "boolean"
+                },
+                "ctaLabel": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "name",
+                "price",
+                "period",
+                "features",
+                "highlighted",
+                "ctaLabel"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "skeleton": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "title",
+          "plans"
+        ],
+        "additionalProperties": false
+      },
+      "placeholder": {
+        "title": "…",
+        "plans": [
+          {
+            "name": "…",
+            "price": "…",
+            "period": "…",
+            "features": [
+              "…",
+              "…",
+              "…"
+            ],
+            "highlighted": false,
+            "ctaLabel": "…"
+          },
+          {
+            "name": "…",
+            "price": "…",
+            "period": "…",
+            "features": [
+              "…",
+              "…",
+              "…"
+            ],
+            "highlighted": true,
+            "ctaLabel": "…"
+          },
+          {
+            "name": "…",
+            "price": "…",
+            "period": "…",
+            "features": [
+              "…",
+              "…",
+              "…"
+            ],
+            "highlighted": false,
+            "ctaLabel": "…"
+          }
+        ],
+        "skeleton": true
+      }
+    },
+    "Testimonials": {
+      "kind": "block",
+      "description": "Customer testimonials: quotes with the customer's name and role.",
+      "slots": [],
+      "events": [],
+      "root": false,
+      "props": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "items": {
+            "minItems": 1,
+            "maxItems": 6,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "quote": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "role": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "quote",
+                "name",
+                "role"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "skeleton": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "title",
+          "items"
+        ],
+        "additionalProperties": false
+      },
+      "placeholder": {
+        "title": "…",
+        "items": [
+          {
+            "quote": "…",
+            "name": "…",
+            "role": "…"
+          },
+          {
+            "quote": "…",
+            "name": "…",
+            "role": "…"
+          },
+          {
+            "quote": "…",
+            "name": "…",
+            "role": "…"
+          }
+        ],
+        "skeleton": true
+      }
+    },
+    "FAQ": {
+      "kind": "block",
+      "description": "Frequently asked questions as an expandable list of question and answer pairs.",
+      "slots": [],
+      "events": [],
+      "root": false,
+      "props": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "items": {
+            "minItems": 1,
+            "maxItems": 8,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "question": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "answer": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "question",
+                "answer"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "skeleton": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "title",
+          "items"
+        ],
+        "additionalProperties": false
+      },
+      "placeholder": {
+        "title": "…",
+        "items": [
+          {
+            "question": "…",
+            "answer": "…"
+          },
+          {
+            "question": "…",
+            "answer": "…"
+          },
+          {
+            "question": "…",
+            "answer": "…"
+          }
+        ],
+        "skeleton": true
+      }
+    },
+    "CTA": {
+      "kind": "block",
+      "description": "Call-to-action banner with a headline, subtitle and a slot for action buttons.",
+      "slots": [
+        "actions"
+      ],
+      "events": [],
+      "root": false,
+      "props": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "subtitle": {
+            "type": "string",
+            "minLength": 1
+          },
+          "skeleton": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "title",
+          "subtitle"
+        ],
+        "additionalProperties": false
+      },
+      "placeholder": {
+        "title": "…",
+        "subtitle": "…",
+        "skeleton": true
+      }
+    },
+    "ContactForm": {
+      "kind": "block",
+      "description": "Contact or sign-up form section. Put Input, Textarea and Checkbox primitives in `fields` and the submit Button in `actions`.",
+      "slots": [
+        "fields",
+        "actions"
+      ],
+      "events": [],
+      "root": false,
+      "props": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "subtitle": {
+            "type": "string",
+            "minLength": 1
+          },
+          "skeleton": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "title",
+          "subtitle"
+        ],
+        "additionalProperties": false
+      },
+      "placeholder": {
+        "title": "…",
+        "subtitle": "…",
+        "skeleton": true
+      }
+    },
+    "Footer": {
+      "kind": "block",
+      "description": "Page footer with brand, link columns and copyright line.",
+      "slots": [],
+      "events": [],
+      "root": false,
+      "props": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "brand": {
+            "type": "string",
+            "minLength": 1
+          },
+          "columns": {
+            "minItems": 1,
+            "maxItems": 4,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "links": {
+                  "minItems": 1,
+                  "maxItems": 5,
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              },
+              "required": [
+                "title",
+                "links"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "copyright": {
+            "type": "string",
+            "minLength": 1
+          },
+          "skeleton": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "brand",
+          "columns",
+          "copyright"
+        ],
+        "additionalProperties": false
+      },
+      "placeholder": {
+        "brand": "…",
+        "columns": [
+          {
+            "title": "…",
+            "links": [
+              "…",
+              "…",
+              "…"
+            ]
+          },
+          {
+            "title": "…",
+            "links": [
+              "…",
+              "…",
+              "…"
+            ]
+          }
+        ],
+        "copyright": "…",
+        "skeleton": true
+      }
+    },
+    "Button": {
+      "kind": "primitive",
+      "description": "Button for actions. Lives in an `actions` slot.",
+      "slots": [],
+      "events": [
+        "press"
+      ],
+      "root": false,
+      "props": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "minLength": 1
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "default",
+              "secondary",
+              "outline",
+              "ghost"
+            ]
+          },
+          "size": {
+            "type": "string",
+            "enum": [
+              "sm",
+              "default",
+              "lg"
+            ]
+          },
+          "skeleton": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "label",
+          "variant",
+          "size"
+        ],
+        "additionalProperties": false
+      },
+      "placeholder": {
+        "label": "…",
+        "variant": "default",
+        "size": "default",
+        "skeleton": true
+      }
+    },
+    "Input": {
+      "kind": "primitive",
+      "description": "Single-line text field with label. Lives in a `fields` slot.",
+      "slots": [],
+      "events": [],
+      "root": false,
+      "props": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "minLength": 1
+          },
+          "placeholder": {
+            "type": "string"
+          },
+          "inputType": {
+            "type": "string",
+            "enum": [
+              "text",
+              "email",
+              "tel",
+              "password",
+              "number"
+            ]
+          },
+          "skeleton": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "label",
+          "placeholder",
+          "inputType"
+        ],
+        "additionalProperties": false
+      },
+      "placeholder": {
+        "label": "…",
+        "placeholder": "…",
+        "inputType": "text",
+        "skeleton": true
+      }
+    },
+    "Textarea": {
+      "kind": "primitive",
+      "description": "Multi-line text field with label. Lives in a `fields` slot.",
+      "slots": [],
+      "events": [],
+      "root": false,
+      "props": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "minLength": 1
+          },
+          "placeholder": {
+            "type": "string"
+          },
+          "skeleton": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "label",
+          "placeholder"
+        ],
+        "additionalProperties": false
+      },
+      "placeholder": {
+        "label": "…",
+        "placeholder": "…",
+        "skeleton": true
+      }
+    },
+    "Checkbox": {
+      "kind": "primitive",
+      "description": "Checkbox with a label, e.g. accept terms. Lives in a `fields` slot.",
+      "slots": [],
+      "events": [],
+      "root": false,
+      "props": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "minLength": 1
+          },
+          "skeleton": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "label"
+        ],
+        "additionalProperties": false
+      },
+      "placeholder": {
+        "label": "…",
+        "skeleton": true
+      }
+    },
+    "Badge": {
+      "kind": "primitive",
+      "description": "Small status or category label.",
+      "slots": [],
+      "events": [],
+      "root": false,
+      "props": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "minLength": 1
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "default",
+              "secondary",
+              "outline"
+            ]
+          },
+          "skeleton": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "label",
+          "variant"
+        ],
+        "additionalProperties": false
+      },
+      "placeholder": {
+        "label": "…",
+        "variant": "secondary",
+        "skeleton": true
+      }
+    }
+  },
+  "theme": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "primary": {
+        "type": "string",
+        "pattern": "^#[0-9a-fA-F]{6}$"
+      },
+      "primaryForeground": {
+        "type": "string",
+        "pattern": "^#[0-9a-fA-F]{6}$"
+      },
+      "background": {
+        "type": "string",
+        "pattern": "^#[0-9a-fA-F]{6}$"
+      },
+      "foreground": {
+        "type": "string",
+        "pattern": "^#[0-9a-fA-F]{6}$"
+      },
+      "muted": {
+        "type": "string",
+        "pattern": "^#[0-9a-fA-F]{6}$"
+      },
+      "mutedForeground": {
+        "type": "string",
+        "pattern": "^#[0-9a-fA-F]{6}$"
+      },
+      "accent": {
+        "type": "string",
+        "pattern": "^#[0-9a-fA-F]{6}$"
+      },
+      "border": {
+        "type": "string",
+        "pattern": "^#[0-9a-fA-F]{6}$"
+      },
+      "radius": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1.5,
+        "description": "corner radius in rem"
+      },
+      "font": {
+        "type": "string",
+        "enum": [
+          "sans",
+          "serif",
+          "mono",
+          "rounded"
+        ]
+      }
+    },
+    "required": [
+      "primary",
+      "primaryForeground",
+      "background",
+      "foreground",
+      "muted",
+      "mutedForeground",
+      "accent",
+      "border",
+      "radius",
+      "font"
+    ],
+    "additionalProperties": false
+  },
+  "themePresets": {
+    "neutral": {
+      "primary": "#18181b",
+      "primaryForeground": "#fafafa",
+      "background": "#ffffff",
+      "foreground": "#09090b",
+      "muted": "#f4f4f5",
+      "mutedForeground": "#71717a",
+      "accent": "#f4f4f5",
+      "border": "#e4e4e7",
+      "radius": 0.5,
+      "font": "sans"
+    },
+    "coffee": {
+      "primary": "#6f4e37",
+      "primaryForeground": "#fff8f0",
+      "background": "#fffaf5",
+      "foreground": "#2b1d14",
+      "muted": "#f3e9df",
+      "mutedForeground": "#7a6455",
+      "accent": "#e8d5c4",
+      "border": "#e6d8cb",
+      "radius": 0.75,
+      "font": "serif"
+    },
+    "ocean": {
+      "primary": "#0369a1",
+      "primaryForeground": "#f0f9ff",
+      "background": "#ffffff",
+      "foreground": "#0c1a26",
+      "muted": "#eff6fb",
+      "mutedForeground": "#55707f",
+      "accent": "#e0f2fe",
+      "border": "#d6e6f0",
+      "radius": 0.6,
+      "font": "sans"
+    },
+    "forest": {
+      "primary": "#15803d",
+      "primaryForeground": "#f0fdf4",
+      "background": "#fbfdfb",
+      "foreground": "#0f1f14",
+      "muted": "#ecf5ee",
+      "mutedForeground": "#5b7262",
+      "accent": "#dcfce7",
+      "border": "#d5e6da",
+      "radius": 1,
+      "font": "rounded"
+    },
+    "midnight": {
+      "primary": "#a78bfa",
+      "primaryForeground": "#1e1b2e",
+      "background": "#0f0e17",
+      "foreground": "#ece9f7",
+      "muted": "#1d1b2b",
+      "mutedForeground": "#a19cb8",
+      "accent": "#2a2640",
+      "border": "#2e2a44",
+      "radius": 0.5,
+      "font": "sans"
+    }
+  },
+  "actions": {
+    "navigate": {
+      "description": "Prototype navigation: show another frame of the project.",
+      "params": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "frameId": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "frameId"
+        ],
+        "additionalProperties": false
+      }
+    }
+  }
+}

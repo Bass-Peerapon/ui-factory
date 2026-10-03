@@ -1,0 +1,320 @@
+{
+ "root": "page",
+ "state": {},
+ "elements": {
+  "page": {
+   "type": "Page",
+   "props": {
+    "title": "บ้านกาแฟดอย"
+   },
+   "children": [
+    "nav",
+    "hero",
+    "features",
+    "stats",
+    "pricing",
+    "reviews",
+    "faq",
+    "cta",
+    "contact",
+    "footer"
+   ]
+  },
+  "nav": {
+   "type": "Navbar",
+   "props": {
+    "brand": "บ้านกาแฟดอย",
+    "links": [
+     "เมนู",
+     "แพ็กเกจ",
+     "รีวิว",
+     "ติดต่อ"
+    ],
+    "ctaLabel": "สั่งเลย"
+   },
+   "children": []
+  },
+  "hero": {
+   "type": "Hero",
+   "props": {
+    "eyebrow": "คั่วสดทุกสัปดาห์",
+    "title": "กาแฟอาราบิก้าจากดอยช้าง ส่งตรงถึงบ้าน",
+    "subtitle": "เมล็ดคั่วอ่อนถึงเข้ม เลือกได้ตามรสที่ชอบ จัดส่งฟรีทั่วประเทศเมื่อสั่งครบ 500 บาท",
+    "align": "center",
+    "showImage": true
+   },
+   "slots": {
+    "actions": [
+     "hero-buy",
+     "hero-more"
+    ]
+   },
+   "children": []
+  },
+  "hero-buy": {
+   "type": "Button",
+   "props": {
+    "label": "สั่งซื้อเมล็ดกาแฟ",
+    "variant": "default",
+    "size": "lg"
+   },
+   "children": []
+  },
+  "hero-more": {
+   "type": "Button",
+   "props": {
+    "label": "ดูเมนูทั้งหมด",
+    "variant": "outline",
+    "size": "lg"
+   },
+   "children": []
+  },
+  "features": {
+   "type": "FeatureGrid",
+   "props": {
+    "title": "ทำไมต้องบ้านกาแฟดอย",
+    "subtitle": "ดูแลตั้งแต่ไร่จนถึงแก้วของคุณ",
+    "features": [
+     {
+      "icon": "leaf",
+      "title": "ปลูกแบบอินทรีย์",
+      "description": "รับซื้อตรงจากเกษตรกรดอยช้าง 42 ครอบครัว ไม่ใช้สารเคมี"
+     },
+     {
+      "icon": "coffee",
+      "title": "คั่วสดทุกวันจันทร์",
+      "description": "คั่วเป็นล็อตเล็ก ส่งออกภายใน 48 ชั่วโมงหลังคั่ว"
+     },
+     {
+      "icon": "truck",
+      "title": "ส่งฟรีครบ 500 บาท",
+      "description": "จัดส่งทั่วประเทศภายใน 2 ถึง 3 วันทำการ"
+     }
+    ]
+   },
+   "children": []
+  },
+  "stats": {
+   "type": "Stats",
+   "props": {
+    "items": [
+     {
+      "value": "12,000+",
+      "label": "ลูกค้าประจำ"
+     },
+     {
+      "value": "42",
+      "label": "ครอบครัวเกษตรกร"
+     },
+     {
+      "value": "4.9",
+      "label": "คะแนนรีวิว"
+     },
+     {
+      "value": "48 ชม.",
+      "label": "จากคั่วถึงส่ง"
+     }
+    ]
+   },
+   "children": []
+  },
+  "pricing": {
+   "type": "Pricing",
+   "props": {
+    "title": "แพ็กเกจสมาชิกรายเดือน",
+    "plans": [
+     {
+      "name": "ลองชิม",
+      "price": "฿390",
+      "period": "/เดือน",
+      "features": [
+       "เมล็ด 250 กรัม",
+       "เลือกระดับคั่วได้"
+      ],
+      "highlighted": false,
+      "ctaLabel": "เริ่มเลย"
+     },
+     {
+      "name": "คนรักกาแฟ",
+      "price": "฿690",
+      "period": "/เดือน",
+      "features": [
+       "เมล็ด 500 กรัม",
+       "ส่งฟรี",
+       "ส่วนลดหน้าร้าน 10%"
+      ],
+      "highlighted": true,
+      "ctaLabel": "สมัครสมาชิก"
+     },
+     {
+      "name": "ออฟฟิศ",
+      "price": "฿1,990",
+      "period": "/เดือน",
+      "features": [
+       "เมล็ด 2 กิโลกรัม",
+       "ส่งฟรี",
+       "บดให้ฟรี"
+      ],
+      "highlighted": false,
+      "ctaLabel": "ติดต่อฝ่ายขาย"
+     }
+    ]
+   },
+   "children": []
+  },
+  "reviews": {
+   "type": "Testimonials",
+   "props": {
+    "title": "เสียงจากลูกค้า",
+    "items": [
+     {
+      "quote": "หอมมาก คั่วกลางกำลังดี ดื่มทุกเช้าไม่เบื่อ",
+      "name": "ศิริพร ก.",
+      "role": "สมาชิก 2 ปี"
+     },
+     {
+      "quote": "ส่งไวจริง ได้ของสองวันหลังคั่ว",
+      "name": "ธนวัฒน์ ส.",
+      "role": "เจ้าของคาเฟ่"
+     },
+     {
+      "quote": "แพ็กเกจออฟฟิศคุ้มมาก ทีมชอบทุกคน",
+      "name": "ปวีณา ร.",
+      "role": "HR Manager"
+     }
+    ]
+   },
+   "children": []
+  },
+  "faq": {
+   "type": "FAQ",
+   "props": {
+    "title": "คำถามที่พบบ่อย",
+    "items": [
+     {
+      "question": "ยกเลิกสมาชิกได้ไหม",
+      "answer": "ยกเลิกได้ทุกเมื่อก่อนรอบตัดบัตรครั้งถัดไป"
+     },
+     {
+      "question": "เมล็ดเก็บได้นานเท่าไร",
+      "answer": "แนะนำให้ดื่มภายใน 30 วันหลังเปิดถุงเพื่อรสชาติที่ดีที่สุด"
+     },
+     {
+      "question": "มีบริการบดให้ไหม",
+      "answer": "มี เลือกระดับการบดได้ตอนสั่งซื้อ"
+     }
+    ]
+   },
+   "children": []
+  },
+  "cta": {
+   "type": "CTA",
+   "props": {
+    "title": "พร้อมเริ่มเช้าที่หอมกว่าเดิมหรือยัง",
+    "subtitle": "สมัครวันนี้ รับเมล็ดถุงแรกลด 30%"
+   },
+   "slots": {
+    "actions": [
+     "cta-btn"
+    ]
+   },
+   "children": []
+  },
+  "cta-btn": {
+   "type": "Button",
+   "props": {
+    "label": "รับส่วนลด 30%",
+    "variant": "secondary",
+    "size": "lg"
+   },
+   "children": []
+  },
+  "contact": {
+   "type": "ContactForm",
+   "props": {
+    "title": "ติดต่อเรา",
+    "subtitle": "สั่งซื้อจำนวนมากหรือสอบถามเพิ่มเติม"
+   },
+   "slots": {
+    "fields": [
+     "f-name",
+     "f-email",
+     "f-msg",
+     "f-ok"
+    ],
+    "actions": [
+     "f-send"
+    ]
+   },
+   "children": []
+  },
+  "f-name": {
+   "type": "Input",
+   "props": {
+    "label": "ชื่อ",
+    "placeholder": "ชื่อของคุณ",
+    "inputType": "text"
+   },
+   "children": []
+  },
+  "f-email": {
+   "type": "Input",
+   "props": {
+    "label": "อีเมล",
+    "placeholder": "you@example.com",
+    "inputType": "email"
+   },
+   "children": []
+  },
+  "f-msg": {
+   "type": "Textarea",
+   "props": {
+    "label": "ข้อความ",
+    "placeholder": "พิมพ์ข้อความ"
+   },
+   "children": []
+  },
+  "f-ok": {
+   "type": "Checkbox",
+   "props": {
+    "label": "ยอมรับนโยบายความเป็นส่วนตัว"
+   },
+   "children": []
+  },
+  "f-send": {
+   "type": "Button",
+   "props": {
+    "label": "ส่งข้อความ",
+    "variant": "default",
+    "size": "default"
+   },
+   "children": []
+  },
+  "footer": {
+   "type": "Footer",
+   "props": {
+    "brand": "บ้านกาแฟดอย",
+    "columns": [
+     {
+      "title": "สินค้า",
+      "links": [
+       "เมล็ดกาแฟ",
+       "ดริปแบก",
+       "อุปกรณ์"
+      ]
+     },
+     {
+      "title": "บริษัท",
+      "links": [
+       "เกี่ยวกับเรา",
+       "เกษตรกร",
+       "ร่วมงาน"
+      ]
+     }
+    ],
+    "copyright": "© 2026 บ้านกาแฟดอย สงวนลิขสิทธิ์"
+   },
+   "children": []
+  }
+ }
+}
