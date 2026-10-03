@@ -81,3 +81,24 @@ docs/                spec และ decision notes
 - ยังไม่ได้ยืนยันว่า adk-go รองรับ streaming และ tool loop ได้ครบหรือไม่ (ตรวจใน M2 และ M3)
 - Gemini free tier มี rate limit ต่ำ ถ้าเจอ 429 บ่อยให้เปิด billing
 - Jev ประมวลผลในสหรัฐฯ เท่านั้น จึงใช้ได้กับข้อมูลสมมติเท่านั้น
+
+## สถานะ (อัปเดต 2026-10-03)
+
+| # | สถานะ | หมายเหตุ |
+|---|---|---|
+| M1 | เสร็จ | spike ผ่าน ดู [decision 001](decisions/001-jev-compose-spike.md) |
+| M2 | เสร็จ | Jev route + structure ส่ง skeleton ขึ้น canvas ใน 0.6 ถึง 0.9 วินาที |
+| M3 | เสร็จ | Fill ขนานผ่าน SSE, tool-based edit ด้วย adk-go, snapshot, undo, lock, stop rollback |
+| M4 | เสร็จ | ดู [decision 002](decisions/002-composer-eval.md) คอลัมน์คะแนนที่ให้เองยังรอผู้ใช้กรอก |
+| M5 | เสร็จ | catalog 27 blocks, แผงซ้าย, Props inspector, theme, device frames, prototype navigate, export JSON |
+
+ความเสี่ยงที่ปิดแล้ว
+
+- `experimental_composeSpec` รับ placeholder props ได้ ไม่ต้องเขียน compose layer เอง
+- adk-go v1.7.0 รองรับ streaming และ tool loop
+- evaluator ของ library ยิง Vercel AI Gateway จึงเขียน adapter ยิง TypeSafe API ตรง
+
+ความเสี่ยงที่ยังเปิดอยู่
+
+- Gemini free tier (5 RPM สำหรับ `gemini-3.8-flash` และมี 503 เป็นระยะ) แก้ชั่วคราวด้วย rate limiter และ fallback ไป fast model การเปิด billing ยังเป็นการตัดสินใจของเจ้าของโปรเจกต์
+- Jev วาง block ลงใน slot ได้ (2/20 ใน eval) กันด้วย `normalizeSpec` และ `ValidateSpec`

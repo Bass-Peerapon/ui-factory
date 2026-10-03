@@ -18,7 +18,7 @@ typecheck:
 	pnpm -r typecheck
 	cd services/api && go vet ./...
 
-eval: ## run the jev vs llm composer evaluation (composer must be running)
+eval: ## run the jev vs llm composer evaluation (calls Jev and Gemini directly)
 	pnpm eval
 
 build:
