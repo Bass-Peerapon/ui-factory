@@ -1,5 +1,5 @@
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
-import { catalog } from "@ui-factory/catalog";
+import { catalog, normalizeSpec } from "@ui-factory/catalog";
 import { env, loadEnv } from "./env";
 import { createComposer } from "./index";
 
@@ -39,11 +39,18 @@ const server = createServer(async (req, res) => {
       res.writeHead(200, { "Content-Type": "application/x-ndjson" });
       try {
         for await (const ev of pick(b.mode).structure({ prompt: String(b.prompt), maxElements: b.maxElements, signal: ac.signal })) {
-          if (ev.type === "complete" && ev.spec) {
-            const v = catalog.validate(ev.spec) as { success: boolean; error?: { issues?: unknown } };
-            res.write(JSON.stringify({ ...ev, valid: v.success, issues: v.success ? undefined : v.error?.issues }) + "\n");
-          } else {
+          if (!ev.spec) {
             res.write(JSON.stringify(ev) + "\n");
+            continue;
+          }
+          // The composer may nest blocks in slots; repair placement before it reaches the canvas.
+          const { spec, fixes } = normalizeSpec(ev.spec);
+          if (ev.type === "complete") {
+            if (fixes.length) console.log("normalized:", fixes.join("; "));
+            const v = catalog.validate(spec) as { success: boolean; error?: { issues?: unknown } };
+            res.write(JSON.stringify({ ...ev, spec, fixes, valid: v.success, issues: v.success ? undefined : v.error?.issues }) + "\n");
+          } else {
+            res.write(JSON.stringify({ ...ev, spec }) + "\n");
           }
         }
       } catch (e) {

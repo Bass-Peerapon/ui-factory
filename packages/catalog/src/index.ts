@@ -8,6 +8,7 @@ import { ThemeSchema, themePresets } from "./theme";
 export * from "./defs";
 export * from "./components";
 export * from "./theme";
+export * from "./normalize";
 export type { Spec };
 
 const skeletonFlag = { skeleton: z.boolean().optional() };

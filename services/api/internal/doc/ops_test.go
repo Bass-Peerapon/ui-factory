@@ -3,6 +3,7 @@ package doc
 import (
 	"encoding/json/v2"
 	"os"
+	"slices"
 	"testing"
 
 	"github.com/Bass-Peerapon/ui-factory/services/api/internal/catalog"
@@ -85,5 +86,15 @@ func TestOps(t *testing.T) {
 	}
 	if err := ValidateSpec(c, s); err != nil {
 		t.Fatal(err)
+	}
+}
+
+func TestValidateSpecPlacement(t *testing.T) {
+	c, p := fixture(t)
+	s := p.Frames["f"].Spec
+	s.Elements["hero"].Slots["actions"] = append(s.Elements["hero"].Slots["actions"], "cta")
+	s.Elements["page"].Children = slices.DeleteFunc(s.Elements["page"].Children, func(id string) bool { return id == "cta" })
+	if err := ValidateSpec(c, s); err == nil {
+		t.Fatal("block inside a slot should be rejected")
 	}
 }

@@ -72,6 +72,25 @@ importers:
         specifier: 8.3.2
         version: 8.3.2(@types/node@24.19.1)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)
 
+  evals:
+    dependencies:
+      '@ui-factory/catalog':
+        specifier: workspace:*
+        version: link:../packages/catalog
+      '@ui-factory/composer':
+        specifier: workspace:*
+        version: link:../services/composer
+    devDependencies:
+      '@types/node':
+        specifier: 24.19.1
+        version: 24.19.1
+      tsx:
+        specifier: 4.23.15
+        version: 4.23.15
+      typescript:
+        specifier: 5.9.3
+        version: 5.9.3
+
   packages/catalog:
     dependencies:
       '@json-render/core':

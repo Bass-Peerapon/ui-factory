@@ -8,3 +8,4 @@ export { JevComposer, LLMComposer };
 export function createComposer(mode: string): Composer {
   return mode === "llm" ? new LLMComposer() : new JevComposer();
 }
+export { loadEnv } from "./env";

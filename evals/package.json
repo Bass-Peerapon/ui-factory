@@ -1,0 +1,19 @@
+{
+  "name": "@ui-factory/evals",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "eval": "tsx run.ts",
+    "typecheck": "tsc -p ."
+  },
+  "dependencies": {
+    "@ui-factory/catalog": "workspace:*",
+    "@ui-factory/composer": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.1",
+    "tsx": "4.23.15",
+    "typescript": "5.9.3"
+  }
+}

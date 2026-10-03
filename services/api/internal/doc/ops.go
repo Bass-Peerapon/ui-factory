@@ -315,9 +315,23 @@ func ValidateSpec(c *catalog.Catalog, s *Spec) error {
 			continue
 		}
 		refs := slices.Clone(el.Children)
+		for _, child := range el.Children {
+			if ch := s.Elements[child]; ch != nil {
+				if err := checkPlacement(c, s, ch.Type, id, ""); err != nil {
+					errs = append(errs, fmt.Errorf("%s: %w", child, err))
+				}
+			}
+		}
 		for slot, keys := range el.Slots {
 			if !slices.Contains(c.Get(el.Type).Slots, slot) {
 				errs = append(errs, fmt.Errorf("%s: unknown slot %q", id, slot))
+			}
+			for _, child := range keys {
+				if ch := s.Elements[child]; ch != nil {
+					if err := checkPlacement(c, s, ch.Type, id, slot); err != nil {
+						errs = append(errs, fmt.Errorf("%s: %w", child, err))
+					}
+				}
 			}
 			refs = append(refs, keys...)
 		}
