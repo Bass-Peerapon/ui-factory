@@ -347,3 +347,40 @@ func ValidateSpec(c *catalog.Catalog, s *Spec) error {
 	}
 	return errors.Join(errs...)
 }
+
+// DuplicateFrame copies a frame (spec included) to a new frame, optionally on another device.
+func DuplicateFrame(p *Project, frameID, device string) (string, error) {
+	f, err := p.Frame(frameID)
+	if err != nil {
+		return "", err
+	}
+	if device == "" {
+		device = f.Device
+	}
+	name := f.Name
+	if device != f.Device {
+		name += " · " + device
+	} else {
+		name += " copy"
+	}
+	id, err := CreateFrame(p, name, device)
+	if err != nil {
+		return "", err
+	}
+	cp := p.Clone().Frames[frameID] // deep copy of the source frame
+	n := p.Frames[id]
+	n.Spec, n.Brief, n.Flow = cp.Spec, cp.Brief, cp.Flow
+	return id, nil
+}
+
+// FirstButton returns the first Button in reading order that has no navigation yet.
+func (s *Spec) FirstButton() string {
+	for _, item := range s.Outline() {
+		id := item["id"].(string)
+		el := s.Elements[id]
+		if el.Type == "Button" && el.On["press"] == nil {
+			return id
+		}
+	}
+	return ""
+}

@@ -12,6 +12,7 @@ export * from "./theme";
 export * from "./normalize";
 export * from "./designSystems";
 export * from "./fonts";
+export * from "./patterns";
 export type { Spec };
 
 const skeletonFlag = { skeleton: z.boolean().optional() };

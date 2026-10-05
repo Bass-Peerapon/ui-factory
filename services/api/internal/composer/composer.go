@@ -114,3 +114,49 @@ func (c *Client) Structure(ctx context.Context, prompt string) iter.Seq2[Structu
 		}
 	}
 }
+
+type PlanPage struct {
+	Key   string `json:"key"`
+	Name  string `json:"name"`
+	Brief string `json:"brief"`
+}
+
+type Plan struct {
+	Pattern    string      `json:"pattern"`
+	Device     string      `json:"device"`
+	Pages      []PlanPage  `json:"pages"`
+	Links      [][2]string `json:"links"`
+	Confidence *float64    `json:"confidence"`
+	MS         int         `json:"ms"`
+}
+
+type BriefChoice struct {
+	Value      string   `json:"value"`
+	Confidence *float64 `json:"confidence"`
+}
+
+type Brief struct {
+	Sufficient float64                `json:"sufficient"`
+	Answers    map[string]BriefChoice `json:"answers"`
+	MS         int                    `json:"ms"`
+}
+
+func postJSON[T any](ctx context.Context, c *Client, path string, body any) (T, error) {
+	var out T
+	res, err := c.post(ctx, path, body)
+	if err != nil {
+		return out, err
+	}
+	defer res.Body.Close()
+	return out, json.UnmarshalRead(res.Body, &out)
+}
+
+// Plan picks a flow pattern (or a custom set of screens) and a device for a multi-page request.
+func (c *Client) Plan(ctx context.Context, prompt string) (Plan, error) {
+	return postJSON[Plan](ctx, c, "/plan", map[string]any{"prompt": prompt, "mode": c.Mode})
+}
+
+// Brief infers recommended answers for the clarify form and how specific the request already is.
+func (c *Client) Brief(ctx context.Context, prompt string) (Brief, error) {
+	return postJSON[Brief](ctx, c, "/brief", map[string]any{"prompt": prompt, "mode": c.Mode})
+}

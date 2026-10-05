@@ -1,7 +1,8 @@
 import { componentDefs, placeholderProps, type ComponentDef, type ComponentName, type Spec } from "@ui-factory/catalog";
 import { pageGuidance } from "./jev";
+import { briefQuestions, customPages, deviceCriteria, pagesFromPattern, patternCriteria, sufficientQuestion } from "./planning";
 import { geminiJSON } from "./gemini";
-import { intents, routeInstructions, routeState, type Composer, type Intent, type RouteInput, type StructureEvent, type StructureInput } from "./types";
+import { intents, routeInstructions, routeState, type BriefResult, type PlanResult, type Composer, type Intent, type RouteInput, type StructureEvent, type StructureInput } from "./types";
 
 const names = Object.keys(componentDefs) as ComponentName[];
 const blockNames = names.filter((n) => componentDefs[n].kind === "block");
@@ -68,6 +69,43 @@ export class LLMComposer implements Composer {
       signal,
     });
     return { intent: r.intent, confidence: null, ms: Math.round(performance.now() - t0) };
+  }
+
+  async plan(prompt: string, signal?: AbortSignal): Promise<PlanResult> {
+    const t0 = performance.now();
+    const r = await geminiJSON<{ pattern: string; device: PlanResult["device"] }>({
+      system: "Pick the UX flow pattern and device for the request.\nPatterns:\n" +
+        Object.entries(patternCriteria).map(([k, v]) => `- ${k}: ${v}`).join("\n") +
+        "\nDevices:\n" + Object.entries(deviceCriteria).map(([k, v]) => `- ${k}: ${v}`).join("\n"),
+      prompt,
+      schema: {
+        type: "object",
+        properties: {
+          pattern: { type: "string", enum: Object.keys(patternCriteria) },
+          device: { type: "string", enum: Object.keys(deviceCriteria) },
+        },
+        required: ["pattern", "device"],
+      },
+      signal,
+    });
+    const pages = r.pattern === "custom" ? await customPages(prompt, signal) : pagesFromPattern(r.pattern, prompt);
+    return { pattern: r.pattern, device: r.device, ...pages, confidence: null, ms: Math.round(performance.now() - t0) };
+  }
+
+  async brief(prompt: string, signal?: AbortSignal): Promise<BriefResult> {
+    const t0 = performance.now();
+    const props = Object.fromEntries(
+      Object.entries(briefQuestions).map(([k, q]) => [k, { type: "string", enum: Object.keys(q.criteria), description: q.instructions }]),
+    );
+    const r = await geminiJSON<Record<string, string> & { sufficient: boolean }>({
+      system: "Infer sensible defaults for a page brief. `sufficient`: " + sufficientQuestion + "\n" +
+        Object.entries(briefQuestions).map(([k, q]) => `${k}: ` + Object.entries(q.criteria).map(([a, b]) => `${a} = ${b}`).join("; ")).join("\n"),
+      prompt: JSON.stringify({ request: prompt }),
+      schema: { type: "object", properties: { sufficient: { type: "boolean" }, ...props }, required: ["sufficient", ...Object.keys(props)] },
+      signal,
+    });
+    const answers = Object.fromEntries(Object.keys(briefQuestions).map((k) => [k, { value: r[k], confidence: null }])) as BriefResult["answers"];
+    return { sufficient: r.sufficient ? 1 : 0, answers, ms: Math.round(performance.now() - t0) };
   }
 
   async *structure(input: StructureInput): AsyncGenerator<StructureEvent> {

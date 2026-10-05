@@ -106,3 +106,16 @@ func TestStopRollsBack(t *testing.T) {
 		t.Fatal("rolled-back turn should leave no undo entry")
 	}
 }
+
+func TestNoOpTurnLeavesNoVersion(t *testing.T) {
+	s, _ := newSession(t)
+	turn, ctx, err := s.BeginTurn(t.Context(), "", "route", "AI: ask")
+	if err != nil {
+		t.Fatal(err)
+	}
+	s.Plan(turn, "a", "b")
+	s.EndTurn(context.WithoutCancel(ctx), turn, "done")
+	if v, _ := s.Versions(t.Context()); len(v) != 0 {
+		t.Fatalf("no-op turn should drop its snapshot, got %v", v)
+	}
+}

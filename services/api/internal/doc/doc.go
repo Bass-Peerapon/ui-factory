@@ -34,7 +34,9 @@ type Frame struct {
 	Y      float64 `json:"y"`
 	// Brief is the prompt that produced the frame; the Fill step reuses it.
 	Brief string `json:"brief,omitempty"`
-	Spec  *Spec  `json:"spec"`
+	// Flow labels frames generated together from one flow pattern.
+	Flow string `json:"flow,omitempty"`
+	Spec *Spec  `json:"spec"`
 }
 
 type Project struct {

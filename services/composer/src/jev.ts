@@ -4,7 +4,8 @@ import {
 } from "@json-render/core";
 import { catalog, compositionCandidates } from "@ui-factory/catalog";
 import { env } from "./env";
-import { intents, routeInstructions, routeState, type Composer, type Intent, type RouteInput, type StructureEvent, type StructureInput } from "./types";
+import { briefQuestions, customPages, deviceCriteria, pagesFromPattern, patternCriteria, sufficientQuestion } from "./planning";
+import { intents, routeInstructions, routeState, type BriefResult, type PlanResult, type Composer, type Intent, type RouteInput, type StructureEvent, type StructureInput } from "./types";
 
 interface SystemOneResponse {
   answers: Record<string, { choice: string; confidence?: number }>;
@@ -32,6 +33,10 @@ async function systemOne(
     return (await r.json()) as SystemOneResponse;
   }
 }
+
+type RawAnswer = { choice: string; confidence?: number; noul?: number };
+const fetchSystemOneRaw = (state: unknown, questions: Record<string, unknown>, signal?: AbortSignal) =>
+  systemOne(state, questions, signal) as unknown as Promise<{ answers: Record<string, RawAnswer> }>;
 
 export const jevEvaluator: Experimental_CompositionEvaluator = async ({ state, questions, signal }) => {
   const res = await systemOne(state, questions, signal);
@@ -67,6 +72,41 @@ export class JevComposer implements Composer {
     );
     const a = res.answers.intent;
     return { intent: a.choice as Intent, confidence: a.confidence ?? null, ms: Math.round(performance.now() - t0) };
+  }
+
+  async plan(prompt: string, signal?: AbortSignal): Promise<PlanResult> {
+    const t0 = performance.now();
+    const res = await systemOne(
+      { request: prompt },
+      {
+        pattern: { type: "choice", instructions: "Which UX flow pattern does `request` describe?", criteria: patternCriteria },
+        device: { type: "choice", instructions: "Which device is `request` designed for?", criteria: deviceCriteria },
+      },
+      signal,
+    );
+    const pattern = res.answers.pattern.choice;
+    const pages = pattern === "custom" ? await customPages(prompt, signal) : pagesFromPattern(pattern, prompt);
+    return {
+      pattern,
+      device: res.answers.device.choice as PlanResult["device"],
+      ...pages,
+      confidence: res.answers.pattern.confidence ?? null,
+      ms: Math.round(performance.now() - t0),
+    };
+  }
+
+  /** One Jev call answers every clarify question, giving the form its recommended defaults. */
+  async brief(prompt: string, signal?: AbortSignal): Promise<BriefResult> {
+    const t0 = performance.now();
+    const questions: Record<string, unknown> = {
+      sufficient: { type: "noul", instructions: sufficientQuestion },
+      ...Object.fromEntries(Object.entries(briefQuestions).map(([k, q]) => [k, { type: "choice", ...q }])),
+    };
+    const r = await fetchSystemOneRaw({ request: prompt }, questions, signal);
+    const answers = Object.fromEntries(
+      Object.keys(briefQuestions).map((k) => [k, { value: r.answers[k].choice, confidence: r.answers[k].confidence ?? null }]),
+    ) as BriefResult["answers"];
+    return { sufficient: r.answers.sufficient.noul ?? 0, answers, ms: Math.round(performance.now() - t0) };
   }
 
   async *structure(input: StructureInput): AsyncGenerator<StructureEvent> {

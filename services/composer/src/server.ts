@@ -34,6 +34,13 @@ const server = createServer(async (req, res) => {
       return send(res, 200, { ...r, composer: pick(b.mode).name });
     }
 
+    if (req.method === "POST" && (req.url === "/plan" || req.url === "/brief")) {
+      const b = await readJSON(req);
+      const c = pick(b.mode);
+      const r = req.url === "/plan" ? await c.plan(String(b.prompt), ac.signal) : await c.brief(String(b.prompt), ac.signal);
+      return send(res, 200, { ...r, composer: c.name });
+    }
+
     if (req.method === "POST" && req.url === "/structure") {
       const b = await readJSON(req);
       res.writeHead(200, { "Content-Type": "application/x-ndjson" });

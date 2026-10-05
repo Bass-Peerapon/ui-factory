@@ -21,8 +21,16 @@ const fillConcurrency = 4
 type FillResult struct {
 	Filled   int
 	Total    int
+	Polished int // elements rewritten after the quality check
 	Duration time.Duration
 	Failures []string
+}
+
+func (f FillResult) QualityDetail() string {
+	if f.Polished == 0 {
+		return "ผ่าน"
+	}
+	return fmt.Sprintf("เขียนใหม่ %d จุด", f.Polished)
 }
 
 func (f FillResult) Summary() string {
@@ -78,8 +86,12 @@ Return exactly one JSON object keyed by element id; each value is that element's
 var localeName = map[string]string{"th": "Thai (ภาษาไทย)", "en": "English"}
 
 // fill replaces skeleton props in a frame block by block, in parallel, streaming each block as a patch.
-func (r *Runner) fill(ctx context.Context, s *hub.Session, t *hub.Turn, frameID string) (FillResult, error) {
-	s.UpdateTurn(t, frameID, "fill")
+func (r *Runner) fill(ctx context.Context, s *hub.Session, t *hub.Turn, frameID string, lock bool, progress *fillProgress) (FillResult, error) {
+	if lock {
+		s.UpdateTurn(t, frameID, "fill")
+	} else {
+		s.UpdateTurn(t, "", "fill")
+	}
 	start := time.Now()
 	p, _ := s.Doc()
 	spec, err := p.SpecOf(frameID)
@@ -94,6 +106,9 @@ func (r *Runner) fill(ctx context.Context, s *hub.Session, t *hub.Turn, frameID 
 	}
 	if res.Total == 0 {
 		return res, nil
+	}
+	if progress != nil {
+		progress.add(len(groups), 0)
 	}
 
 	var outline []string
@@ -121,11 +136,15 @@ func (r *Runner) fill(ctx context.Context, s *hub.Session, t *hub.Turn, frameID 
 				return
 			}
 			defer func() { <-sem }()
-			filled, failures := r.fillGroup(ctx, s, frameID, spec, g, system, brief, outline)
+			filled, polished, failures := r.fillGroup(ctx, s, frameID, spec, g, system, brief, outline)
 			mu.Lock()
 			res.Filled += filled
+			res.Polished += polished
 			res.Failures = append(res.Failures, failures...)
 			mu.Unlock()
+			if progress != nil {
+				progress.add(0, 1)
+			}
 		})
 	}
 	wg.Wait()
@@ -137,11 +156,12 @@ func (r *Runner) fill(ctx context.Context, s *hub.Session, t *hub.Turn, frameID 
 }
 
 func (r *Runner) fillGroup(ctx context.Context, s *hub.Session, frameID string, spec *doc.Spec, g fillGroup,
-	system, brief string, outline []string) (int, []string) {
+	system, brief string, outline []string) (int, int, []string) {
 	pending := slices.Clone(g.ids)
 	valid := map[string]map[string]any{}
 	fallback := map[string]map[string]any{}
 	lastErr := map[string]string{}
+	polished := map[string]bool{}
 
 	for attempt := 0; attempt < max(r.MaxRetries, 1) && len(pending) > 0; attempt++ {
 		props := map[string]any{}
@@ -179,7 +199,7 @@ func (r *Runner) fillGroup(ctx context.Context, s *hub.Session, frameID string, 
 		})
 		if err != nil {
 			if ctx.Err() != nil {
-				return 0, nil
+				return 0, 0, nil
 			}
 			for _, id := range pending {
 				lastErr[id] = err.Error()
@@ -213,6 +233,7 @@ func (r *Runner) fillGroup(ctx context.Context, s *hub.Session, frameID string, 
 			if findings := lint.Props(pr); len(findings) > 0 && attempt < max(r.MaxRetries, 1)-1 {
 				// Schema-valid but sloppy: keep it as a fallback and ask for a better version.
 				fallback[id] = pr
+				polished[id] = true
 				lastErr[id] = "quality check failed: " + joinFindings(findings)
 				still = append(still, id)
 				continue
@@ -239,14 +260,14 @@ func (r *Runner) fillGroup(ctx context.Context, s *hub.Session, frameID string, 
 			return nil
 		})
 		if err != nil {
-			return 0, []string{fmt.Sprintf("%s: %v", spec.Elements[g.block].Type, err)}
+			return 0, 0, []string{fmt.Sprintf("%s: %v", spec.Elements[g.block].Type, err)}
 		}
 	}
 	var failures []string
 	for _, id := range pending {
 		failures = append(failures, fmt.Sprintf("%s (%s) หลังลอง %d ครั้ง: %s", spec.Elements[id].Type, id, r.MaxRetries, truncate(lastErr[id], 160)))
 	}
-	return len(valid), failures
+	return len(valid), len(polished), failures
 }
 
 func joinFindings(fs []lint.Finding) string {

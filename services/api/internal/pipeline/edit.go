@@ -3,6 +3,7 @@ package pipeline
 import (
 	"context"
 	"encoding/json/v2"
+	"errors"
 	"fmt"
 	"maps"
 	"slices"
@@ -44,6 +45,22 @@ type editSession struct {
 	attempts map[string]int
 	failures []string
 	applied  int
+	// scope limits edits to commented elements and their subtrees; nil means the whole frame.
+	scope map[string]bool
+}
+
+var errOutOfScope = errors.New("out of scope: this turn may only change the commented elements and their children")
+
+func (e *editSession) inScope(ids ...string) error {
+	if e.scope == nil {
+		return nil
+	}
+	for _, id := range ids {
+		if !e.scope[id] {
+			return fmt.Errorf("%w (element %q)", errOutOfScope, id)
+		}
+	}
+	return nil
 }
 
 // apply runs one document operation; validation errors go back to the model until the retry budget is spent.
@@ -138,6 +155,9 @@ func (e *editSession) tools() ([]tool.Tool, error) {
 			func(n, d string) (tool.Tool, error) {
 				return functiontool.New(functiontool.Config{Name: n, Description: d}, func(tc agent.ToolContext, a addNodeArgs) (toolResult, error) {
 					return e.apply(tc, "add_node "+a.Type, func(p *doc.Project) (string, error) {
+						if err := e.inScope(a.ParentID); err != nil {
+							return "", err
+						}
 						props, err := parseProps(a.PropsJSON)
 						if err != nil {
 							return "", err
@@ -151,6 +171,9 @@ func (e *editSession) tools() ([]tool.Tool, error) {
 			func(n, d string) (tool.Tool, error) {
 				return functiontool.New(functiontool.Config{Name: n, Description: d}, func(tc agent.ToolContext, a updatePropsArgs) (toolResult, error) {
 					return e.apply(tc, "update_props "+a.ElementID, func(p *doc.Project) (string, error) {
+						if err := e.inScope(a.ElementID); err != nil {
+							return "", err
+						}
 						props, err := parseProps(a.PropsJSON)
 						if err != nil {
 							return "", err
@@ -163,6 +186,9 @@ func (e *editSession) tools() ([]tool.Tool, error) {
 			func(n, d string) (tool.Tool, error) {
 				return functiontool.New(functiontool.Config{Name: n, Description: d}, func(tc agent.ToolContext, a moveNodeArgs) (toolResult, error) {
 					return e.apply(tc, "move_node "+a.ElementID, func(p *doc.Project) (string, error) {
+						if err := e.inScope(a.ElementID, a.ParentID); err != nil {
+							return "", err
+						}
 						return a.ElementID, doc.MoveNode(cat, p, e.frameID, a.ElementID, a.ParentID, a.Slot, a.Index)
 					}), nil
 				})
@@ -171,6 +197,9 @@ func (e *editSession) tools() ([]tool.Tool, error) {
 			func(n, d string) (tool.Tool, error) {
 				return functiontool.New(functiontool.Config{Name: n, Description: d}, func(tc agent.ToolContext, a removeNodeArgs) (toolResult, error) {
 					return e.apply(tc, "remove_node "+a.ElementID, func(p *doc.Project) (string, error) {
+						if err := e.inScope(a.ElementID); err != nil {
+							return "", err
+						}
 						return a.ElementID, doc.RemoveNode(p, e.frameID, a.ElementID)
 					}), nil
 				})
@@ -179,6 +208,9 @@ func (e *editSession) tools() ([]tool.Tool, error) {
 			func(n, d string) (tool.Tool, error) {
 				return functiontool.New(functiontool.Config{Name: n, Description: d}, func(tc agent.ToolContext, a setThemeArgs) (toolResult, error) {
 					return e.apply(tc, "set_theme", func(p *doc.Project) (string, error) {
+						if e.scope != nil {
+							return "", errOutOfScope
+						}
 						tokens, err := parseProps(a.TokensJSON)
 						if err != nil {
 							return "", err
@@ -191,6 +223,9 @@ func (e *editSession) tools() ([]tool.Tool, error) {
 			func(n, d string) (tool.Tool, error) {
 				return functiontool.New(functiontool.Config{Name: n, Description: d}, func(tc agent.ToolContext, a createFrameArgs) (toolResult, error) {
 					return e.apply(tc, "create_frame", func(p *doc.Project) (string, error) {
+						if e.scope != nil {
+							return "", errOutOfScope
+						}
 						return doc.CreateFrame(p, a.Name, a.Device)
 					}), nil
 				})
@@ -199,6 +234,9 @@ func (e *editSession) tools() ([]tool.Tool, error) {
 			func(n, d string) (tool.Tool, error) {
 				return functiontool.New(functiontool.Config{Name: n, Description: d}, func(tc agent.ToolContext, a setNavigationArgs) (toolResult, error) {
 					return e.apply(tc, "set_navigation "+a.ElementID, func(p *doc.Project) (string, error) {
+						if err := e.inScope(a.ElementID); err != nil {
+							return "", err
+						}
 						return a.ElementID, doc.SetNavigation(cat, p, e.frameID, a.ElementID, a.TargetFrameID)
 					}), nil
 				})
@@ -236,7 +274,7 @@ Catalog:
 %s
 Theme presets (design systems): %s`
 
-func (r *Runner) edit(ctx context.Context, s *hub.Session, t *hub.Turn, req ChatRequest, intent string) (string, error) {
+func (r *Runner) edit(ctx context.Context, s *hub.Session, t *hub.Turn, req ChatRequest, intent string) (reply, error) {
 	phase := "edit"
 	if intent == "set_theme" {
 		phase = "theme"
@@ -250,9 +288,18 @@ func (r *Runner) edit(ctx context.Context, s *hub.Session, t *hub.Turn, req Chat
 	s.UpdateTurn(t, frameID, phase)
 
 	es := &editSession{r: r, s: s, frameID: frameID, attempts: map[string]int{}}
+	if len(req.Comments) > 0 && frame != nil && frame.Spec != nil {
+		es.scope = map[string]bool{}
+		for _, c := range req.Comments {
+			for _, id := range frame.Spec.Subtree(c.ElementID) {
+				es.scope[id] = true
+			}
+		}
+		s.Step(t, 1, fmt.Sprintf("%d คอมเมนต์", len(req.Comments)))
+	}
 	tools, err := es.tools()
 	if err != nil {
-		return "", err
+		return reply{}, err
 	}
 	a, err := llmagent.New(llmagent.Config{
 		Name:        "ui_editor",
@@ -266,37 +313,37 @@ func (r *Runner) edit(ctx context.Context, s *hub.Session, t *hub.Turn, req Chat
 		},
 	})
 	if err != nil {
-		return "", err
+		return reply{}, err
 	}
 	run, err := runner.New(runner.Config{AppName: "ui-factory", Agent: a, SessionService: session.InMemoryService(), AutoCreateSession: true})
 	if err != nil {
-		return "", err
+		return reply{}, err
 	}
 
 	prompt, err := r.editContext(ctx, s, p, frame, req)
 	if err != nil {
-		return "", err
+		return reply{}, err
 	}
 	ctx, cancel := context.WithTimeout(ctx, editTimeout)
 	defer cancel()
-	var reply strings.Builder
+	var answer strings.Builder
 	for ev, err := range run.Run(ctx, "user", t.ID, genai.NewContentFromText(prompt, genai.RoleUser), agent.RunConfig{}) {
 		if err != nil {
 			if ctx.Err() != nil {
-				return "", context.Cause(ctx)
+				return reply{}, context.Cause(ctx)
 			}
-			return "", err
+			return reply{}, err
 		}
 		if ev.IsFinalResponse() && ev.Content != nil {
 			for _, part := range ev.Content.Parts {
 				if part.Text != "" && !part.Thought {
-					reply.WriteString(part.Text)
+					answer.WriteString(part.Text)
 				}
 			}
 		}
 	}
 
-	out := strings.TrimSpace(reply.String())
+	out := strings.TrimSpace(answer.String())
 	if out == "" {
 		out = fmt.Sprintf("แก้ไขแล้ว %d รายการ", es.applied)
 	}
@@ -310,14 +357,17 @@ func (r *Runner) edit(ctx context.Context, s *hub.Session, t *hub.Turn, req Chat
 	if frameID != "" {
 		cur, _ := s.Doc()
 		if spec := cur.Frames[frameID].Spec; spec != nil && len(skeletonGroups(spec)) > 0 {
-			res, err := r.fill(ctx, s, t, frameID)
+			res, err := r.fill(ctx, s, t, frameID, true, nil)
 			if err != nil {
-				return "", err
+				return reply{}, err
 			}
 			out += "\n" + res.Summary()
 		}
 	}
-	return out, nil
+	if frameID == "" {
+		return reply{text: out}, nil
+	}
+	return r.withNext(s, frameID, out), nil
 }
 
 // editContext builds the user message: selection subtree, frame outline, theme and the last 10 chat turns.
@@ -346,7 +396,17 @@ func (r *Runner) editContext(ctx context.Context, s *hub.Session, p *doc.Project
 	}
 	if frame != nil && frame.Spec != nil {
 		c["current_frame"] = map[string]any{"id": frame.ID, "name": frame.Name, "root": frame.Spec.Root, "outline": frame.Spec.Outline()}
-		if el := frame.Spec.Elements[req.ElementID]; el != nil {
+		if len(req.Comments) > 0 {
+			var items []map[string]any
+			for i, cm := range req.Comments {
+				if el := frame.Spec.Elements[cm.ElementID]; el != nil {
+					items = append(items, map[string]any{"n": i + 1, "comment": cm.Text, "element_id": cm.ElementID, "type": el.Type,
+						"subtree": frame.Spec.SubtreeSpec(cm.ElementID)})
+				}
+			}
+			c["comments"] = items
+			c["hard_scope"] = "Change ONLY the commented elements and their children. Do not modify sibling blocks, other frames, the page order or the theme. Address every comment."
+		} else if el := frame.Spec.Elements[req.ElementID]; el != nil {
 			c["selected"] = map[string]any{"id": req.ElementID, "type": el.Type, "subtree": frame.Spec.SubtreeSpec(req.ElementID)}
 		} else {
 			c["selected"] = "nothing selected; the request applies to the whole frame"

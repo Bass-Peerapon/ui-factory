@@ -85,6 +85,14 @@ type TurnState struct {
 	FrameID string `json:"frameId"`
 	Status  string `json:"status"`
 	Phase   string `json:"phase"`
+	// Steps is the visible plan (Step N/M in the editor).
+	Steps []Step `json:"steps"`
+}
+
+type Step struct {
+	Label  string `json:"label"`
+	Status string `json:"status"` // pending | active | done | skipped
+	Detail string `json:"detail,omitempty"`
 }
 
 type Turn struct {
@@ -215,7 +223,11 @@ func (s *Session) Undo(ctx context.Context) (string, error) {
 }
 
 func (s *Session) AddMessage(ctx context.Context, role, text, turnID string) store.Message {
-	m := store.Message{ID: uuid.NewV7().String(), Role: role, Text: text, TurnID: turnID, CreatedAt: time.Now().UTC()}
+	return s.AddMessageMeta(ctx, role, text, turnID, nil)
+}
+
+func (s *Session) AddMessageMeta(ctx context.Context, role, text, turnID string, meta map[string]any) store.Message {
+	m := store.Message{ID: uuid.NewV7().String(), Role: role, Text: text, TurnID: turnID, Meta: meta, CreatedAt: time.Now().UTC()}
 	if err := s.hub.store.AddMessage(ctx, s.ID, m); err != nil {
 		slog.Error("save message", "err", err)
 	}
@@ -265,6 +277,42 @@ func (s *Session) UpdateTurn(t *Turn, frameID, phase string) {
 	s.broadcastLocked(Event{"turn", t.TurnState})
 }
 
+// Plan replaces the turn's visible steps; the first one becomes active.
+func (s *Session) Plan(t *Turn, labels ...string) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if s.turn != t {
+		return
+	}
+	t.Steps = make([]Step, len(labels))
+	for i, l := range labels {
+		t.Steps[i] = Step{Label: l, Status: "pending"}
+	}
+	if len(t.Steps) > 0 {
+		t.Steps[0].Status = "active"
+	}
+	s.broadcastLocked(Event{"turn", t.TurnState})
+}
+
+// Step marks step i active (earlier steps done) and sets its detail text.
+func (s *Session) Step(t *Turn, i int, detail string) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if s.turn != t || i < 0 || i >= len(t.Steps) {
+		return
+	}
+	for j := range t.Steps {
+		switch {
+		case j < i && t.Steps[j].Status != "skipped":
+			t.Steps[j].Status = "done"
+		case j == i:
+			t.Steps[j].Status = "active"
+			t.Steps[j].Detail = detail
+		}
+	}
+	s.broadcastLocked(Event{"turn", t.TurnState})
+}
+
 // EndTurn releases the lock. A turn without changes drops its undo snapshot.
 func (s *Session) EndTurn(ctx context.Context, t *Turn, status string) {
 	s.mu.Lock()
@@ -274,11 +322,16 @@ func (s *Session) EndTurn(ctx context.Context, t *Turn, status string) {
 	}
 	s.turn = nil
 	t.Status = status
+	if status == "done" {
+		for i := range t.Steps {
+			if t.Steps[i].Status != "skipped" {
+				t.Steps[i].Status = "done"
+			}
+		}
+	}
 	t.cancel(nil)
 	close(t.done)
-	before, _ := json.Marshal(t.pre)
-	now, _ := json.Marshal(s.doc)
-	if string(before) == string(now) {
+	if sameDoc(t.pre, s.doc) {
 		if _, _, err := s.hub.store.PopSnapshot(ctx, s.ID); err != nil {
 			slog.Warn("drop empty snapshot", "err", err)
 		}
@@ -304,9 +357,7 @@ func (s *Session) StopTurn(ctx context.Context) error {
 	}
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	pre, _ := json.Marshal(t.pre)
-	now, _ := json.Marshal(s.doc)
-	if string(pre) == string(now) {
+	if sameDoc(t.pre, s.doc) {
 		return nil // EndTurn already dropped the unused snapshot
 	}
 	if err := s.commitLocked(ctx, t.pre, MutateOpts{}); err != nil {
@@ -337,4 +388,30 @@ func (s *Session) FrameLocked(frameID string) bool {
 // History returns the last n chat messages in order.
 func (s *Session) History(ctx context.Context, n int) ([]store.Message, error) {
 	return s.hub.store.Messages(ctx, s.ID, n)
+}
+
+func (s *Session) Versions(ctx context.Context) ([]store.Snapshot, error) {
+	return s.hub.store.Snapshots(ctx, s.ID)
+}
+
+// Restore makes a snapshot the current document. The current state is snapshotted first, so a
+// restore is itself undoable and the history keeps every version.
+func (s *Session) Restore(ctx context.Context, id int64) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if s.turn != nil {
+		return ErrBusy
+	}
+	p, err := s.hub.store.Snapshot(ctx, s.ID, id)
+	if err != nil {
+		return err
+	}
+	return s.commitLocked(ctx, p, MutateOpts{Snapshot: true, Label: fmt.Sprintf("restore #%d", id)})
+}
+
+// sameDoc compares documents; json/v2 map order is random unless Deterministic is set.
+func sameDoc(a, b *doc.Project) bool {
+	x, err1 := json.Marshal(a, json.Deterministic(true))
+	y, err2 := json.Marshal(b, json.Deterministic(true))
+	return err1 == nil && err2 == nil && string(x) == string(y)
 }

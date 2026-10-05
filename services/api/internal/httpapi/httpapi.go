@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 	"time"
 
 	"github.com/Bass-Peerapon/ui-factory/services/api/internal/doc"
@@ -38,6 +39,8 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("POST /api/projects/{id}/stop", s.stop)
 	mux.HandleFunc("POST /api/projects/{id}/undo", s.undo)
 	mux.HandleFunc("POST /api/projects/{id}/ops", s.op)
+	mux.HandleFunc("GET /api/projects/{id}/versions", s.versions)
+	mux.HandleFunc("POST /api/projects/{id}/versions/{vid}/restore", s.restore)
 	return cors(mux)
 }
 
@@ -336,7 +339,7 @@ func (s *Server) op(w http.ResponseWriter, r *http.Request) {
 	}
 	a := req.Args
 	cat := s.Hub.Catalog()
-	projectLevel := a.FrameID == "" || req.Op == "set_theme" || req.Op == "set_locale" || req.Op == "create_frame"
+	projectLevel := a.FrameID == "" || req.Op == "set_theme" || req.Op == "set_locale" || req.Op == "create_frame" || req.Op == "duplicate_frame"
 	if (projectLevel && sess.Turn() != nil) || (!projectLevel && sess.FrameLocked(a.FrameID)) {
 		writeErr(w, http.StatusConflict, errors.New("เฟรมนี้ถูกล็อกระหว่างที่ AI ทำงาน"))
 		return
@@ -370,6 +373,10 @@ func (s *Server) op(w http.ResponseWriter, r *http.Request) {
 			return err
 		case "update_frame":
 			return doc.UpdateFrame(p, a.FrameID, doc.FrameUpdate{Name: a.Name, Device: a.Device, X: a.X, Y: a.Y})
+		case "duplicate_frame":
+			id, err := doc.DuplicateFrame(p, a.FrameID, deref(a.Device))
+			result = id
+			return err
 		case "delete_frame":
 			return doc.DeleteFrame(p, a.FrameID)
 		case "set_navigation":
@@ -383,4 +390,39 @@ func (s *Server) op(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	writeJSON(w, http.StatusOK, map[string]any{"ok": true, "result": result})
+}
+
+func (s *Server) versions(w http.ResponseWriter, r *http.Request) {
+	sess := s.session(w, r)
+	if sess == nil {
+		return
+	}
+	list, err := sess.Versions(r.Context())
+	if err != nil {
+		writeErr(w, http.StatusInternalServerError, err)
+		return
+	}
+	writeJSON(w, http.StatusOK, list)
+}
+
+func (s *Server) restore(w http.ResponseWriter, r *http.Request) {
+	sess := s.session(w, r)
+	if sess == nil {
+		return
+	}
+	vid, err := strconv.ParseInt(r.PathValue("vid"), 10, 64)
+	if err != nil {
+		writeErr(w, http.StatusBadRequest, errors.New("invalid version id"))
+		return
+	}
+	switch err := sess.Restore(r.Context(), vid); {
+	case errors.Is(err, store.ErrNotFound):
+		writeErr(w, http.StatusNotFound, errors.New("version not found"))
+	case errors.Is(err, hub.ErrBusy):
+		writeErr(w, http.StatusConflict, err)
+	case err != nil:
+		writeErr(w, http.StatusInternalServerError, err)
+	default:
+		writeJSON(w, http.StatusOK, map[string]bool{"ok": true})
+	}
 }

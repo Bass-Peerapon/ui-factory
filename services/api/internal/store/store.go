@@ -25,10 +25,18 @@ type ProjectSummary struct {
 }
 
 type Message struct {
-	ID        string    `json:"id"`
-	Role      string    `json:"role"`
-	Text      string    `json:"text"`
-	TurnID    string    `json:"turnId,omitempty"`
+	ID     string `json:"id"`
+	Role   string `json:"role"`
+	Text   string `json:"text"`
+	TurnID string `json:"turnId,omitempty"`
+	// Meta carries structured extras: a brief form, next-step suggestions, comment targets.
+	Meta      map[string]any `json:"meta,omitempty"`
+	CreatedAt time.Time      `json:"createdAt"`
+}
+
+type Snapshot struct {
+	ID        int64     `json:"id"`
+	Label     string    `json:"label"`
 	CreatedAt time.Time `json:"createdAt"`
 }
 
@@ -76,6 +84,8 @@ func Open(path string) (*Store, error) {
 	if _, err := db.Exec(schema); err != nil {
 		return nil, fmt.Errorf("migrate: %w", err)
 	}
+	// v2: message metadata. ALTER fails harmlessly when the column already exists.
+	_, _ = db.Exec(`ALTER TABLE messages ADD COLUMN meta TEXT NOT NULL DEFAULT '{}'`)
 	return &Store{db: db}, nil
 }
 
@@ -165,14 +175,18 @@ func (s *Store) PopSnapshot(ctx context.Context, projectID string) (*doc.Project
 }
 
 func (s *Store) AddMessage(ctx context.Context, projectID string, m Message) error {
-	_, err := s.db.ExecContext(ctx, `INSERT INTO messages (id, project_id, role, text, turn_id, created_at) VALUES (?, ?, ?, ?, ?, ?)`,
-		m.ID, projectID, m.Role, m.Text, m.TurnID, m.CreatedAt)
+	meta, err := json.Marshal(m.Meta)
+	if err != nil {
+		return err
+	}
+	_, err = s.db.ExecContext(ctx, `INSERT INTO messages (id, project_id, role, text, turn_id, meta, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+		m.ID, projectID, m.Role, m.Text, m.TurnID, string(meta), m.CreatedAt)
 	return err
 }
 
 // Messages returns the latest `limit` messages in chronological order.
 func (s *Store) Messages(ctx context.Context, projectID string, limit int) ([]Message, error) {
-	rows, err := s.db.QueryContext(ctx, `SELECT id, role, text, turn_id, created_at FROM
+	rows, err := s.db.QueryContext(ctx, `SELECT id, role, text, turn_id, meta, created_at FROM
   (SELECT * FROM messages WHERE project_id = ? ORDER BY created_at DESC LIMIT ?) ORDER BY created_at`, projectID, limit)
 	if err != nil {
 		return nil, err
@@ -181,10 +195,46 @@ func (s *Store) Messages(ctx context.Context, projectID string, limit int) ([]Me
 	out := []Message{}
 	for rows.Next() {
 		var m Message
-		if err := rows.Scan(&m.ID, &m.Role, &m.Text, &m.TurnID, &m.CreatedAt); err != nil {
+		var meta string
+		if err := rows.Scan(&m.ID, &m.Role, &m.Text, &m.TurnID, &meta, &m.CreatedAt); err != nil {
 			return nil, err
+		}
+		if meta != "" && meta != "{}" && meta != "null" {
+			_ = json.Unmarshal([]byte(meta), &m.Meta)
 		}
 		out = append(out, m)
 	}
 	return out, rows.Err()
+}
+
+// Snapshots lists the undo history newest first.
+func (s *Store) Snapshots(ctx context.Context, projectID string) ([]Snapshot, error) {
+	rows, err := s.db.QueryContext(ctx, `SELECT id, label, created_at FROM snapshots WHERE project_id = ? ORDER BY id DESC`, projectID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	out := []Snapshot{}
+	for rows.Next() {
+		var sn Snapshot
+		if err := rows.Scan(&sn.ID, &sn.Label, &sn.CreatedAt); err != nil {
+			return nil, err
+		}
+		out = append(out, sn)
+	}
+	return out, rows.Err()
+}
+
+// Snapshot loads one snapshot document without removing it.
+func (s *Store) Snapshot(ctx context.Context, projectID string, id int64) (*doc.Project, error) {
+	var raw string
+	err := s.db.QueryRowContext(ctx, `SELECT doc FROM snapshots WHERE project_id = ? AND id = ?`, projectID, id).Scan(&raw)
+	if errors.Is(err, sql.ErrNoRows) {
+		return nil, ErrNotFound
+	}
+	if err != nil {
+		return nil, err
+	}
+	var p doc.Project
+	return &p, json.Unmarshal([]byte(raw), &p)
 }
