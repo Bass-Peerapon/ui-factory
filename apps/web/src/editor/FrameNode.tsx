@@ -35,6 +35,7 @@ function useOnScreen(frame: Frame | undefined, height: number) {
 export const FrameNode = memo(function FrameNode({ data }: NodeProps<FrameNodeType>) {
   const frame = useEditor((s) => s.doc?.frames[data.frameId]);
   const theme = useEditor((s) => s.doc?.theme);
+  const locale = useEditor((s) => s.doc?.locale ?? "th");
   const selection = useEditor((s) => s.selection);
   const turn = useEditor((s) => s.turn);
   const thumb = useEditor((s) => s.thumbnails[data.frameId]);
@@ -49,12 +50,12 @@ export const FrameNode = memo(function FrameNode({ data }: NodeProps<FrameNodeTy
     const win = iframeRef.current?.contentWindow;
     if (!win || !frame || !theme) return;
     const msg: ToFrame = {
-      type: "render", spec: frame.spec, theme, mode: "edit", selectedId: active ? selection.elementId : null,
+      type: "render", spec: frame.spec, theme, locale, mode: "edit", selectedId: active ? selection.elementId : null,
     };
     win.postMessage({ [FRAME_MSG]: msg }, "*");
   };
 
-  useEffect(send, [frame?.spec, theme, active, selection.elementId, onScreen]);
+  useEffect(send, [frame?.spec, theme, locale, active, selection.elementId, onScreen]);
   useEffect(() => {
     const win = iframeRef.current?.contentWindow;
     if (!win) return;

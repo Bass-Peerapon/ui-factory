@@ -74,7 +74,7 @@ func TestOps(t *testing.T) {
 	if s.Elements["f-name"] != nil {
 		t.Fatal("subtree should be removed")
 	}
-	if err := SetTheme(c, p, "coffee", map[string]any{"radius": 1.0}); err != nil {
+	if err := SetTheme(c, p, "editorial", map[string]any{"radius": 1.0}); err != nil {
 		t.Fatal(err)
 	}
 	if err := SetTheme(c, p, "", map[string]any{"primary": "red"}); err == nil {

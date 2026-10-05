@@ -5,6 +5,7 @@ import (
 	"encoding/json/v2"
 	"path/filepath"
 	"testing"
+	"time"
 
 	"github.com/Bass-Peerapon/ui-factory/services/api/internal/catalog"
 	"github.com/Bass-Peerapon/ui-factory/services/api/internal/doc"
@@ -42,7 +43,7 @@ func TestMutateBroadcastsPatchAndUndo(t *testing.T) {
 		t.Fatalf("first event should be doc, got %s", ev.Name)
 	}
 	err := s.Mutate(t.Context(), MutateOpts{Snapshot: true, Label: "theme"}, func(p *doc.Project) error {
-		return doc.SetTheme(cat, p, "forest", nil)
+		return doc.SetTheme(cat, p, "friendly", nil)
 	})
 	if err != nil {
 		t.Fatal(err)
@@ -53,14 +54,14 @@ func TestMutateBroadcastsPatchAndUndo(t *testing.T) {
 	}
 	b, _ := json.Marshal(ev.Data)
 	t.Logf("patch: %s", b)
-	if p, v := s.Doc(); p.Theme["primary"] != "#15803d" || v != 2 {
+	if p, v := s.Doc(); p.Theme["primary"] != "#ea580c" || v != 2 {
 		t.Fatalf("theme not applied: %v v=%d", p.Theme["primary"], v)
 	}
 	label, err := s.Undo(t.Context())
 	if err != nil || label != "theme" {
 		t.Fatalf("undo: %q %v", label, err)
 	}
-	if p, _ := s.Doc(); p.Theme["primary"] != "#18181b" {
+	if p, _ := s.Doc(); p.Theme["primary"] != "#111111" {
 		t.Fatal("undo did not restore the theme")
 	}
 	if _, err := s.Undo(t.Context()); err == nil {
@@ -78,19 +79,24 @@ func TestStopRollsBack(t *testing.T) {
 		t.Fatalf("second turn should be busy, got %v", err)
 	}
 	go func() {
-		_ = s.Mutate(ctx, MutateOpts{}, func(p *doc.Project) error { return doc.SetTheme(cat, p, "midnight", nil) })
+		_ = s.Mutate(ctx, MutateOpts{}, func(p *doc.Project) error { return doc.SetTheme(cat, p, "luxury", nil) })
 		<-ctx.Done()
 		s.EndTurn(context.WithoutCancel(ctx), turn, "stopped")
 	}()
+	deadline := time.Now().Add(5 * time.Second)
 	for {
-		if p, _ := s.Doc(); p.Theme["primary"] == "#a78bfa" {
+		if p, _ := s.Doc(); p.Theme["primary"] == "#c6a15b" {
 			break
 		}
+		if time.Now().After(deadline) {
+			t.Fatal("turn mutation never applied")
+		}
+		time.Sleep(5 * time.Millisecond)
 	}
 	if err := s.StopTurn(t.Context()); err != nil {
 		t.Fatal(err)
 	}
-	if p, _ := s.Doc(); p.Theme["primary"] != "#18181b" {
+	if p, _ := s.Doc(); p.Theme["primary"] != "#111111" {
 		t.Fatal("stop should roll back the turn")
 	}
 	if s.Turn() != nil {

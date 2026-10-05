@@ -9,6 +9,7 @@ export function Prototype() {
   const frameId = useEditor((s) => s.prototypeFrame);
   const frame = useEditor((s) => (frameId ? s.doc?.frames[frameId] : undefined));
   const theme = useEditor((s) => s.doc?.theme);
+  const locale = useEditor((s) => s.doc?.locale ?? "th");
   const ref = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
@@ -20,14 +21,14 @@ export function Prototype() {
   useEffect(() => {
     const send = () => {
       if (!frame || !theme) return;
-      const msg: ToFrame = { type: "render", spec: frame.spec, theme, mode: "prototype", selectedId: null };
+      const msg: ToFrame = { type: "render", spec: frame.spec, theme, locale, mode: "prototype", selectedId: null };
       ref.current?.contentWindow?.postMessage({ [FRAME_MSG]: msg }, "*");
     };
     send();
     const onMsg = (e: MessageEvent) => e.data?.[FRAME_MSG]?.type === "ready" && e.source === ref.current?.contentWindow && send();
     addEventListener("message", onMsg);
     return () => removeEventListener("message", onMsg);
-  }, [frame, theme]);
+  }, [frame, theme, locale]);
 
   if (!frameId) return null;
   if (!frame) return null;

@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { useState } from "react";
 import type { componentDefs } from "@ui-factory/catalog";
 import { Check, ChevronDown, ImageIcon, Sparkles } from "lucide-react";
-import { Bar, Heading, Section, SkCards, SkHeading, hasSlot, icons, type BlockProps } from "./blocks-shared";
+import { Bar, Heading, Section, SkCards, SkHeading, hasSlot, icons, type BlockProps, type PropsOf } from "./blocks-shared";
 import { renders2, skeletons2 } from "./blocks2";
 import { cn } from "../lib/utils";
 import { Badge } from "./ui/badge";
@@ -34,60 +34,129 @@ export const Navbar = ({ props }: BlockProps<"Navbar">) => (
   </header>
 );
 
+const HeroImage = ({ className }: { className?: string }) => (
+  <div className={cn("grid place-items-center rounded-xl border bg-gradient-to-br from-muted via-accent to-muted text-muted-foreground", className)}>
+    <ImageIcon className="size-10 opacity-50" />
+  </div>
+);
+
 export const Hero = ({ props, slots }: BlockProps<"Hero">) => {
-  const center = props.align === "center";
-  return (
-    <Section className="md:py-28">
-      <div className={cn("grid items-center gap-12", props.showImage && !center && "md:grid-cols-2")}>
-        <div className={cn(center && "mx-auto max-w-3xl text-center")}>
-          <Badge variant="secondary" className="mb-6">{props.eyebrow}</Badge>
-          <h1 className="text-4xl font-bold leading-tight tracking-tight md:text-6xl">{props.title}</h1>
-          <p className="mt-6 text-lg text-muted-foreground md:text-xl">{props.subtitle}</p>
-          {hasSlot(slots.actions) && (
-            <div className={cn("mt-8 flex flex-wrap gap-3", center && "justify-center")}>{slots.actions}</div>
-          )}
-        </div>
-        {props.showImage && (
-          <div
-            className={cn(
-              "grid aspect-video place-items-center rounded-xl border bg-gradient-to-br from-primary/25 via-accent to-muted text-muted-foreground",
-              center && "mx-auto mt-4 w-full max-w-4xl",
-            )}
-          >
-            <ImageIcon className="size-10 opacity-60" />
+  const actions = hasSlot(slots.actions) ? slots.actions : null;
+  switch (props.variant) {
+    case "split":
+      return (
+        <Section>
+          <div className="grid items-center gap-12 md:grid-cols-[1.1fr_1fr] md:gap-16">
+            <div>
+              <div className="eyebrow text-primary">{props.eyebrow}</div>
+              <h1 className="mt-5 text-4xl md:text-[3.5rem]">{props.title}</h1>
+              <p className="measure mt-6 text-lg text-muted-foreground">{props.subtitle}</p>
+              {actions && <div className="mt-8 flex flex-wrap gap-3">{actions}</div>}
+            </div>
+            <HeroImage className="aspect-[4/3.4] shadow-sm" />
           </div>
-        )}
+        </Section>
+      );
+    case "editorial":
+      return (
+        <Section className="md:pt-32">
+          <div className="eyebrow text-muted-foreground">{props.eyebrow}</div>
+          <h1 className="mt-6 max-w-5xl text-5xl md:text-[5.5rem]">{props.title}</h1>
+          <div className="mt-10 grid gap-8 border-t pt-8 md:grid-cols-[2fr_1fr] md:items-end">
+            <p className="measure text-xl text-muted-foreground">{props.subtitle}</p>
+            {actions && <div className="flex flex-wrap gap-3 md:justify-end">{actions}</div>}
+          </div>
+        </Section>
+      );
+    case "immersive":
+      return (
+        <section className="relative isolate grid min-h-[620px] place-items-center overflow-hidden px-6 py-24 text-center text-white">
+          <div className="absolute inset-0 -z-10 bg-gradient-to-br from-neutral-700 via-neutral-500 to-neutral-800" />
+          <ImageIcon className="absolute top-1/2 left-1/2 -z-10 size-16 -translate-1/2 opacity-15" />
+          <div className="absolute inset-0 -z-10 bg-black/45" />
+          <div className="mx-auto max-w-3xl">
+            <div className="eyebrow opacity-85">{props.eyebrow}</div>
+            <h1 className="mt-5 text-4xl md:text-6xl">{props.title}</h1>
+            <p className="mx-auto mt-6 max-w-2xl text-lg opacity-90">{props.subtitle}</p>
+            {actions && <div className="mt-9 flex flex-wrap justify-center gap-3">{actions}</div>}
+          </div>
+        </section>
+      );
+    default:
+      return (
+        <Section className="md:pt-28">
+          <div className="mx-auto max-w-3xl text-center">
+            <Badge variant="secondary" className="mb-6">{props.eyebrow}</Badge>
+            <h1 className="text-4xl md:text-6xl">{props.title}</h1>
+            <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground md:text-xl">{props.subtitle}</p>
+            {actions && <div className="mt-9 flex flex-wrap justify-center gap-3">{actions}</div>}
+          </div>
+          <HeroImage className="mx-auto mt-16 aspect-[16/8] w-full max-w-5xl shadow-sm" />
+        </Section>
+      );
+  }
+};
+
+export const FeatureGrid = ({ props }: BlockProps<"FeatureGrid">) => {
+  const Feature = ({ f, big }: { f: PropsOf<"FeatureGrid">["features"][number]; big?: boolean }) => {
+    const Icon = icons[f.icon] ?? Sparkles;
+    return (
+      <>
+        <Icon className={cn("text-foreground/80", big ? "size-7" : "size-5")} strokeWidth={1.7} />
+        <h3 className={cn("mt-4", big ? "text-2xl" : "text-lg")}>{f.title}</h3>
+        <p className="mt-2 text-sm text-muted-foreground">{f.description}</p>
+      </>
+    );
+  };
+  if (props.variant === "list") {
+    return (
+      <Section>
+        <div className="grid gap-12 md:grid-cols-[1fr_1.6fr]">
+          <div>
+            <h2 className="text-3xl md:text-[2.5rem]">{props.title}</h2>
+            <p className="mt-4 text-muted-foreground">{props.subtitle}</p>
+          </div>
+          <div className="grid gap-x-10 gap-y-10 sm:grid-cols-2">
+            {props.features.map((f, i) => <div key={i} className="border-t pt-6"><Feature f={f} /></div>)}
+          </div>
+        </div>
+      </Section>
+    );
+  }
+  if (props.variant === "bento") {
+    return (
+      <Section>
+        <Heading title={props.title} subtitle={props.subtitle} />
+        <div className="grid auto-rows-[minmax(170px,auto)] gap-4 md:grid-cols-3">
+          {props.features.map((f, i) => (
+            <div key={i} className={cn("flex flex-col justify-end rounded-xl border bg-muted/50 p-7", i === 0 && "md:col-span-2 md:row-span-2 bg-muted")}>
+              <Feature f={f} big={i === 0} />
+            </div>
+          ))}
+        </div>
+      </Section>
+    );
+  }
+  return (
+    <Section>
+      <Heading title={props.title} subtitle={props.subtitle} />
+      <div className="grid gap-[var(--gap)] sm:grid-cols-2 lg:grid-cols-3">
+        {props.features.map((f, i) => (
+          <div key={i} className="rounded-lg border bg-background p-7">
+            <Feature f={f} />
+          </div>
+        ))}
       </div>
     </Section>
   );
 };
-
-export const FeatureGrid = ({ props }: BlockProps<"FeatureGrid">) => (
-  <Section>
-    <Heading title={props.title} subtitle={props.subtitle} />
-    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {props.features.map((f, i) => {
-        const Icon = icons[f.icon] ?? Sparkles;
-        return (
-          <div key={i} className="rounded-lg border bg-background p-6 shadow-sm">
-            <div className="mb-4 grid size-11 place-items-center rounded-md bg-primary/10 text-primary">
-              <Icon className="size-5" />
-            </div>
-            <h3 className="text-lg font-semibold">{f.title}</h3>
-            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{f.description}</p>
-          </div>
-        );
-      })}
-    </div>
-  </Section>
-);
 
 export const Stats = ({ props }: BlockProps<"Stats">) => (
   <Section className="bg-muted/60 md:py-14">
     <div className="grid grid-cols-2 gap-8 text-center md:grid-cols-4">
       {props.items.map((s, i) => (
         <div key={i}>
-          <div className="text-3xl font-bold text-primary md:text-4xl">{s.value}</div>
+          <div className="font-display tabular text-3xl font-semibold md:text-4xl">{s.value}</div>
           <div className="mt-1 text-sm text-muted-foreground">{s.label}</div>
         </div>
       ))}
@@ -115,7 +184,7 @@ export const Pricing = ({ props }: BlockProps<"Pricing">) => (
           <ul className="mt-6 flex-1 space-y-3 text-sm">
             {p.features.map((f, j) => (
               <li key={j} className="flex items-start gap-2">
-                <Check className="mt-0.5 size-4 shrink-0 text-primary" />
+                <Check className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
                 {f}
               </li>
             ))}
@@ -127,27 +196,52 @@ export const Pricing = ({ props }: BlockProps<"Pricing">) => (
   </Section>
 );
 
-export const Testimonials = ({ props }: BlockProps<"Testimonials">) => (
-  <Section className="bg-muted/40">
-    <Heading title={props.title} />
-    <div className="grid gap-6 md:grid-cols-3">
-      {props.items.map((t, i) => (
-        <figure key={i} className="rounded-lg border bg-background p-6 shadow-sm">
-          <blockquote className="leading-relaxed">“{t.quote}”</blockquote>
-          <figcaption className="mt-6 flex items-center gap-3">
-            <div className="grid size-10 place-items-center rounded-full bg-primary/15 font-semibold text-primary">
-              {t.name.slice(0, 1)}
-            </div>
-            <div>
-              <div className="text-sm font-semibold">{t.name}</div>
-              <div className="text-xs text-muted-foreground">{t.role}</div>
-            </div>
-          </figcaption>
+export const Testimonials = ({ props }: BlockProps<"Testimonials">) => {
+  const Person = ({ t }: { t: PropsOf<"Testimonials">["items"][number] }) => (
+    <figcaption className="mt-6 flex items-center gap-3">
+      <div className="grid size-10 place-items-center rounded-full bg-muted font-semibold text-foreground">{t.name.slice(0, 1)}</div>
+      <div>
+        <div className="text-sm font-semibold">{t.name}</div>
+        <div className="text-xs text-muted-foreground">{t.role}</div>
+      </div>
+    </figcaption>
+  );
+  if (props.variant === "spotlight" && props.items.length > 0) {
+    const [first, ...rest] = props.items;
+    return (
+      <Section className="bg-muted/50">
+        <div className="eyebrow mb-8 text-muted-foreground">{props.title}</div>
+        <figure className="max-w-4xl">
+          <blockquote className="font-display text-3xl leading-snug md:text-[2.6rem]">“{first.quote}”</blockquote>
+          <Person t={first} />
         </figure>
-      ))}
-    </div>
-  </Section>
-);
+        {rest.length > 0 && (
+          <div className="mt-14 grid gap-8 border-t pt-10 md:grid-cols-3">
+            {rest.map((t, i) => (
+              <figure key={i}>
+                <blockquote className="text-muted-foreground">“{t.quote}”</blockquote>
+                <Person t={t} />
+              </figure>
+            ))}
+          </div>
+        )}
+      </Section>
+    );
+  }
+  return (
+    <Section className="bg-muted/40">
+      <Heading title={props.title} />
+      <div className="grid gap-[var(--gap)] md:grid-cols-3">
+        {props.items.map((t, i) => (
+          <figure key={i} className="rounded-lg border bg-background p-7">
+            <blockquote>“{t.quote}”</blockquote>
+            <Person t={t} />
+          </figure>
+        ))}
+      </div>
+    </Section>
+  );
+};
 
 export const FAQ = ({ props }: BlockProps<"FAQ">) => {
   const [open, setOpen] = useState(0);
@@ -172,20 +266,47 @@ export const FAQ = ({ props }: BlockProps<"FAQ">) => {
   );
 };
 
-export const CTA = ({ props, slots }: BlockProps<"CTA">) => (
-  <Section>
-    <div className="rounded-2xl bg-primary px-8 py-14 text-center text-primary-foreground md:px-16">
-      <h2 className="text-3xl font-bold tracking-tight md:text-4xl">{props.title}</h2>
-      <p className="mx-auto mt-4 max-w-2xl text-lg opacity-85">{props.subtitle}</p>
-      {hasSlot(slots.actions) && <div className="mt-8 flex flex-wrap justify-center gap-3">{slots.actions}</div>}
-    </div>
-  </Section>
-);
+export const CTA = ({ props, slots }: BlockProps<"CTA">) => {
+  const actions = hasSlot(slots.actions) ? slots.actions : null;
+  if (props.variant === "split") {
+    return (
+      <Section>
+        <div className="flex flex-col gap-8 rounded-2xl border bg-muted/60 p-10 md:flex-row md:items-center md:justify-between md:p-14">
+          <div className="max-w-xl">
+            <h2 className="text-3xl md:text-4xl">{props.title}</h2>
+            <p className="mt-3 text-muted-foreground">{props.subtitle}</p>
+          </div>
+          {actions && <div className="flex shrink-0 flex-wrap gap-3">{actions}</div>}
+        </div>
+      </Section>
+    );
+  }
+  if (props.variant === "quiet") {
+    return (
+      <Section>
+        <div className="mx-auto max-w-2xl border-t pt-16 text-center">
+          <h2 className="text-3xl md:text-4xl">{props.title}</h2>
+          <p className="mt-4 text-muted-foreground">{props.subtitle}</p>
+          {actions && <div className="mt-8 flex justify-center gap-3">{actions}</div>}
+        </div>
+      </Section>
+    );
+  }
+  return (
+    <Section>
+      <div className="rounded-2xl bg-primary px-8 py-16 text-center text-primary-foreground md:px-16 [&_button]:bg-primary-foreground [&_button]:text-primary">
+        <h2 className="text-3xl md:text-4xl">{props.title}</h2>
+        <p className="mx-auto mt-4 max-w-2xl text-lg opacity-85">{props.subtitle}</p>
+        {actions && <div className="mt-8 flex flex-wrap justify-center gap-3">{actions}</div>}
+      </div>
+    </Section>
+  );
+};
 
 export const ContactForm = ({ props, slots }: BlockProps<"ContactForm">) => (
   <Section>
     <div className="mx-auto max-w-xl rounded-xl border bg-background p-8 shadow-sm">
-      <h2 className="text-2xl font-bold">{props.title}</h2>
+      <h2 className="text-2xl font-semibold">{props.title}</h2>
       <p className="mt-2 text-muted-foreground">{props.subtitle}</p>
       <div className="mt-8 space-y-5">{slots.fields}</div>
       {hasSlot(slots.actions) && <div className="mt-8 flex gap-3">{slots.actions}</div>}

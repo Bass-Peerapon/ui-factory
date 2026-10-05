@@ -25,6 +25,11 @@ export interface ComponentDef<S extends z.ZodObject = z.ZodObject> {
   maxUses?: number;
   /** Only layout roots may be the spec root. */
   root?: boolean;
+  /**
+   * Layout variants of the `variant` prop. Each becomes its own composer candidate sharing one
+   * resource, so Jev picks the layout that fits the prompt and places at most one of them.
+   */
+  variants?: readonly { value: string; description: string }[];
 }
 
 export function def<S extends z.ZodObject>(d: ComponentDef<S>): ComponentDef<S> {

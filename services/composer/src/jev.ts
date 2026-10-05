@@ -47,6 +47,14 @@ export const jevEvaluator: Experimental_CompositionEvaluator = async ({ state, q
 
 const candidates = compositionCandidates();
 
+/** Page-composition guidance; the anti-template rule follows open-design's craft/anti-ai-slop.md. */
+export const pageGuidance =
+  "Build a focused page for the request: usually a Navbar first and a Footer last, with only the sections the request needs (4 to 7 in between). " +
+  "Pick the layout variant that fits the domain. Avoid the default template rhythm Hero, FeatureGrid, Pricing, FAQ, CTA; " +
+  "include at least one distinctive section that suits the content, such as ImageText, Steps, Quote, LogoCloud, Gallery, Timeline or ComparisonTable. " +
+  "App screens (dashboards, sign-in, settings) skip marketing sections. " +
+  "Put Button primitives into `actions` slots and Input, Textarea or Checkbox primitives into `fields` slots.";
+
 export class JevComposer implements Composer {
   readonly name = "jev" as const;
 
@@ -72,9 +80,7 @@ export class JevComposer implements Composer {
       signal: input.signal,
       instructions: {
         root: "The root is always the Page layout.",
-        next:
-          "Build a complete, conventional page for the request: usually a Navbar first and a Footer last. " +
-          "Put Button primitives into `actions` slots and Input, Textarea or Checkbox primitives into a ContactForm `fields` slot.",
+        next: pageGuidance,
       },
     })) {
       const ms = Math.round(performance.now() - t0);

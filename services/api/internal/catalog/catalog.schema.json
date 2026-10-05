@@ -91,6 +91,15 @@
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
         "properties": {
+          "variant": {
+            "type": "string",
+            "enum": [
+              "centered",
+              "split",
+              "editorial",
+              "immersive"
+            ]
+          },
           "eyebrow": {
             "type": "string",
             "minLength": 1
@@ -103,35 +112,23 @@
             "type": "string",
             "minLength": 1
           },
-          "align": {
-            "type": "string",
-            "enum": [
-              "left",
-              "center"
-            ]
-          },
-          "showImage": {
-            "type": "boolean"
-          },
           "skeleton": {
             "type": "boolean"
           }
         },
         "required": [
+          "variant",
           "eyebrow",
           "title",
-          "subtitle",
-          "align",
-          "showImage"
+          "subtitle"
         ],
         "additionalProperties": false
       },
       "placeholder": {
+        "variant": "centered",
         "eyebrow": "…",
         "title": "…",
         "subtitle": "…",
-        "align": "center",
-        "showImage": true,
         "skeleton": true
       }
     },
@@ -145,6 +142,14 @@
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
         "properties": {
+          "variant": {
+            "type": "string",
+            "enum": [
+              "cards",
+              "list",
+              "bento"
+            ]
+          },
           "title": {
             "type": "string",
             "minLength": 1
@@ -203,6 +208,7 @@
           }
         },
         "required": [
+          "variant",
           "title",
           "subtitle",
           "features"
@@ -210,6 +216,7 @@
         "additionalProperties": false
       },
       "placeholder": {
+        "variant": "cards",
         "title": "…",
         "subtitle": "…",
         "features": [
@@ -416,6 +423,13 @@
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
         "properties": {
+          "variant": {
+            "type": "string",
+            "enum": [
+              "cards",
+              "spotlight"
+            ]
+          },
           "title": {
             "type": "string",
             "minLength": 1
@@ -453,12 +467,14 @@
           }
         },
         "required": [
+          "variant",
           "title",
           "items"
         ],
         "additionalProperties": false
       },
       "placeholder": {
+        "variant": "cards",
         "title": "…",
         "items": [
           {
@@ -558,6 +574,14 @@
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
         "properties": {
+          "variant": {
+            "type": "string",
+            "enum": [
+              "band",
+              "split",
+              "quiet"
+            ]
+          },
           "title": {
             "type": "string",
             "minLength": 1
@@ -571,12 +595,14 @@
           }
         },
         "required": [
+          "variant",
           "title",
           "subtitle"
         ],
         "additionalProperties": false
       },
       "placeholder": {
+        "variant": "band",
         "title": "…",
         "subtitle": "…",
         "skeleton": true
@@ -2093,6 +2119,56 @@
           "mono",
           "rounded"
         ]
+      },
+      "designSystem": {
+        "type": "string"
+      },
+      "displayFont": {
+        "type": "string",
+        "enum": [
+          "\"Geist\", \"Anuphan\", system-ui, sans-serif",
+          "\"Inter\", \"IBM Plex Sans Thai\", system-ui, sans-serif",
+          "\"IBM Plex Sans Thai\", system-ui, sans-serif",
+          "\"Anuphan\", system-ui, sans-serif",
+          "\"Bai Jamjuree\", system-ui, sans-serif",
+          "\"Chakra Petch\", \"IBM Plex Sans Thai\", sans-serif",
+          "\"Kanit\", system-ui, sans-serif",
+          "\"Mitr\", \"Anuphan\", system-ui, sans-serif",
+          "\"Prompt\", system-ui, sans-serif",
+          "\"Sarabun\", system-ui, sans-serif",
+          "\"Noto Serif Thai\", Georgia, serif",
+          "\"Playfair Display\", \"Trirong\", Georgia, serif",
+          "\"Trirong\", Georgia, serif",
+          "\"Taviraj\", Georgia, serif"
+        ]
+      },
+      "bodyFont": {
+        "type": "string",
+        "enum": [
+          "\"Geist\", \"Anuphan\", system-ui, sans-serif",
+          "\"Inter\", \"IBM Plex Sans Thai\", system-ui, sans-serif",
+          "\"IBM Plex Sans Thai\", system-ui, sans-serif",
+          "\"Anuphan\", system-ui, sans-serif",
+          "\"Bai Jamjuree\", system-ui, sans-serif",
+          "\"Chakra Petch\", \"IBM Plex Sans Thai\", sans-serif",
+          "\"Kanit\", system-ui, sans-serif",
+          "\"Mitr\", \"Anuphan\", system-ui, sans-serif",
+          "\"Prompt\", system-ui, sans-serif",
+          "\"Sarabun\", system-ui, sans-serif",
+          "\"Noto Serif Thai\", Georgia, serif",
+          "\"Playfair Display\", \"Trirong\", Georgia, serif",
+          "\"Trirong\", Georgia, serif",
+          "\"Taviraj\", Georgia, serif"
+        ]
+      },
+      "density": {
+        "description": "section spacing tier",
+        "type": "string",
+        "enum": [
+          "relaxed",
+          "standard",
+          "compact"
+        ]
       }
     },
     "required": [
@@ -2111,66 +2187,348 @@
   },
   "themePresets": {
     "neutral": {
-      "primary": "#18181b",
-      "primaryForeground": "#fafafa",
+      "designSystem": "shadcn",
+      "primary": "#111111",
+      "primaryForeground": "#ffffff",
       "background": "#ffffff",
-      "foreground": "#09090b",
-      "muted": "#f4f4f5",
-      "mutedForeground": "#71717a",
+      "foreground": "#111827",
+      "muted": "#f5f5f5",
+      "mutedForeground": "#64748b",
       "accent": "#f4f4f5",
-      "border": "#e4e4e7",
+      "border": "#e5e7eb",
       "radius": 0.5,
-      "font": "sans"
+      "font": "sans",
+      "displayFont": "\"Geist\", \"Anuphan\", system-ui, sans-serif",
+      "bodyFont": "\"Geist\", \"Anuphan\", system-ui, sans-serif",
+      "density": "standard"
     },
-    "coffee": {
-      "primary": "#6f4e37",
-      "primaryForeground": "#fff8f0",
-      "background": "#fffaf5",
-      "foreground": "#2b1d14",
-      "muted": "#f3e9df",
-      "mutedForeground": "#7a6455",
-      "accent": "#e8d5c4",
-      "border": "#e6d8cb",
-      "radius": 0.75,
-      "font": "serif"
-    },
-    "ocean": {
-      "primary": "#0369a1",
-      "primaryForeground": "#f0f9ff",
+    "shadcn": {
+      "designSystem": "shadcn",
+      "primary": "#111111",
+      "primaryForeground": "#ffffff",
       "background": "#ffffff",
-      "foreground": "#0c1a26",
-      "muted": "#eff6fb",
-      "mutedForeground": "#55707f",
-      "accent": "#e0f2fe",
-      "border": "#d6e6f0",
-      "radius": 0.6,
-      "font": "sans"
-    },
-    "forest": {
-      "primary": "#15803d",
-      "primaryForeground": "#f0fdf4",
-      "background": "#fbfdfb",
-      "foreground": "#0f1f14",
-      "muted": "#ecf5ee",
-      "mutedForeground": "#5b7262",
-      "accent": "#dcfce7",
-      "border": "#d5e6da",
-      "radius": 1,
-      "font": "rounded"
-    },
-    "midnight": {
-      "primary": "#a78bfa",
-      "primaryForeground": "#1e1b2e",
-      "background": "#0f0e17",
-      "foreground": "#ece9f7",
-      "muted": "#1d1b2b",
-      "mutedForeground": "#a19cb8",
-      "accent": "#2a2640",
-      "border": "#2e2a44",
+      "foreground": "#111827",
+      "muted": "#f5f5f5",
+      "mutedForeground": "#64748b",
+      "accent": "#f4f4f5",
+      "border": "#e5e7eb",
       "radius": 0.5,
-      "font": "sans"
+      "font": "sans",
+      "displayFont": "\"Geist\", \"Anuphan\", system-ui, sans-serif",
+      "bodyFont": "\"Geist\", \"Anuphan\", system-ui, sans-serif",
+      "density": "standard"
+    },
+    "vercel": {
+      "designSystem": "vercel",
+      "primary": "#000000",
+      "primaryForeground": "#ffffff",
+      "background": "#ffffff",
+      "foreground": "#0a0a0a",
+      "muted": "#fafafa",
+      "mutedForeground": "#666666",
+      "accent": "#f2f2f2",
+      "border": "#eaeaea",
+      "radius": 0.375,
+      "font": "sans",
+      "displayFont": "\"Geist\", \"Anuphan\", system-ui, sans-serif",
+      "bodyFont": "\"Geist\", \"Anuphan\", system-ui, sans-serif",
+      "density": "relaxed"
+    },
+    "clean": {
+      "designSystem": "clean",
+      "primary": "#111111",
+      "primaryForeground": "#ffffff",
+      "background": "#ffffff",
+      "foreground": "#111111",
+      "muted": "#f7f7f7",
+      "mutedForeground": "#707070",
+      "accent": "#f0f0f0",
+      "border": "#d9d9d9",
+      "radius": 0.5,
+      "font": "sans",
+      "displayFont": "\"Anuphan\", system-ui, sans-serif",
+      "bodyFont": "\"Anuphan\", system-ui, sans-serif",
+      "density": "relaxed"
+    },
+    "editorial": {
+      "designSystem": "editorial",
+      "primary": "#9a5a2f",
+      "primaryForeground": "#ffffff",
+      "background": "#fbf7f0",
+      "foreground": "#1f1a16",
+      "muted": "#f3ece1",
+      "mutedForeground": "#7d7168",
+      "accent": "#efe6d8",
+      "border": "#ded3c5",
+      "radius": 0.5,
+      "font": "serif",
+      "displayFont": "\"Noto Serif Thai\", Georgia, serif",
+      "bodyFont": "\"Sarabun\", system-ui, sans-serif",
+      "density": "relaxed"
+    },
+    "warm-editorial": {
+      "designSystem": "warm-editorial",
+      "primary": "#9b5b32",
+      "primaryForeground": "#ffffff",
+      "background": "#fbf6ee",
+      "foreground": "#201914",
+      "muted": "#f4ece0",
+      "mutedForeground": "#7a6d63",
+      "accent": "#efe4d4",
+      "border": "#ded2c3",
+      "radius": 1,
+      "font": "serif",
+      "displayFont": "\"Trirong\", Georgia, serif",
+      "bodyFont": "\"Anuphan\", system-ui, sans-serif",
+      "density": "relaxed"
+    },
+    "dashboard": {
+      "designSystem": "dashboard",
+      "primary": "#0284c7",
+      "primaryForeground": "#ffffff",
+      "background": "#f4f7fb",
+      "foreground": "#111827",
+      "muted": "#eaf0f7",
+      "mutedForeground": "#64748b",
+      "accent": "#e6eef8",
+      "border": "#d8e2ee",
+      "radius": 0.75,
+      "font": "sans",
+      "displayFont": "\"Chakra Petch\", \"IBM Plex Sans Thai\", sans-serif",
+      "bodyFont": "\"IBM Plex Sans Thai\", system-ui, sans-serif",
+      "density": "compact"
+    },
+    "corporate": {
+      "designSystem": "corporate",
+      "primary": "#2563eb",
+      "primaryForeground": "#ffffff",
+      "background": "#f5f8ff",
+      "foreground": "#101828",
+      "muted": "#eaf0fb",
+      "mutedForeground": "#667085",
+      "accent": "#e3ebfb",
+      "border": "#d7e0ef",
+      "radius": 1,
+      "font": "sans",
+      "displayFont": "\"Bai Jamjuree\", system-ui, sans-serif",
+      "bodyFont": "\"IBM Plex Sans Thai\", system-ui, sans-serif",
+      "density": "standard"
+    },
+    "friendly": {
+      "designSystem": "friendly",
+      "primary": "#ea580c",
+      "primaryForeground": "#ffffff",
+      "background": "#fff8d7",
+      "foreground": "#1d1836",
+      "muted": "#fff1b8",
+      "mutedForeground": "#796f91",
+      "accent": "#ffeeb0",
+      "border": "#eadfba",
+      "radius": 1.25,
+      "font": "rounded",
+      "displayFont": "\"Mitr\", \"Anuphan\", system-ui, sans-serif",
+      "bodyFont": "\"Anuphan\", system-ui, sans-serif",
+      "density": "standard"
+    },
+    "luxury": {
+      "designSystem": "luxury",
+      "primary": "#c6a15b",
+      "primaryForeground": "#080706",
+      "background": "#0f0e0c",
+      "foreground": "#fff8ea",
+      "muted": "#151310",
+      "mutedForeground": "#9f927c",
+      "accent": "#1c1915",
+      "border": "#3a3020",
+      "radius": 0.875,
+      "font": "serif",
+      "displayFont": "\"Playfair Display\", \"Trirong\", Georgia, serif",
+      "bodyFont": "\"Sarabun\", system-ui, sans-serif",
+      "density": "relaxed"
+    },
+    "neobrutalism": {
+      "designSystem": "neobrutalism",
+      "primary": "#d24b1f",
+      "primaryForeground": "#ffffff",
+      "background": "#fff4cf",
+      "foreground": "#2a1810",
+      "muted": "#fffaf0",
+      "mutedForeground": "#8a6652",
+      "accent": "#ffe9a8",
+      "border": "#2a1810",
+      "radius": 0.25,
+      "font": "sans",
+      "displayFont": "\"Kanit\", system-ui, sans-serif",
+      "bodyFont": "\"Prompt\", system-ui, sans-serif",
+      "density": "standard"
+    },
+    "publication": {
+      "designSystem": "publication",
+      "primary": "#c1121f",
+      "primaryForeground": "#ffffff",
+      "background": "#ffffff",
+      "foreground": "#0b0b0b",
+      "muted": "#f6f6f6",
+      "mutedForeground": "#666666",
+      "accent": "#efefef",
+      "border": "#d6d6d6",
+      "radius": 0,
+      "font": "serif",
+      "displayFont": "\"Kanit\", system-ui, sans-serif",
+      "bodyFont": "\"Taviraj\", Georgia, serif",
+      "density": "standard"
+    },
+    "linear-app": {
+      "designSystem": "linear-app",
+      "primary": "#5e6ad2",
+      "primaryForeground": "#ffffff",
+      "background": "#08090a",
+      "foreground": "#f7f8f8",
+      "muted": "#191a1b",
+      "mutedForeground": "#8a8f98",
+      "accent": "#1c1d1f",
+      "border": "#1d1e20",
+      "radius": 0.5,
+      "font": "sans",
+      "displayFont": "\"Inter\", \"IBM Plex Sans Thai\", system-ui, sans-serif",
+      "bodyFont": "\"Inter\", \"IBM Plex Sans Thai\", system-ui, sans-serif",
+      "density": "standard"
     }
   },
+  "designSystems": [
+    {
+      "id": "shadcn",
+      "name": "Shadcn",
+      "category": "Modern & Minimal",
+      "summary": "Monochrome, utility-first, black primary on white",
+      "rules": [
+        "Monochrome UI: hierarchy comes from weight and size, not color.",
+        "Primary buttons are solid near-black; every other action is outline or ghost.",
+        "Thin 1px borders and subtle elevation; no gradients."
+      ]
+    },
+    {
+      "id": "vercel",
+      "name": "Vercel",
+      "category": "Developer Tools",
+      "summary": "Stark black and white with a precise blue link color",
+      "rules": [
+        "Large tight headlines over generous white space; content speaks for itself.",
+        "Accent blue only for one primary action or link per screen.",
+        "Use grids with hairline dividers instead of cards with shadows."
+      ]
+    },
+    {
+      "id": "clean",
+      "name": "Clean",
+      "category": "Modern & Minimal",
+      "summary": "Ample whitespace, limited palette, legible type",
+      "rules": [
+        "Reduce visual clutter: at most one decorative element per section.",
+        "Neutral grey surfaces separate sections; the accent stays near-black.",
+        "Favour short copy and clear labels over long descriptions."
+      ]
+    },
+    {
+      "id": "editorial",
+      "name": "Editorial",
+      "category": "Creative & Artistic",
+      "summary": "Magazine serif typography on warm paper",
+      "rules": [
+        "Serif display headlines with a clear reading rhythm; body copy reads like an article.",
+        "Rust accent sparingly: one kicker or one CTA per screen.",
+        "Structured grids, pull quotes and generous section spacing."
+      ]
+    },
+    {
+      "id": "warm-editorial",
+      "name": "Warm Editorial",
+      "category": "Starter",
+      "summary": "Soft cream surfaces, serif headlines, rounded corners",
+      "rules": [
+        "Warm, human tone in copy; avoid corporate jargon.",
+        "Serif headlines with sans body; rounded generous cards.",
+        "One warm accent; neutrals carry most of the page."
+      ]
+    },
+    {
+      "id": "dashboard",
+      "name": "Dashboard",
+      "category": "Professional & Corporate",
+      "summary": "Data-dense product UI with a sky-blue signal color",
+      "rules": [
+        "Information density is the feature: compact spacing, tabular numbers, no decoration.",
+        "Sky accent marks only the current state or the primary action.",
+        "Use semantic colors (success, danger) for data, never for decoration."
+      ]
+    },
+    {
+      "id": "corporate",
+      "name": "Corporate",
+      "category": "Professional & Corporate",
+      "summary": "Trustworthy enterprise blue, structured grids",
+      "rules": [
+        "Structured, predictable layouts; proof (logos, numbers, case studies) near the top.",
+        "Blue accent for the primary action only; secondary actions are outline.",
+        "Formal but plain-language copy; no hype adjectives."
+      ]
+    },
+    {
+      "id": "friendly",
+      "name": "Friendly",
+      "category": "Creative & Artistic",
+      "summary": "Playful orange on sunny cream, very rounded",
+      "rules": [
+        "Conversational, upbeat microcopy with specific verbs.",
+        "Rounded shapes and soft surfaces; orange only for the main action.",
+        "Illustration-like placeholders are fine; keep text short and warm."
+      ]
+    },
+    {
+      "id": "luxury",
+      "name": "Luxury",
+      "category": "Professional & Corporate",
+      "summary": "Near-black canvas, gold accent, high-contrast serif",
+      "rules": [
+        "Dark, quiet canvas; let large serif headlines and space create the premium feel.",
+        "Gold accent at most twice per screen; never as large fills.",
+        "Few words per section; evocative, specific copy."
+      ]
+    },
+    {
+      "id": "neobrutalism",
+      "name": "Neobrutalism",
+      "category": "Bold & Expressive",
+      "summary": "Heavy type, hard borders, vivid orange on warm yellow",
+      "rules": [
+        "Bold, chunky display type and thick borders; flat colors, no gradients.",
+        "High contrast and raw layouts; one vivid accent.",
+        "Short punchy copy."
+      ]
+    },
+    {
+      "id": "publication",
+      "name": "Publication",
+      "category": "Creative & Artistic",
+      "summary": "Print-inspired, square corners, red accent",
+      "rules": [
+        "Editorial grid with strong typographic contrast between headline and body.",
+        "Square corners everywhere; rules and dividers instead of cards.",
+        "Red accent for one kicker or link per screen."
+      ]
+    },
+    {
+      "id": "linear-app",
+      "name": "Linear (dark)",
+      "category": "Productivity & SaaS",
+      "summary": "Dark-mode precision, luminance hierarchy, indigo signal",
+      "rules": [
+        "Dark canvas; hierarchy through text luminance (bright headline, dim body).",
+        "Hairline borders and subtle surfaces instead of shadows.",
+        "Indigo accent only for the primary action and one highlight."
+      ]
+    }
+  ],
   "actions": {
     "navigate": {
       "description": "Prototype navigation: show another frame of the project.",

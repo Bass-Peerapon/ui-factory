@@ -21,15 +21,15 @@ export const icons = {
 };
 
 export const Section = ({ className, children }: { className?: string; children: ReactNode }) => (
-  <section className={cn("px-6 py-16 md:px-12 md:py-20", className)}>
+  <section className={cn("section-y px-6 md:px-12", className)}>
     <div className="mx-auto max-w-6xl">{children}</div>
   </section>
 );
 
 export const Heading = ({ title, subtitle }: { title: string; subtitle?: string }) => (
   <div className="mx-auto mb-12 max-w-2xl text-center">
-    <h2 className="text-3xl font-bold tracking-tight md:text-4xl">{title}</h2>
-    {subtitle && <p className="mt-4 text-lg text-muted-foreground">{subtitle}</p>}
+    <h2 className="text-3xl font-semibold md:text-[2.5rem]">{title}</h2>
+    {subtitle && <p className="measure mx-auto mt-4 text-lg text-muted-foreground">{subtitle}</p>}
   </div>
 );
 

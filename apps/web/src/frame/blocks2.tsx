@@ -6,7 +6,7 @@ import { Bar, Heading, Section, SkCards, SkHeading, hasSlot, icons, type BlockPr
 import { Badge } from "./ui/badge";
 
 const ImagePlaceholder = ({ className }: { className?: string }) => (
-  <div className={cn("grid place-items-center rounded-lg border bg-gradient-to-br from-primary/20 via-accent to-muted text-muted-foreground", className)}>
+  <div className={cn("grid place-items-center rounded-lg border bg-gradient-to-br from-muted via-accent to-muted text-muted-foreground", className)}>
     <ImageIcon className="size-8 opacity-60" />
   </div>
 );
@@ -25,7 +25,7 @@ export const LogoCloud = ({ props }: BlockProps<"LogoCloud">) => (
     <p className="mb-6 text-center text-sm font-medium text-muted-foreground">{props.title}</p>
     <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4">
       {props.logos.map((l, i) => (
-        <span key={i} className="text-xl font-bold tracking-tight text-foreground/45">{l}</span>
+        <span key={i} className="text-xl font-bold text-foreground/45">{l}</span>
       ))}
     </div>
   </Section>
@@ -36,13 +36,13 @@ export const ImageText = ({ props, slots }: BlockProps<"ImageText">) => (
     <div className="grid items-center gap-10 md:grid-cols-2 md:gap-16">
       <ImagePlaceholder className={cn("aspect-[4/3]", props.imageSide === "left" ? "md:order-first" : "md:order-last")} />
       <div>
-        <div className="text-sm font-semibold uppercase tracking-wider text-primary">{props.eyebrow}</div>
-        <h2 className="mt-3 text-3xl font-bold tracking-tight md:text-4xl">{props.title}</h2>
+        <div className="eyebrow text-primary">{props.eyebrow}</div>
+        <h2 className="mt-3 text-3xl font-semibold md:text-4xl">{props.title}</h2>
         <p className="mt-4 text-lg leading-relaxed text-muted-foreground">{props.description}</p>
         {props.bullets.length > 0 && (
           <ul className="mt-6 space-y-3">
             {props.bullets.map((b, i) => (
-              <li key={i} className="flex gap-3"><Check className="mt-0.5 size-5 shrink-0 text-primary" />{b}</li>
+              <li key={i} className="flex gap-3"><Check className="mt-0.5 size-5 shrink-0 text-foreground/70" />{b}</li>
             ))}
           </ul>
         )}
@@ -58,7 +58,7 @@ export const Steps = ({ props }: BlockProps<"Steps">) => (
     <ol className={cn("grid gap-8", props.steps.length >= 4 ? "md:grid-cols-4" : "md:grid-cols-3")}>
       {props.steps.map((s, i) => (
         <li key={i} className="relative">
-          <div className="mb-4 grid size-10 place-items-center rounded-full bg-primary font-bold text-primary-foreground">{i + 1}</div>
+          <div className="mb-4 grid size-10 place-items-center rounded-full bg-foreground font-semibold text-background tabular">{i + 1}</div>
           <h3 className="text-lg font-semibold">{s.title}</h3>
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{s.description}</p>
         </li>
@@ -79,7 +79,7 @@ export const ProductGrid = ({ props }: BlockProps<"ProductGrid">) => (
           </div>
           <div className="mt-3 flex items-start justify-between gap-2">
             <h3 className="font-semibold">{p.name}</h3>
-            <span className="shrink-0 font-semibold text-primary">{p.price}</span>
+            <span className="tabular shrink-0 font-semibold">{p.price}</span>
           </div>
           <p className="mt-1 text-sm text-muted-foreground">{p.description}</p>
         </div>
@@ -108,9 +108,9 @@ export const Team = ({ props }: BlockProps<"Team">) => (
     <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
       {props.members.map((m, i) => (
         <div key={i} className="text-center">
-          <div className="mx-auto grid size-24 place-items-center rounded-full bg-primary/15 text-2xl font-bold text-primary">{m.name.slice(0, 1)}</div>
+          <div className="mx-auto grid size-24 place-items-center rounded-full bg-muted text-2xl font-semibold text-foreground">{m.name.slice(0, 1)}</div>
           <h3 className="mt-4 font-semibold">{m.name}</h3>
-          <div className="text-sm text-primary">{m.role}</div>
+          <div className="text-sm text-muted-foreground">{m.role}</div>
           <p className="mt-2 text-sm text-muted-foreground">{m.bio}</p>
         </div>
       ))}
@@ -121,11 +121,11 @@ export const Team = ({ props }: BlockProps<"Team">) => (
 export const Timeline = ({ props }: BlockProps<"Timeline">) => (
   <Section>
     <Heading title={props.title} />
-    <ol className="relative mx-auto max-w-3xl border-l-2 border-primary/30 pl-8">
+    <ol className="relative mx-auto max-w-3xl border-l-2 border-border pl-8">
       {props.items.map((it, i) => (
         <li key={i} className="relative pb-10 last:pb-0">
           <span className="absolute -left-[41px] top-1 size-4 rounded-full border-4 border-background bg-primary" />
-          <div className="text-sm font-semibold text-primary">{it.date}</div>
+          <div className="eyebrow text-muted-foreground">{it.date}</div>
           <h3 className="mt-1 text-lg font-semibold">{it.title}</h3>
           <p className="mt-1 text-muted-foreground">{it.description}</p>
         </li>
@@ -155,7 +155,7 @@ export const ComparisonTable = ({ props }: BlockProps<"ComparisonTable">) => (
                 const no = /^(✗|-|no|false|ไม่มี)$/i.test(v);
                 return (
                   <td key={j} className="p-4 text-center text-muted-foreground">
-                    {yes ? <Check className="mx-auto size-4 text-primary" /> : no ? <Minus className="mx-auto size-4 opacity-40" /> : v}
+                    {yes ? <Check className="mx-auto size-4 text-foreground" /> : no ? <Minus className="mx-auto size-4 opacity-40" /> : v}
                   </td>
                 );
               })}
@@ -189,7 +189,7 @@ export const BlogList = ({ props }: BlockProps<"BlogList">) => (
 export const Quote = ({ props }: BlockProps<"Quote">) => (
   <Section>
     <figure className="mx-auto max-w-3xl text-center">
-      <QuoteIcon className="mx-auto size-10 text-primary/40" />
+      <QuoteIcon className="mx-auto size-10 text-muted-foreground/40" />
       <blockquote className="mt-6 text-2xl font-medium leading-relaxed md:text-3xl">{props.quote}</blockquote>
       <figcaption className="mt-6">
         <div className="font-semibold">{props.author}</div>
@@ -203,7 +203,7 @@ export const Newsletter = ({ props, slots }: BlockProps<"Newsletter">) => (
   <Section>
     <div className="flex flex-col items-start justify-between gap-6 rounded-2xl border bg-muted/50 p-8 md:flex-row md:items-center md:p-10">
       <div className="max-w-md">
-        <h2 className="text-2xl font-bold">{props.title}</h2>
+        <h2 className="text-2xl font-semibold">{props.title}</h2>
         <p className="mt-2 text-muted-foreground">{props.subtitle}</p>
       </div>
       <div className="flex w-full max-w-md flex-col gap-3 sm:flex-row sm:items-end">
@@ -222,7 +222,7 @@ export const ContactInfo = ({ props }: BlockProps<"ContactInfo">) => (
         const Icon = icons[it.icon];
         return (
           <div key={i} className="flex gap-4 rounded-lg border p-5">
-            <div className="grid size-10 shrink-0 place-items-center rounded-md bg-primary/10 text-primary"><Icon className="size-5" /></div>
+            <div className="grid size-10 shrink-0 place-items-center rounded-md bg-muted text-foreground"><Icon className="size-5" /></div>
             <div>
               <div className="text-sm text-muted-foreground">{it.label}</div>
               <div className="mt-0.5 font-medium">{it.value}</div>
@@ -237,7 +237,7 @@ export const ContactInfo = ({ props }: BlockProps<"ContactInfo">) => (
 export const AuthForm = ({ props, slots }: BlockProps<"AuthForm">) => (
   <div className="grid min-h-[640px] place-items-center bg-muted/40 px-6 py-16">
     <div className="w-full max-w-sm rounded-xl border bg-background p-8 shadow-sm">
-      <h1 className="text-2xl font-bold">{props.title}</h1>
+      <h1 className="text-2xl font-semibold">{props.title}</h1>
       <p className="mt-1 text-sm text-muted-foreground">{props.subtitle}</p>
       <div className="mt-6 space-y-4">{slots.fields}</div>
       {hasSlot(slots.actions) && <div className="mt-6 grid gap-2 [&>*]:w-full [&_button]:w-full">{slots.actions}</div>}
@@ -294,7 +294,7 @@ export const EmptyState = ({ props, slots }: BlockProps<"EmptyState">) => {
   return (
     <Section>
       <div className="mx-auto flex max-w-md flex-col items-center rounded-xl border border-dashed p-10 text-center">
-        <div className="grid size-14 place-items-center rounded-full bg-primary/10 text-primary"><Icon className="size-7" /></div>
+        <div className="grid size-14 place-items-center rounded-full bg-muted text-foreground"><Icon className="size-7" /></div>
         <h2 className="mt-4 text-xl font-semibold">{props.title}</h2>
         <p className="mt-2 text-muted-foreground">{props.description}</p>
         {hasSlot(slots.actions) && <div className="mt-6 flex gap-3">{slots.actions}</div>}

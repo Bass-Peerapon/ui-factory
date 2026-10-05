@@ -42,6 +42,11 @@ function treeIssues(spec: Spec): string[] {
     }
     if (kind === "primitive" && (el.children?.length ?? 0) > 0) issues.push(`${id}: primitive has children`);
   }
+  const top = root?.children ?? [];
+  const footerAt = top.findIndex((k) => spec.elements[k]?.type === "Footer");
+  if (footerAt >= 0 && footerAt !== top.length - 1) issues.push("Footer is not the last section");
+  const navAt = top.findIndex((k) => spec.elements[k]?.type === "Navbar");
+  if (navAt > 0 && spec.elements[top[0]]?.type !== "Banner") issues.push("Navbar is not the first section");
   return issues;
 }
 

@@ -11,6 +11,7 @@ import (
 
 	"github.com/Bass-Peerapon/ui-factory/services/api/internal/doc"
 	"github.com/Bass-Peerapon/ui-factory/services/api/internal/hub"
+	"github.com/Bass-Peerapon/ui-factory/services/api/internal/lint"
 	"github.com/Bass-Peerapon/ui-factory/services/api/internal/llm"
 )
 
@@ -55,12 +56,24 @@ func skeletonGroups(s *doc.Spec) []fillGroup {
 	return groups
 }
 
-const fillSystem = `You write realistic mock content for UI components of a web page prototype.
-Rules:
-- Write in %s. Use natural, specific copy for the product in the brief (brand names, prices, numbers, names of people). No lorem ipsum, no placeholders like "…".
-- Keep copy concise like a real website: headlines up to 10 words, descriptions up to 25 words.
-- Keep a consistent brand and tone across the whole page.
-- Return exactly one JSON object keyed by element id; each value is that element's props and must match the schema.`
+// fillSystem carries the writing and craft rules. The craft part is adapted from open-design's
+// craft/anti-ai-slop.md, color.md and typography.md (Apache-2.0); see THIRD_PARTY_NOTICES.md.
+const fillSystem = `You write the content of UI components for a realistic product prototype.
+
+Writing rules:
+- Write in %s. Natural, idiomatic copy a local designer would ship; keep brand names as they are.
+- Be specific to the brief: concrete product details, believable names, prices and numbers (e.g. "1,240 orders this month").
+  Never use vague superlatives or invented hype metrics ("10x faster", "99.9%%", "อันดับ 1 ของประเทศ").
+- No filler ("lorem ipsum", "feature one", "ข้อความตัวอย่าง", "…"), no emoji.
+- Stay inside the length budgets (characters per prop) given in the request. Headlines short and confident.
+- Buttons use specific verbs ("จองคิวตัดผม", "Start tracking"), not generic ones ("คลิกที่นี่", "Get started").
+- In a block's actions, exactly one Button may use variant "default"; the rest use "outline" or "ghost".
+- Pick icons that match the meaning of each item.
+- Vary the copy between sections: do not repeat the same headline pattern or phrase on one page.
+
+%s
+
+Return exactly one JSON object keyed by element id; each value is that element's props and must match the schema.`
 
 var localeName = map[string]string{"th": "Thai (ภาษาไทย)", "en": "English"}
 
@@ -91,7 +104,11 @@ func (r *Runner) fill(ctx context.Context, s *hub.Session, t *hub.Turn, frameID 
 	if brief == "" {
 		brief = frame.Name
 	}
-	system := fmt.Sprintf(fillSystem, localeName[p.Locale])
+	guide := r.Cat.DesignGuide(fmt.Sprint(p.Theme["designSystem"]))
+	if guide == "" {
+		guide = "Design system: neutral, restrained; one accent color used only for the primary action."
+	}
+	system := fmt.Sprintf(fillSystem, localeName[p.Locale], guide)
 
 	var mu sync.Mutex
 	var wg sync.WaitGroup
@@ -123,6 +140,7 @@ func (r *Runner) fillGroup(ctx context.Context, s *hub.Session, frameID string, 
 	system, brief string, outline []string) (int, []string) {
 	pending := slices.Clone(g.ids)
 	valid := map[string]map[string]any{}
+	fallback := map[string]map[string]any{}
 	lastErr := map[string]string{}
 
 	for attempt := 0; attempt < max(r.MaxRetries, 1) && len(pending) > 0; attempt++ {
@@ -132,6 +150,9 @@ func (r *Runner) fillGroup(ctx context.Context, s *hub.Session, frameID string, 
 			el := spec.Elements[id]
 			props[id] = r.Cat.ContentSchema(el.Type)
 			item := map[string]any{"id": id, "type": el.Type, "description": r.Cat.Get(el.Type).Description}
+			if v, ok := el.Props["variant"]; ok {
+				item["layout_variant"] = v
+			}
 			if loc, ok := spec.Locate(id); ok {
 				item["parent"] = spec.Elements[loc.ParentID].Type
 				if loc.Slot != "" {
@@ -144,10 +165,11 @@ func (r *Runner) fillGroup(ctx context.Context, s *hub.Session, frameID string, 
 			elements = append(elements, item)
 		}
 		prompt, _ := json.Marshal(map[string]any{
-			"brief":        brief,
-			"page_outline": outline,
-			"block":        spec.Elements[g.block].Type,
-			"elements":     elements,
+			"length_budgets": lint.Budgets,
+			"brief":          brief,
+			"page_outline":   outline,
+			"block":          spec.Elements[g.block].Type,
+			"elements":       elements,
 		})
 		out, err := r.Model.GenerateJSON(ctx, llm.JSONRequest{
 			System: system,
@@ -180,16 +202,32 @@ func (r *Runner) fillGroup(ctx context.Context, s *hub.Session, frameID string, 
 				continue
 			}
 			delete(pr, "skeleton")
+			if v, ok := spec.Elements[id].Props["variant"]; ok {
+				pr["variant"] = v // the composer chose the layout; content fill must not change it
+			}
 			if err := r.Cat.ValidateProps(spec.Elements[id].Type, pr); err != nil {
 				lastErr[id] = err.Error()
 				still = append(still, id)
 				continue
 			}
+			if findings := lint.Props(pr); len(findings) > 0 && attempt < max(r.MaxRetries, 1)-1 {
+				// Schema-valid but sloppy: keep it as a fallback and ask for a better version.
+				fallback[id] = pr
+				lastErr[id] = "quality check failed: " + joinFindings(findings)
+				still = append(still, id)
+				continue
+			}
 			valid[id] = pr
+			delete(fallback, id)
 		}
 		pending = still
 	}
 
+	// Elements that only failed the quality check still beat a skeleton.
+	for id, pr := range fallback {
+		valid[id] = pr
+		pending = slices.DeleteFunc(pending, func(p string) bool { return p == id })
+	}
 	if len(valid) > 0 && ctx.Err() == nil {
 		err := s.Mutate(ctx, hub.MutateOpts{}, func(p *doc.Project) error {
 			for id, pr := range valid {
@@ -197,6 +235,7 @@ func (r *Runner) fillGroup(ctx context.Context, s *hub.Session, frameID string, 
 					return err
 				}
 			}
+			demotePrimaryButtons(p.Frames[frameID].Spec, g.block)
 			return nil
 		})
 		if err != nil {
@@ -208,4 +247,27 @@ func (r *Runner) fillGroup(ctx context.Context, s *hub.Session, frameID string, 
 		failures = append(failures, fmt.Sprintf("%s (%s) หลังลอง %d ครั้ง: %s", spec.Elements[id].Type, id, r.MaxRetries, truncate(lastErr[id], 160)))
 	}
 	return len(valid), failures
+}
+
+func joinFindings(fs []lint.Finding) string {
+	parts := make([]string, len(fs))
+	for i, f := range fs {
+		parts[i] = f.String()
+	}
+	return strings.Join(parts, "; ")
+}
+
+// demotePrimaryButtons keeps at most one solid Button per slot of the block.
+func demotePrimaryButtons(s *doc.Spec, block string) {
+	el := s.Elements[block]
+	if el == nil {
+		return
+	}
+	typeOf := func(id string) string { return s.Elements[id].Type }
+	variantOf := func(id string) string { v, _ := s.Elements[id].Props["variant"].(string); return v }
+	for _, ids := range el.Slots {
+		for _, id := range lint.PrimaryButtons(ids, typeOf, variantOf) {
+			s.Elements[id].Props["variant"] = "outline"
+		}
+	}
 }

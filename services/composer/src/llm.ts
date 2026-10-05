@@ -1,15 +1,22 @@
-import { componentDefs, placeholderProps, type ComponentName, type Spec } from "@ui-factory/catalog";
+import { componentDefs, placeholderProps, type ComponentDef, type ComponentName, type Spec } from "@ui-factory/catalog";
+import { pageGuidance } from "./jev";
 import { geminiJSON } from "./gemini";
 import { intents, routeInstructions, routeState, type Composer, type Intent, type RouteInput, type StructureEvent, type StructureInput } from "./types";
 
 const names = Object.keys(componentDefs) as ComponentName[];
 const blockNames = names.filter((n) => componentDefs[n].kind === "block");
 const primitiveNames = names.filter((n) => componentDefs[n].kind === "primitive");
+// Block choices are "Type" or "Type.variant", mirroring the Jev candidates.
+const blockChoices = blockNames.flatMap((n) => {
+  const v = (componentDefs[n] as ComponentDef).variants;
+  return v ? v.map((x) => `${n}.${x.value}`) : [n];
+});
 const catalogText = names
   .filter((n) => componentDefs[n].kind !== "layout")
   .map((n) => {
-    const d = componentDefs[n];
-    return `- ${n} [${d.kind}]${d.slots ? ` slots=${d.slots.join(",")}` : ""}: ${d.description}`;
+    const d = componentDefs[n] as ComponentDef;
+    const variants = d.variants ? `\n    layouts: ${d.variants.map((v) => `${n}.${v.value} = ${v.description}`).join("; ")}` : "";
+    return `- ${n} [${d.kind}]${d.slots ? ` slots=${d.slots.join(",")}` : ""}: ${d.description}${variants}`;
   })
   .join("\n");
 
@@ -27,7 +34,7 @@ const layoutSchema = {
       items: {
         type: "object",
         properties: {
-          type: { type: "string", enum: blockNames },
+          type: { type: "string", enum: blockChoices },
           slots: {
             type: "array",
             items: {
@@ -68,8 +75,7 @@ export class LLMComposer implements Composer {
     const layout = await geminiJSON<Layout>({
       system:
         "You plan page layouts for a UI builder. Choose blocks from the catalog in display order. " +
-        "Put Button primitives into `actions` slots and form primitives into a ContactForm `fields` slot. " +
-        "Only use slot names listed for that block.\n\nCatalog:\n" + catalogText,
+        pageGuidance + " Only use slot names listed for that block.\n\nCatalog:\n" + catalogText,
       prompt: input.prompt,
       schema: layoutSchema,
       signal: input.signal,
@@ -82,18 +88,20 @@ export class LLMComposer implements Composer {
       state: {},
     };
     let n = 1;
-    const add = (type: ComponentName) => {
+    const add = (type: ComponentName, variant?: string) => {
       const id = `node_${n++}`;
-      spec.elements[id] = { type, props: placeholderProps(type), children: [] };
+      spec.elements[id] = { type, props: { ...placeholderProps(type), ...(variant ? { variant } : {}) }, children: [] };
       return id;
     };
     let stopReason = "finish";
     for (const section of layout.sections) {
       if (n >= max) { stopReason = "limit"; break; }
-      if (!blockNames.includes(section.type as ComponentName)) continue;
-      const id = add(section.type as ComponentName);
+      const [typeName, variant] = section.type.split(".");
+      if (!blockNames.includes(typeName as ComponentName)) continue;
+      const type = typeName as ComponentName;
+      const id = add(type, variant);
       spec.elements.node_0.children!.push(id);
-      const allowed = componentDefs[section.type as ComponentName].slots ?? [];
+      const allowed = componentDefs[type].slots ?? [];
       for (const slot of section.slots ?? []) {
         if (!allowed.includes(slot.name)) continue;
         for (const item of slot.items) {

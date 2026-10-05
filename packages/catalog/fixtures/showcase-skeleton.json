@@ -55,11 +55,10 @@
   "hero": {
    "type": "Hero",
    "props": {
+    "variant": "centered",
     "eyebrow": "…",
     "title": "…",
     "subtitle": "…",
-    "align": "center",
-    "showImage": true,
     "skeleton": true
    },
    "children": [],
@@ -93,6 +92,7 @@
   "featuregrid": {
    "type": "FeatureGrid",
    "props": {
+    "variant": "cards",
     "title": "…",
     "subtitle": "…",
     "features": [
@@ -186,6 +186,7 @@
   "testimonials": {
    "type": "Testimonials",
    "props": {
+    "variant": "cards",
     "title": "…",
     "items": [
      {
@@ -233,6 +234,7 @@
   "cta": {
    "type": "CTA",
    "props": {
+    "variant": "band",
     "title": "…",
     "subtitle": "…",
     "skeleton": true

@@ -4,11 +4,14 @@ import { z } from "zod";
 import { componentDefs, type ComponentName } from "./components";
 import type { ComponentDef } from "./defs";
 import { ThemeSchema, themePresets } from "./theme";
+import { designSystems } from "./designSystems";
 
 export * from "./defs";
 export * from "./components";
 export * from "./theme";
 export * from "./normalize";
+export * from "./designSystems";
+export * from "./fonts";
 export type { Spec };
 
 const skeletonFlag = { skeleton: z.boolean().optional() };
@@ -42,13 +45,22 @@ export const catalog = defineCatalog(schema, {
 
 /** One skeleton candidate per component for the Jev composer. */
 export function compositionCandidates() {
-  return Object.entries(componentDefs).map(([name, d]) => ({
-    id: name,
-    description: `${name}: ${d.description}`,
-    element: { type: name, props: { ...(d.placeholder as object), skeleton: true } },
-    root: d.root ?? false,
-    ...(d.maxUses ? { maxUses: d.maxUses } : {}),
-  }));
+  return Object.entries(componentDefs as Record<string, ComponentDef>).flatMap(([name, d]) => {
+    const base = {
+      root: d.root ?? false,
+      ...(d.maxUses ? { maxUses: d.maxUses } : {}),
+    };
+    if (!d.variants) {
+      return [{ ...base, id: name, description: `${name}: ${d.description}`, element: { type: name, props: { ...(d.placeholder as object), skeleton: true } } }];
+    }
+    return d.variants.map((v) => ({
+      ...base,
+      id: `${name}-${v.value}`,
+      description: `${name} (${v.value} layout): ${d.description} Layout: ${v.description}.`,
+      element: { type: name, props: { ...(d.placeholder as object), variant: v.value, skeleton: true } },
+      resource: name,
+    }));
+  });
 }
 
 /** Skeleton props for a component, used by the llm composer and the Components panel. */
@@ -79,6 +91,7 @@ export function catalogJsonSchema() {
     ),
     theme: z.toJSONSchema(ThemeSchema, { target: "draft-2020-12" }),
     themePresets,
+    designSystems: designSystems.map(({ theme: _, ...d }) => d),
     actions: Object.fromEntries(
       Object.entries(actionDefs).map(([name, a]) => [
         name,

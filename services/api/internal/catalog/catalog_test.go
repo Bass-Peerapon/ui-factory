@@ -18,7 +18,7 @@ func TestValidateProps(t *testing.T) {
 	if err := c.ValidateProps("Nope", nil); err == nil {
 		t.Fatal("expected unknown type error")
 	}
-	if err := c.ValidateTheme(c.ThemePresets["coffee"]); err != nil {
+	if err := c.ValidateTheme(c.ThemePresets["editorial"]); err != nil {
 		t.Fatalf("preset should be valid: %v", err)
 	}
 	if s := c.ContentSchema("Pricing"); s["properties"].(map[string]any)["skeleton"] != nil {

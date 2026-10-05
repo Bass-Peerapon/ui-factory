@@ -29,10 +29,19 @@ type Component struct {
 	schema *jsonschema.Schema
 }
 
+type DesignSystem struct {
+	ID       string   `json:"id"`
+	Name     string   `json:"name"`
+	Category string   `json:"category"`
+	Summary  string   `json:"summary"`
+	Rules    []string `json:"rules"`
+}
+
 type Catalog struct {
-	Components   map[string]*Component     `json:"components"`
-	Theme        map[string]any            `json:"theme"`
-	ThemePresets map[string]map[string]any `json:"themePresets"`
+	Components    map[string]*Component     `json:"components"`
+	Theme         map[string]any            `json:"theme"`
+	ThemePresets  map[string]map[string]any `json:"themePresets"`
+	DesignSystems []DesignSystem            `json:"designSystems"`
 
 	themeSchema *jsonschema.Schema
 }
@@ -185,4 +194,14 @@ func (c *Catalog) Summary() string {
 		}
 	}
 	return b.String()
+}
+
+// DesignGuide returns the posture rules of a design system id, or "" when unknown.
+func (c *Catalog) DesignGuide(id string) string {
+	for _, d := range c.DesignSystems {
+		if d.ID == id {
+			return fmt.Sprintf("Design system %q (%s): %s\n- %s", d.Name, d.Category, d.Summary, strings.Join(d.Rules, "\n- "))
+		}
+	}
+	return ""
 }

@@ -13,7 +13,7 @@ const post = (m: FromFrame) => parent.postMessage({ [FRAME_MSG]: m }, "*");
 
 function App() {
   const [msg, setMsg] = useState<ToFrame>({
-    type: "render", spec: null, theme: themePresets.neutral, mode: "edit", selectedId: null,
+    type: "render", spec: null, theme: themePresets.neutral, mode: "edit", selectedId: null, locale: "th",
   });
 
   useEffect(() => {
@@ -26,7 +26,7 @@ function App() {
     return () => removeEventListener("message", onMsg);
   }, []);
 
-  useEffect(() => applyTheme(msg.theme as Theme), [msg.theme]);
+  useEffect(() => applyTheme(msg.theme as Theme, msg.locale ?? "th"), [msg.theme, msg.locale]);
   useEffect(() => {
     document.body.classList.toggle("mode-edit", msg.mode === "edit");
   }, [msg.mode]);

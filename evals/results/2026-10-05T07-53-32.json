@@ -1,0 +1,587 @@
+{
+  "structure": [
+    {
+      "mode": "jev",
+      "id": "coffee-landing",
+      "run": 1,
+      "ms": 830,
+      "stopReason": "finish",
+      "valid": true,
+      "repaired": true,
+      "issues": [],
+      "blocks": [
+        "Navbar",
+        "Hero",
+        "Pricing",
+        "Testimonials",
+        "CTA",
+        "Footer",
+        "ImageText"
+      ],
+      "elements": 11,
+      "coverage": 1
+    },
+    {
+      "mode": "jev",
+      "id": "dental-booking",
+      "run": 1,
+      "ms": 752,
+      "stopReason": "finish",
+      "valid": true,
+      "repaired": true,
+      "issues": [],
+      "blocks": [
+        "Navbar",
+        "ContactForm",
+        "Footer",
+        "ContactInfo"
+      ],
+      "elements": 9,
+      "coverage": 0.5
+    },
+    {
+      "mode": "jev",
+      "id": "saas-pricing",
+      "run": 1,
+      "ms": 1220,
+      "stopReason": "finish",
+      "valid": true,
+      "repaired": true,
+      "issues": [],
+      "blocks": [
+        "Navbar",
+        "ComparisonTable",
+        "Hero",
+        "Pricing",
+        "FAQ",
+        "Footer"
+      ],
+      "elements": 11,
+      "coverage": 1
+    },
+    {
+      "mode": "jev",
+      "id": "fitness-signup",
+      "run": 1,
+      "ms": 639,
+      "stopReason": "finish",
+      "valid": true,
+      "repaired": true,
+      "issues": [],
+      "blocks": [
+        "Navbar",
+        "ContactForm",
+        "AuthForm",
+        "Footer"
+      ],
+      "elements": 10,
+      "coverage": 1
+    },
+    {
+      "mode": "jev",
+      "id": "edtech-course",
+      "run": 1,
+      "ms": 624,
+      "stopReason": "finish",
+      "valid": true,
+      "repaired": true,
+      "issues": [],
+      "blocks": [
+        "Navbar",
+        "Hero",
+        "Stats",
+        "Testimonials",
+        "CTA",
+        "Footer",
+        "Quote"
+      ],
+      "elements": 11,
+      "coverage": 1
+    },
+    {
+      "mode": "jev",
+      "id": "bank-feature",
+      "run": 1,
+      "ms": 622,
+      "stopReason": "finish",
+      "valid": true,
+      "repaired": true,
+      "issues": [],
+      "blocks": [
+        "Navbar",
+        "Hero",
+        "FeatureGrid",
+        "CTA",
+        "Footer",
+        "ImageText",
+        "Steps"
+      ],
+      "elements": 11,
+      "coverage": 1
+    },
+    {
+      "mode": "jev",
+      "id": "event-registration",
+      "run": 1,
+      "ms": 922,
+      "stopReason": "finish",
+      "valid": true,
+      "repaired": true,
+      "issues": [],
+      "blocks": [
+        "Navbar",
+        "Hero",
+        "FAQ",
+        "ImageText",
+        "Timeline",
+        "ContactForm",
+        "Footer"
+      ],
+      "elements": 16,
+      "coverage": 1
+    },
+    {
+      "mode": "jev",
+      "id": "hotel-promo",
+      "run": 1,
+      "ms": 639,
+      "stopReason": "finish",
+      "valid": true,
+      "repaired": true,
+      "issues": [],
+      "blocks": [
+        "Navbar",
+        "Hero",
+        "FeatureGrid",
+        "Testimonials",
+        "CTA",
+        "Footer",
+        "ImageText",
+        "Gallery",
+        "Quote"
+      ],
+      "elements": 13,
+      "coverage": 1
+    },
+    {
+      "mode": "jev",
+      "id": "minimal-waitlist",
+      "run": 1,
+      "ms": 815,
+      "stopReason": "finish",
+      "valid": true,
+      "repaired": true,
+      "issues": [],
+      "blocks": [
+        "Navbar",
+        "Hero",
+        "CTA",
+        "ContactForm",
+        "Newsletter",
+        "Footer"
+      ],
+      "elements": 9,
+      "coverage": 1
+    },
+    {
+      "mode": "jev",
+      "id": "logistics-b2b",
+      "run": 1,
+      "ms": 777,
+      "stopReason": "finish",
+      "valid": true,
+      "repaired": true,
+      "issues": [],
+      "blocks": [
+        "Navbar",
+        "Hero",
+        "FeatureGrid",
+        "Stats",
+        "CTA",
+        "ContactForm",
+        "Footer",
+        "LogoCloud"
+      ],
+      "elements": 18,
+      "coverage": 1
+    },
+    {
+      "mode": "llm",
+      "id": "coffee-landing",
+      "run": 1,
+      "ms": 1640,
+      "stopReason": "finish",
+      "valid": true,
+      "repaired": true,
+      "issues": [],
+      "blocks": [
+        "Navbar",
+        "Hero",
+        "LogoCloud",
+        "FeatureGrid",
+        "Steps",
+        "Pricing",
+        "Testimonials",
+        "Footer"
+      ],
+      "elements": 9,
+      "coverage": 1
+    },
+    {
+      "mode": "llm",
+      "id": "dental-booking",
+      "run": 1,
+      "ms": 2016,
+      "stopReason": "finish",
+      "valid": true,
+      "repaired": true,
+      "issues": [],
+      "blocks": [
+        "Navbar",
+        "Hero",
+        "FeatureGrid",
+        "Steps",
+        "Testimonials",
+        "ContactForm",
+        "Footer"
+      ],
+      "elements": 12,
+      "coverage": 1
+    },
+    {
+      "mode": "llm",
+      "id": "saas-pricing",
+      "run": 1,
+      "ms": 1944,
+      "stopReason": "finish",
+      "valid": true,
+      "repaired": true,
+      "issues": [],
+      "blocks": [
+        "Navbar",
+        "Hero",
+        "LogoCloud",
+        "Pricing",
+        "ComparisonTable",
+        "Testimonials",
+        "FAQ",
+        "CTA",
+        "Footer"
+      ],
+      "elements": 12,
+      "coverage": 1
+    },
+    {
+      "mode": "llm",
+      "id": "fitness-signup",
+      "run": 1,
+      "ms": 1671,
+      "stopReason": "finish",
+      "valid": true,
+      "repaired": true,
+      "issues": [],
+      "blocks": [
+        "Navbar",
+        "Hero",
+        "AuthForm",
+        "Footer"
+      ],
+      "elements": 10,
+      "coverage": 0
+    },
+    {
+      "mode": "llm",
+      "id": "edtech-course",
+      "run": 1,
+      "ms": 1864,
+      "stopReason": "finish",
+      "valid": true,
+      "repaired": true,
+      "issues": [],
+      "blocks": [
+        "Navbar",
+        "Hero",
+        "LogoCloud",
+        "Stats",
+        "FeatureGrid",
+        "Steps",
+        "Testimonials",
+        "Pricing",
+        "FAQ",
+        "CTA",
+        "Footer"
+      ],
+      "elements": 14,
+      "coverage": 1
+    },
+    {
+      "mode": "llm",
+      "id": "bank-feature",
+      "run": 1,
+      "ms": 1666,
+      "stopReason": "finish",
+      "valid": true,
+      "repaired": true,
+      "issues": [],
+      "blocks": [
+        "Navbar",
+        "Hero",
+        "LogoCloud",
+        "FeatureGrid",
+        "Stats",
+        "Steps",
+        "Quote",
+        "CTA",
+        "Footer"
+      ],
+      "elements": 12,
+      "coverage": 1
+    },
+    {
+      "mode": "llm",
+      "id": "event-registration",
+      "run": 1,
+      "ms": 2198,
+      "stopReason": "finish",
+      "valid": true,
+      "repaired": true,
+      "issues": [],
+      "blocks": [
+        "Navbar",
+        "Hero",
+        "Stats",
+        "Steps",
+        "FAQ",
+        "ContactForm",
+        "Footer"
+      ],
+      "elements": 13,
+      "coverage": 1
+    },
+    {
+      "mode": "llm",
+      "id": "hotel-promo",
+      "run": 1,
+      "ms": 1987,
+      "stopReason": "finish",
+      "valid": true,
+      "repaired": true,
+      "issues": [],
+      "blocks": [
+        "Navbar",
+        "Hero",
+        "LogoCloud",
+        "FeatureGrid",
+        "Gallery",
+        "Quote",
+        "Testimonials",
+        "CTA",
+        "Footer"
+      ],
+      "elements": 11,
+      "coverage": 1
+    },
+    {
+      "mode": "llm",
+      "id": "minimal-waitlist",
+      "run": 1,
+      "ms": 1422,
+      "stopReason": "finish",
+      "valid": true,
+      "repaired": true,
+      "issues": [],
+      "blocks": [
+        "Navbar",
+        "Hero",
+        "Newsletter",
+        "Footer"
+      ],
+      "elements": 8,
+      "coverage": 0.5
+    },
+    {
+      "mode": "llm",
+      "id": "logistics-b2b",
+      "run": 1,
+      "ms": 1748,
+      "stopReason": "finish",
+      "valid": true,
+      "repaired": true,
+      "issues": [],
+      "blocks": [
+        "Navbar",
+        "Hero",
+        "Stats",
+        "LogoCloud",
+        "FeatureGrid",
+        "Steps",
+        "ContactForm",
+        "Footer"
+      ],
+      "elements": 13,
+      "coverage": 1
+    }
+  ],
+  "route": [
+    {
+      "mode": "jev",
+      "prompt": "หน้า landing page แอปออกกำลังกาย มีฟีเจอร์ ราคา และ FAQ",
+      "expect": "new_page",
+      "got": "new_page",
+      "ms": 346,
+      "confidence": 0.93
+    },
+    {
+      "mode": "jev",
+      "prompt": "ทำหน้า pricing สำหรับแอปนี้",
+      "expect": "new_page",
+      "got": "new_page",
+      "ms": 295,
+      "confidence": 0.99
+    },
+    {
+      "mode": "jev",
+      "prompt": "เพิ่มส่วนราคาให้หน่อย",
+      "expect": "edit_selection",
+      "got": "edit_selection",
+      "ms": 319,
+      "confidence": 1
+    },
+    {
+      "mode": "jev",
+      "prompt": "ทำหัวข้อให้สั้นลง",
+      "expect": "edit_selection",
+      "got": "edit_selection",
+      "ms": 287,
+      "confidence": 1
+    },
+    {
+      "mode": "jev",
+      "prompt": "เปลี่ยนเป็นโทนเขียว",
+      "expect": "set_theme",
+      "got": "set_theme",
+      "ms": 273,
+      "confidence": 0.96
+    },
+    {
+      "mode": "jev",
+      "prompt": "สร้างหน้าสมัครสมาชิก",
+      "expect": "new_page",
+      "got": "new_page",
+      "ms": 281,
+      "confidence": 1
+    },
+    {
+      "mode": "jev",
+      "prompt": "ลบ FAQ ออก",
+      "expect": "edit_selection",
+      "got": "edit_selection",
+      "ms": 278,
+      "confidence": 1
+    },
+    {
+      "mode": "jev",
+      "prompt": "เปลี่ยนข้อความทั้งหน้าเป็นร้านชานม",
+      "expect": "edit_selection",
+      "got": "edit_selection",
+      "ms": 263,
+      "confidence": 0.93
+    },
+    {
+      "mode": "jev",
+      "prompt": "ทำหน้า checkout ของร้าน",
+      "expect": "new_page",
+      "got": "new_page",
+      "ms": 298,
+      "confidence": 1
+    },
+    {
+      "mode": "jev",
+      "prompt": "dark mode please",
+      "expect": "set_theme",
+      "got": "set_theme",
+      "ms": 277,
+      "confidence": 1
+    },
+    {
+      "mode": "llm",
+      "prompt": "หน้า landing page แอปออกกำลังกาย มีฟีเจอร์ ราคา และ FAQ",
+      "expect": "new_page",
+      "got": "new_page",
+      "ms": 1310,
+      "confidence": null
+    },
+    {
+      "mode": "llm",
+      "prompt": "ทำหน้า pricing สำหรับแอปนี้",
+      "expect": "new_page",
+      "got": "new_page",
+      "ms": 964,
+      "confidence": null
+    },
+    {
+      "mode": "llm",
+      "prompt": "เพิ่มส่วนราคาให้หน่อย",
+      "expect": "edit_selection",
+      "got": "edit_selection",
+      "ms": 1020,
+      "confidence": null
+    },
+    {
+      "mode": "llm",
+      "prompt": "ทำหัวข้อให้สั้นลง",
+      "expect": "edit_selection",
+      "got": "edit_selection",
+      "ms": 1279,
+      "confidence": null
+    },
+    {
+      "mode": "llm",
+      "prompt": "เปลี่ยนเป็นโทนเขียว",
+      "expect": "set_theme",
+      "got": "set_theme",
+      "ms": 1010,
+      "confidence": null
+    },
+    {
+      "mode": "llm",
+      "prompt": "สร้างหน้าสมัครสมาชิก",
+      "expect": "new_page",
+      "got": "new_page",
+      "ms": 1063,
+      "confidence": null
+    },
+    {
+      "mode": "llm",
+      "prompt": "ลบ FAQ ออก",
+      "expect": "edit_selection",
+      "got": "edit_selection",
+      "ms": 934,
+      "confidence": null
+    },
+    {
+      "mode": "llm",
+      "prompt": "เปลี่ยนข้อความทั้งหน้าเป็นร้านชานม",
+      "expect": "edit_selection",
+      "got": "edit_selection",
+      "ms": 1373,
+      "confidence": null
+    },
+    {
+      "mode": "llm",
+      "prompt": "ทำหน้า checkout ของร้าน",
+      "expect": "new_page",
+      "got": "new_page",
+      "ms": 1285,
+      "confidence": null
+    },
+    {
+      "mode": "llm",
+      "prompt": "dark mode please",
+      "expect": "set_theme",
+      "got": "set_theme",
+      "ms": 1442,
+      "confidence": null
+    }
+  ]
+}

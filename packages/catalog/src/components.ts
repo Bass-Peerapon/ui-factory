@@ -37,19 +37,25 @@ export const blocks = {
     kind: "block",
     description: "Hero section: eyebrow, large headline, supporting subtitle and a slot for action buttons.",
     props: z.object({
+      variant: z.enum(["centered", "split", "editorial", "immersive"]),
       eyebrow: str(),
       title: str(),
       subtitle: str(),
-      align: z.enum(["left", "center"]),
-      showImage: z.boolean(),
     }),
     slots: ["actions"],
-    placeholder: { eyebrow: P, title: P, subtitle: P, align: "center", showImage: true },
+    placeholder: { variant: "centered", eyebrow: P, title: P, subtitle: P },
+    variants: [
+      { value: "centered", description: "centered headline with a wide product image below; general landing pages" },
+      { value: "split", description: "headline and actions on the left, product image on the right; apps, SaaS and products" },
+      { value: "editorial", description: "very large left-aligned type, no image; brands, agencies, editorial and minimal pages" },
+      { value: "immersive", description: "full-bleed photo background with overlaid headline; travel, hospitality, food and events" },
+    ],
   }),
   FeatureGrid: def({
     kind: "block",
     description: "Grid of product features or benefits, each with an icon, title and short description.",
     props: z.object({
+      variant: z.enum(["cards", "list", "bento"]),
       title: str(),
       subtitle: str(),
       features: z
@@ -57,7 +63,13 @@ export const blocks = {
         .min(2)
         .max(6),
     }),
+    variants: [
+      { value: "cards", description: "three-column cards; the default feature overview" },
+      { value: "list", description: "two-column list with the heading on the left; calm, text-led sites" },
+      { value: "bento", description: "asymmetric bento grid with one large tile; product capability showcases" },
+    ],
     placeholder: {
+      variant: "cards",
       title: P,
       subtitle: P,
       features: [
@@ -108,10 +120,16 @@ export const blocks = {
     kind: "block",
     description: "Customer testimonials: quotes with the customer's name and role.",
     props: z.object({
+      variant: z.enum(["cards", "spotlight"]),
       title: str(),
       items: z.array(z.object({ quote: str(), name: str(), role: str() })).min(1).max(6),
     }),
+    variants: [
+      { value: "cards", description: "grid of three quote cards" },
+      { value: "spotlight", description: "one large featured quote with smaller supporting quotes" },
+    ],
     placeholder: {
+      variant: "cards",
       title: P,
       items: [
         { quote: P, name: P, role: P },
@@ -139,9 +157,14 @@ export const blocks = {
   CTA: def({
     kind: "block",
     description: "Call-to-action banner with a headline, subtitle and a slot for action buttons.",
-    props: z.object({ title: str(), subtitle: str() }),
+    props: z.object({ variant: z.enum(["band", "split", "quiet"]), title: str(), subtitle: str() }),
     slots: ["actions"],
-    placeholder: { title: P, subtitle: P },
+    placeholder: { variant: "band", title: P, subtitle: P },
+    variants: [
+      { value: "band", description: "solid primary-colored band; strong closing call to action" },
+      { value: "split", description: "headline left, actions right on a subtle surface; B2B and product pages" },
+      { value: "quiet", description: "plain centered text and one button with a top divider; minimal and editorial pages" },
+    ],
   }),
   ContactForm: def({
     kind: "block",

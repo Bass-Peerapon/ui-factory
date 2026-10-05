@@ -1,4 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Noto+Serif+Thai:wght@400;600;700&family=Mitr:wght@400;500;600&family=IBM+Plex+Mono&display=swap");
 @import "tailwindcss";
 
 /* shadcn/ui variables; values are injected per project theme by applyTheme() */
@@ -18,6 +17,10 @@
   --ring: #a1a1aa;
   --radius: 0.5rem;
   --font: "IBM Plex Sans Thai", system-ui, sans-serif;
+  --font-display: var(--font);
+  --section-y: 5.5rem;
+  --section-y-sm: 3.5rem;
+  --gap: 1.5rem;
 }
 
 @theme inline {
@@ -42,6 +45,27 @@
 }
 
 * { border-color: var(--border); }
+
+/* Typography craft (after open-design craft/typography.md): three weights, display face on headings,
+   tight Latin display tracking, and Thai treated like CJK: looser leading, no negative tracking. */
+h1, h2, h3, .font-display { font-family: var(--font-display); font-weight: 600; text-wrap: balance; }
+h1 { line-height: 1.08; letter-spacing: -0.025em; }
+h2 { line-height: 1.15; letter-spacing: -0.02em; }
+h3 { line-height: 1.3; letter-spacing: -0.01em; }
+p { text-wrap: pretty; }
+body { line-height: 1.55; }
+:root[lang="th"] body { line-height: 1.7; }
+:root[lang="th"] h1 { line-height: 1.35; letter-spacing: 0; }
+:root[lang="th"] h2 { line-height: 1.4; letter-spacing: 0; }
+:root[lang="th"] h3 { line-height: 1.45; letter-spacing: 0; }
+.eyebrow { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; }
+.measure { max-width: 65ch; }
+.section-y { padding-top: var(--section-y-sm); padding-bottom: var(--section-y-sm); }
+@media (min-width: 768px) { .section-y { padding-top: var(--section-y); padding-bottom: var(--section-y); } }
+.tabular { font-variant-numeric: tabular-nums; }
+/* Hover moves the surface, never greys out the text. */
+button:hover { filter: brightness(0.96); }
+:root[data-ds="neobrutalism"] .rounded-lg, :root[data-ds="neobrutalism"] .rounded-xl { border-width: 2px; border-color: var(--foreground); box-shadow: 4px 4px 0 var(--foreground); }
 html, body { margin: 0; background: var(--background); color: var(--foreground); font-family: var(--font); }
 body { overflow-x: hidden; }
 

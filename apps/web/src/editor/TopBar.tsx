@@ -1,7 +1,8 @@
-import { DEVICES, themePresets, type Device } from "@ui-factory/catalog";
+import { DEVICES, type Device } from "@ui-factory/catalog";
 import { Download, Monitor, Play, Plus, Smartphone, Tablet, Undo2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { api, openProject, runOp, type ProjectSummary } from "./api";
+import { DesignSystemPicker } from "./DesignSystemPicker";
 import { getState, setState, useEditor } from "./store";
 
 const deviceIcon = { desktop: Monitor, tablet: Tablet, mobile: Smartphone };
@@ -57,23 +58,7 @@ export function TopBar() {
       })}
 
       <div className="mx-2 h-5 w-px bg-[var(--ed-border)]" />
-      <span className="label">Theme</span>
-      <select
-        className="field !w-28"
-        value=""
-        onChange={(e) => e.target.value && void runOp("set_theme", { preset: e.target.value })}
-        disabled={!doc || busy}
-      >
-        <option value="">เลือก preset</option>
-        {Object.keys(themePresets).map((k) => <option key={k} value={k}>{k}</option>)}
-      </select>
-      {doc && (
-        <div className="flex gap-0.5" title="theme ปัจจุบัน">
-          {[doc.theme.primary, doc.theme.accent, doc.theme.background, doc.theme.foreground].map((c, i) => (
-            <span key={i} className="size-4 rounded-sm border border-[var(--ed-border)]" style={{ background: c }} />
-          ))}
-        </div>
-      )}
+      <DesignSystemPicker disabled={!doc || busy} />
       <span className="label ml-2">ภาษา</span>
       <select
         className="field !w-20"

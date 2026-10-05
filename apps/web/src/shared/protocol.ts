@@ -7,6 +7,7 @@ export type ToFrame = {
   theme: Theme;
   mode: "edit" | "prototype";
   selectedId: string | null;
+  locale: "th" | "en";
 };
 
 /** Messages from a frame iframe to the editor. */

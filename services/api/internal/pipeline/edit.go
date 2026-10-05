@@ -225,11 +225,16 @@ Rules:
 - Write copy in %s. Keep the brand and tone of the existing page.
 - For theme requests call set_theme once with a preset or tokens (colors as #rrggbb).
 - If a tool returns give_up, stop retrying that change.
+- Copy rules: specific and believable, no hype metrics, no filler, no emoji, short headlines, one solid Button per block.
+- Layout variants (the "variant" prop) are allowed values in the schema; change them when the user asks for a different layout.
+- For theme requests prefer a design system preset; override individual tokens only when the user asks for specific colors.
 - When done, reply with one or two short sentences in Thai describing what changed. No markdown.
+
+%s
 
 Catalog:
 %s
-Theme presets: %s`
+Theme presets (design systems): %s`
 
 func (r *Runner) edit(ctx context.Context, s *hub.Session, t *hub.Turn, req ChatRequest, intent string) (string, error) {
 	phase := "edit"
@@ -253,7 +258,7 @@ func (r *Runner) edit(ctx context.Context, s *hub.Session, t *hub.Turn, req Chat
 		Name:        "ui_editor",
 		Description: "Edits UI frames with catalog-validated tool calls.",
 		Model:       r.Model.Agent(),
-		Instruction: fmt.Sprintf(editInstruction, localeName[p.Locale], r.Cat.Summary(),
+		Instruction: fmt.Sprintf(editInstruction, localeName[p.Locale], r.Cat.DesignGuide(fmt.Sprint(p.Theme["designSystem"])), r.Cat.Summary(),
 			strings.Join(slices.Sorted(maps.Keys(r.Cat.ThemePresets)), ", ")),
 		Tools: tools,
 		GenerateContentConfig: &genai.GenerateContentConfig{
