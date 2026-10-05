@@ -1,6 +1,7 @@
 import { useSyncExternalStore } from "react";
 import { applyPatch, type Operation } from "fast-json-patch";
-import type { ChatMessage, ProjectDoc, TurnState } from "../shared/doc";
+import type { ChatMessage, PendingComment, ProjectDoc, TurnState } from "../shared/doc";
+import type { Rect } from "../shared/protocol";
 
 export interface Selection {
   frameId: string | null;
@@ -22,6 +23,14 @@ export interface EditorState {
   /** Frame the canvas should pan to once. */
   focusFrame: string | null;
   error: string | null;
+  /** Canvas pointer mode: select elements, or pin comments on them. */
+  canvasMode: "select" | "comment";
+  comments: PendingComment[];
+  /** Element waiting for comment text (popover open). */
+  commentDraft: { frameId: string; elementId: string; elementType: string; rect: Rect } | null;
+  draft: string;
+  leftTab: "chat" | "layers" | "components" | "patterns";
+  versionsOpen: boolean;
 }
 
 let state: EditorState = {
@@ -38,6 +47,12 @@ let state: EditorState = {
   prototypeFrame: null,
   focusFrame: null,
   error: null,
+  canvasMode: "select",
+  comments: [],
+  commentDraft: null,
+  draft: "",
+  leftTab: "chat",
+  versionsOpen: false,
 };
 const listeners = new Set<() => void>();
 

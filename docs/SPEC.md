@@ -102,3 +102,7 @@ docs/                spec และ decision notes
 
 - Gemini free tier (5 RPM สำหรับ `gemini-3.8-flash` และมี 503 เป็นระยะ) แก้ชั่วคราวด้วย rate limiter และ fallback ไป fast model การเปิด billing ยังเป็นการตัดสินใจของเจ้าของโปรเจกต์
 - Jev วาง block ลงใน slot ได้ (2/20 ใน eval) กันด้วย `normalizeSpec` และ `ValidateSpec`
+
+## ต่อยอดหลัง MVP (2026-10-05)
+
+- ยกระดับตามแนวทาง open-design โดยยังใช้ catalog + Jev: design system 12 ชุด, กฎ craft, layout variants, linter, form ถามก่อนสร้าง, คอมเมนต์ปักหมุด, version history, next steps และ flow pattern หลายหน้า ดู [decision 003](decisions/003-open-design-uplift.md)

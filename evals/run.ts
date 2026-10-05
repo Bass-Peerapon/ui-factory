@@ -86,6 +86,7 @@ const pct = (x: number) => `${Math.round(x * 100)}%`;
 
 const structureRows: StructureRow[] = [];
 const routeRows: { mode: string; prompt: string; expect: Intent; got: string; ms: number; confidence: number | null }[] = [];
+const planRows: { mode: string; prompt: string; expect: string; got: string; device: string; deviceOk: boolean; pages: number; ms: number }[] = [];
 
 for (const mode of modes) {
   const c = createComposer(mode);
@@ -106,6 +107,15 @@ for (const mode of modes) {
     }
     if (mode === "llm") await sleep(llmPaceMs);
   }
+  for (const pc of prompts.plan) {
+    try {
+      const r = await c.plan(pc.prompt);
+      planRows.push({ mode, prompt: pc.prompt, expect: pc.expect, got: r.pattern, device: r.device, deviceOk: r.device === pc.device, pages: r.pages.length, ms: r.ms });
+    } catch (e) {
+      planRows.push({ mode, prompt: pc.prompt, expect: pc.expect, got: "error: " + (e as Error).message, device: "", deviceOk: false, pages: 0, ms: 0 });
+    }
+    if (mode === "llm") await sleep(llmPaceMs);
+  }
 }
 
 // --- report -----------------------------------------------------------------
@@ -113,11 +123,11 @@ const stamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
 const lines: string[] = [];
 lines.push(`# Composer eval ${stamp}`, "");
 lines.push(`Runs per prompt: ${runs}. Pass = catalog schema valid and tree rules hold (blocks under the root, primitives in declared slots). "After normalize" is what reaches the canvas. Coverage = expected blocks present.`, "");
-lines.push("## Summary", "", "| composer | structure pass (raw) | pass after normalize | median latency | p90 latency | expected-block coverage | route accuracy | route median |", "|---|---|---|---|---|---|---|---|");
+lines.push("## Summary", "", "| composer | structure pass (raw) | pass after normalize | median latency | p90 latency | expected-block coverage | route accuracy | route median | flow pattern | flow device |", "|---|---|---|---|---|---|---|---|---|---|");
 for (const mode of modes) {
   const s = structureRows.filter((r) => r.mode === mode);
   const rt = routeRows.filter((r) => r.mode === mode);
-  lines.push(`| ${mode} | ${s.filter((r) => r.valid).length}/${s.length} (${pct(s.filter((r) => r.valid).length / s.length)}) | ${s.filter((r) => r.repaired).length}/${s.length} | ${median(s.map((r) => r.ms))} ms | ${p90(s.map((r) => r.ms))} ms | ${pct(s.reduce((a, r) => a + r.coverage, 0) / s.length)} | ${rt.filter((r) => r.got === r.expect).length}/${rt.length} | ${median(rt.map((r) => r.ms))} ms |`);
+  lines.push(`| ${mode} | ${s.filter((r) => r.valid).length}/${s.length} (${pct(s.filter((r) => r.valid).length / s.length)}) | ${s.filter((r) => r.repaired).length}/${s.length} | ${median(s.map((r) => r.ms))} ms | ${p90(s.map((r) => r.ms))} ms | ${pct(s.reduce((a, r) => a + r.coverage, 0) / s.length)} | ${rt.filter((r) => r.got === r.expect).length}/${rt.length} | ${median(rt.map((r) => r.ms))} ms | ${planRows.filter((r) => r.mode === mode && r.got === r.expect).length}/${planRows.filter((r) => r.mode === mode).length} | ${planRows.filter((r) => r.mode === mode && r.deviceOk).length}/${planRows.filter((r) => r.mode === mode).length} |`);
 }
 lines.push("", "## Structure (คะแนนที่ให้เอง: กรอก 1 ถึง 5 ในคอลัมน์ score หลังเปิดดูผลในแอป)", "", "| prompt | composer | run | pass | ms | stop | blocks | elements | coverage | score | notes |", "|---|---|---|---|---|---|---|---|---|---|---|");
 for (const r of structureRows) {
@@ -127,10 +137,14 @@ lines.push("", "## Routing", "", "| prompt | expect | composer | got | confidenc
 for (const r of routeRows) {
   lines.push(`| ${r.prompt} | ${r.expect} | ${r.mode} | ${r.got === r.expect ? r.got : `**${r.got}**`} | ${r.confidence ?? "n/a"} | ${r.ms} |`);
 }
+lines.push("", "## Flow planning", "", "| prompt | expect | composer | got | device | pages | ms |", "|---|---|---|---|---|---|---|");
+for (const r of planRows) {
+  lines.push(`| ${r.prompt} | ${r.expect} | ${r.mode} | ${r.got === r.expect ? r.got : `**${r.got}**`} | ${r.deviceOk ? r.device : `**${r.device}**`} | ${r.pages} | ${r.ms} |`);
+}
 const md = lines.join("\n") + "\n";
 mkdirSync(resolve(here, "results"), { recursive: true });
 writeFileSync(resolve(here, `results/${stamp}.md`), md);
-writeFileSync(resolve(here, `results/${stamp}.json`), JSON.stringify({ structure: structureRows, route: routeRows }, null, 2));
+writeFileSync(resolve(here, `results/${stamp}.json`), JSON.stringify({ structure: structureRows, route: routeRows, plan: planRows }, null, 2));
 writeFileSync(resolve(here, "results/latest.md"), md);
 console.log("\n" + lines.slice(0, 8).join("\n"));
 console.log(`\nwrote evals/results/${stamp}.md`);

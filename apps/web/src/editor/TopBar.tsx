@@ -1,11 +1,8 @@
-import { DEVICES, type Device } from "@ui-factory/catalog";
-import { Download, Monitor, Play, Plus, Smartphone, Tablet, Undo2 } from "lucide-react";
+import { Download, Play, Plus, Undo2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { api, openProject, runOp, type ProjectSummary } from "./api";
 import { DesignSystemPicker } from "./DesignSystemPicker";
 import { getState, setState, useEditor } from "./store";
-
-const deviceIcon = { desktop: Monitor, tablet: Tablet, mobile: Smartphone };
 
 export function TopBar() {
   const doc = useEditor((s) => s.doc);
@@ -26,15 +23,11 @@ export function TopBar() {
     await openProject(doc.id);
   };
 
-  const addFrame = (device: Device) => {
-    const n = (doc?.frameOrder.length ?? 0) + 1;
-    void runOp("create_frame", { name: `Frame ${n}`, device });
-  };
 
   const busy = !!turn;
   return (
     <header className="panel flex h-12 shrink-0 items-center gap-2 border-b px-3">
-      <strong className="mr-2 text-[14px]">UI Factory</strong>
+      <strong className="mr-2 flex items-center gap-1.5 text-[14px] text-[var(--ed-strong)]"><span className="size-2.5 rounded-full bg-[var(--ed-brand)]" />UI Factory</strong>
       <select
         className="field !w-48"
         value={projectId ?? ""}
@@ -45,17 +38,6 @@ export function TopBar() {
         ))}
       </select>
       <button className="icon-btn" title="โปรเจกต์ใหม่" onClick={newProject}><Plus size={16} /></button>
-
-      <div className="mx-2 h-5 w-px bg-[var(--ed-border)]" />
-      <span className="label">เพิ่มเฟรม</span>
-      {(Object.keys(DEVICES) as Device[]).map((d) => {
-        const Icon = deviceIcon[d];
-        return (
-          <button key={d} className="icon-btn" title={DEVICES[d].label} onClick={() => addFrame(d)} disabled={!doc}>
-            <Icon size={16} />
-          </button>
-        );
-      })}
 
       <div className="mx-2 h-5 w-px bg-[var(--ed-border)]" />
       <DesignSystemPicker disabled={!doc || busy} />

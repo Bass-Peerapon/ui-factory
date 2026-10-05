@@ -23,9 +23,9 @@ export const flowPatterns: FlowPattern[] = [
     name: "Sign-in / Sign-up",
     description: "Account access flow: sign in, create an account, then a welcome screen.",
     pages: [
-      { key: "signin", name: "เข้าสู่ระบบ", brief: "Sign-in screen: AuthForm in login mode with email and password Inputs, a remember-me Checkbox and a sign-in Button. No marketing sections." },
-      { key: "signup", name: "สมัครสมาชิก", brief: "Sign-up screen: AuthForm in signup mode with name, email and password Inputs, accept-terms Checkbox and a create-account Button." },
-      { key: "welcome", name: "ยินดีต้อนรับ", brief: "Welcome screen after sign-up: EmptyState with a start Button, then Steps for getting started." },
+      { key: "signin", name: "เข้าสู่ระบบ", brief: "Sign-in screen: AuthForm in login mode with email and password Inputs, a remember-me Checkbox and a sign-in Button. No Navbar, no Footer, no marketing sections." },
+      { key: "signup", name: "สมัครสมาชิก", brief: "Sign-up screen: AuthForm in signup mode with name, email and password Inputs, accept-terms Checkbox and a create-account Button. No Navbar, no Footer." },
+      { key: "welcome", name: "ยินดีต้อนรับ", brief: "Welcome screen after sign-up: EmptyState with a start Button, then Steps for getting started. No Navbar, no Footer." },
     ],
     links: [["signin", "welcome"], ["signup", "welcome"]],
   },
@@ -36,8 +36,8 @@ export const flowPatterns: FlowPattern[] = [
     pages: [
       { key: "landing", name: "หน้าแรก", brief: "Landing page with Navbar, a Hero with a primary Button, proof and benefits sections, and a Footer." },
       { key: "pricing", name: "ราคา", brief: "Pricing page: Navbar, Pricing, ComparisonTable, FAQ, Footer." },
-      { key: "signup", name: "สมัคร", brief: "Sign-up screen: AuthForm in signup mode with Inputs and a create-account Button." },
-      { key: "thanks", name: "ขอบคุณ", brief: "Thank-you screen: EmptyState confirming the sign-up with one Button back to the product." },
+      { key: "signup", name: "สมัคร", brief: "Sign-up screen: AuthForm in signup mode with Inputs and a create-account Button. No Navbar, no Footer." },
+      { key: "thanks", name: "ขอบคุณ", brief: "Thank-you screen: EmptyState confirming the sign-up with one Button back to the product. No Footer." },
     ],
     links: [["landing", "pricing"], ["pricing", "signup"], ["signup", "thanks"]],
   },
@@ -58,7 +58,7 @@ export const flowPatterns: FlowPattern[] = [
     name: "SaaS onboarding",
     description: "Create an account, set up a workspace, land on the dashboard.",
     pages: [
-      { key: "signup", name: "สร้างบัญชี", brief: "Sign-up screen: AuthForm in signup mode with Inputs and a continue Button." },
+      { key: "signup", name: "สร้างบัญชี", brief: "Sign-up screen: AuthForm in signup mode with Inputs and a continue Button. No Navbar, no Footer." },
       { key: "setup", name: "ตั้งค่าพื้นที่ทำงาน", brief: "Workspace setup: Steps showing progress, then ContactForm with workspace name and team-size Inputs and a continue Button." },
       { key: "dashboard", name: "Dashboard", brief: "App dashboard: Navbar, KPIGrid, DataTable. No marketing sections and no Footer." },
     ],

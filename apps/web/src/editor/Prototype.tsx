@@ -21,7 +21,7 @@ export function Prototype() {
   useEffect(() => {
     const send = () => {
       if (!frame || !theme) return;
-      const msg: ToFrame = { type: "render", spec: frame.spec, theme, locale, mode: "prototype", selectedId: null };
+      const msg: ToFrame = { type: "render", spec: frame.spec, theme, locale, mode: "prototype", selectedId: null, pins: [] };
       ref.current?.contentWindow?.postMessage({ [FRAME_MSG]: msg }, "*");
     };
     send();

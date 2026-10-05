@@ -1,26 +1,12 @@
 import { componentDefs, type ComponentName, type Kind, type Spec } from "@ui-factory/catalog";
 import { ArrowDown, ArrowUp, Trash2 } from "lucide-react";
-import { useState } from "react";
 import { runOp } from "./api";
 import { findParent, siblings } from "./specTree";
 import { setState, useEditor } from "./store";
 
-export function LeftPanel() {
-  const [tab, setTab] = useState<"components" | "layers">("layers");
-  return (
-    <aside className="panel flex w-64 shrink-0 flex-col border-r">
-      <div className="flex border-b border-[var(--ed-border)]">
-        <button className={`tab ${tab === "components" ? "is-active" : ""}`} onClick={() => setTab("components")}>Components</button>
-        <button className={`tab ${tab === "layers" ? "is-active" : ""}`} onClick={() => setTab("layers")}>Layers</button>
-      </div>
-      <div className="min-h-0 flex-1 overflow-auto p-2">{tab === "components" ? <Components /> : <Layers />}</div>
-    </aside>
-  );
-}
-
 const kindLabel: Record<Kind, string> = { layout: "Layout", block: "Blocks", primitive: "Primitives (shadcn/ui)" };
 
-function Components() {
+export function Components() {
   const doc = useEditor((s) => s.doc);
   const selection = useEditor((s) => s.selection);
   const turn = useEditor((s) => s.turn);
@@ -61,7 +47,7 @@ function Components() {
   );
 }
 
-function Layers() {
+export function Layers() {
   const doc = useEditor((s) => s.doc);
   const selection = useEditor((s) => s.selection);
   const frame = selection.frameId ? doc?.frames[selection.frameId] : undefined;

@@ -1,0 +1,750 @@
+{
+  "structure": [
+    {
+      "mode": "jev",
+      "id": "coffee-landing",
+      "run": 1,
+      "ms": 763,
+      "stopReason": "finish",
+      "valid": false,
+      "repaired": true,
+      "issues": [
+        "Footer is not the last section"
+      ],
+      "blocks": [
+        "Navbar",
+        "Hero",
+        "Pricing",
+        "Testimonials",
+        "CTA",
+        "Footer",
+        "ImageText"
+      ],
+      "elements": 11,
+      "coverage": 1
+    },
+    {
+      "mode": "jev",
+      "id": "dental-booking",
+      "run": 1,
+      "ms": 657,
+      "stopReason": "finish",
+      "valid": true,
+      "repaired": true,
+      "issues": [],
+      "blocks": [
+        "ContactForm"
+      ],
+      "elements": 6,
+      "coverage": 0.5
+    },
+    {
+      "mode": "jev",
+      "id": "saas-pricing",
+      "run": 1,
+      "ms": 668,
+      "stopReason": "finish",
+      "valid": false,
+      "repaired": true,
+      "issues": [
+        "Footer is not the last section"
+      ],
+      "blocks": [
+        "Navbar",
+        "Hero",
+        "Pricing",
+        "FAQ",
+        "CTA",
+        "Footer",
+        "ComparisonTable"
+      ],
+      "elements": 12,
+      "coverage": 1
+    },
+    {
+      "mode": "jev",
+      "id": "fitness-signup",
+      "run": 1,
+      "ms": 635,
+      "stopReason": "finish",
+      "valid": true,
+      "repaired": true,
+      "issues": [],
+      "blocks": [
+        "ContactForm",
+        "AuthForm"
+      ],
+      "elements": 7,
+      "coverage": 1
+    },
+    {
+      "mode": "jev",
+      "id": "edtech-course",
+      "run": 1,
+      "ms": 685,
+      "stopReason": "finish",
+      "valid": false,
+      "repaired": true,
+      "issues": [
+        "Footer is not the last section"
+      ],
+      "blocks": [
+        "Navbar",
+        "Hero",
+        "Stats",
+        "Testimonials",
+        "CTA",
+        "Footer",
+        "Quote"
+      ],
+      "elements": 11,
+      "coverage": 1
+    },
+    {
+      "mode": "jev",
+      "id": "bank-feature",
+      "run": 1,
+      "ms": 666,
+      "stopReason": "finish",
+      "valid": false,
+      "repaired": true,
+      "issues": [
+        "Footer is not the last section"
+      ],
+      "blocks": [
+        "Navbar",
+        "Hero",
+        "FeatureGrid",
+        "CTA",
+        "Footer",
+        "ImageText",
+        "Steps"
+      ],
+      "elements": 11,
+      "coverage": 1
+    },
+    {
+      "mode": "jev",
+      "id": "event-registration",
+      "run": 1,
+      "ms": 662,
+      "stopReason": "finish",
+      "valid": true,
+      "repaired": true,
+      "issues": [],
+      "blocks": [
+        "Navbar",
+        "Hero",
+        "FAQ",
+        "ContactForm"
+      ],
+      "elements": 12,
+      "coverage": 1
+    },
+    {
+      "mode": "jev",
+      "id": "hotel-promo",
+      "run": 1,
+      "ms": 663,
+      "stopReason": "finish",
+      "valid": false,
+      "repaired": true,
+      "issues": [
+        "Footer is not the last section"
+      ],
+      "blocks": [
+        "Navbar",
+        "Hero",
+        "FeatureGrid",
+        "Testimonials",
+        "Gallery",
+        "CTA",
+        "Footer",
+        "Quote"
+      ],
+      "elements": 12,
+      "coverage": 1
+    },
+    {
+      "mode": "jev",
+      "id": "minimal-waitlist",
+      "run": 1,
+      "ms": 791,
+      "stopReason": "finish",
+      "valid": true,
+      "repaired": true,
+      "issues": [],
+      "blocks": [
+        "ContactForm",
+        "Newsletter"
+      ],
+      "elements": 5,
+      "coverage": 0.5
+    },
+    {
+      "mode": "jev",
+      "id": "logistics-b2b",
+      "run": 1,
+      "ms": 690,
+      "stopReason": "finish",
+      "valid": true,
+      "repaired": true,
+      "issues": [],
+      "blocks": [
+        "Navbar",
+        "Hero",
+        "FeatureGrid",
+        "Stats",
+        "CTA",
+        "ContactForm",
+        "LogoCloud",
+        "Footer"
+      ],
+      "elements": 17,
+      "coverage": 1
+    },
+    {
+      "mode": "llm",
+      "id": "coffee-landing",
+      "run": 1,
+      "ms": 1849,
+      "stopReason": "finish",
+      "valid": true,
+      "repaired": true,
+      "issues": [],
+      "blocks": [
+        "Navbar",
+        "Hero",
+        "LogoCloud",
+        "FeatureGrid",
+        "Steps",
+        "Pricing",
+        "Testimonials",
+        "CTA",
+        "Footer"
+      ],
+      "elements": 12,
+      "coverage": 1
+    },
+    {
+      "mode": "llm",
+      "id": "dental-booking",
+      "run": 1,
+      "ms": 1635,
+      "stopReason": "finish",
+      "valid": true,
+      "repaired": true,
+      "issues": [],
+      "blocks": [
+        "Navbar",
+        "Hero",
+        "FeatureGrid",
+        "Steps",
+        "Testimonials",
+        "ContactForm",
+        "Footer"
+      ],
+      "elements": 12,
+      "coverage": 1
+    },
+    {
+      "mode": "llm",
+      "id": "saas-pricing",
+      "run": 1,
+      "ms": 1715,
+      "stopReason": "finish",
+      "valid": true,
+      "repaired": true,
+      "issues": [],
+      "blocks": [
+        "Navbar",
+        "Hero",
+        "Pricing",
+        "ComparisonTable",
+        "FAQ",
+        "CTA",
+        "Footer"
+      ],
+      "elements": 10,
+      "coverage": 1
+    },
+    {
+      "mode": "llm",
+      "id": "fitness-signup",
+      "run": 1,
+      "ms": 1487,
+      "stopReason": "finish",
+      "valid": true,
+      "repaired": true,
+      "issues": [],
+      "blocks": [
+        "Navbar",
+        "AuthForm"
+      ],
+      "elements": 7,
+      "coverage": 0
+    },
+    {
+      "mode": "llm",
+      "id": "edtech-course",
+      "run": 1,
+      "ms": 2098,
+      "stopReason": "finish",
+      "valid": true,
+      "repaired": true,
+      "issues": [],
+      "blocks": [
+        "Navbar",
+        "Hero",
+        "Stats",
+        "FeatureGrid",
+        "Steps",
+        "Testimonials",
+        "Pricing",
+        "FAQ",
+        "CTA",
+        "Footer"
+      ],
+      "elements": 13,
+      "coverage": 1
+    },
+    {
+      "mode": "llm",
+      "id": "bank-feature",
+      "run": 1,
+      "ms": 2255,
+      "stopReason": "finish",
+      "valid": true,
+      "repaired": true,
+      "issues": [],
+      "blocks": [
+        "Navbar",
+        "Hero",
+        "LogoCloud",
+        "FeatureGrid",
+        "Stats",
+        "Steps",
+        "ComparisonTable",
+        "Testimonials",
+        "CTA",
+        "Footer"
+      ],
+      "elements": 14,
+      "coverage": 1
+    },
+    {
+      "mode": "llm",
+      "id": "event-registration",
+      "run": 1,
+      "ms": 1637,
+      "stopReason": "finish",
+      "valid": true,
+      "repaired": true,
+      "issues": [],
+      "blocks": [
+        "Navbar",
+        "Hero",
+        "Stats",
+        "FeatureGrid",
+        "FAQ",
+        "ContactForm",
+        "Footer"
+      ],
+      "elements": 13,
+      "coverage": 1
+    },
+    {
+      "mode": "llm",
+      "id": "hotel-promo",
+      "run": 1,
+      "ms": 1703,
+      "stopReason": "finish",
+      "valid": true,
+      "repaired": true,
+      "issues": [],
+      "blocks": [
+        "Navbar",
+        "Hero",
+        "LogoCloud",
+        "FeatureGrid",
+        "Gallery",
+        "Testimonials",
+        "CTA",
+        "Footer"
+      ],
+      "elements": 11,
+      "coverage": 1
+    },
+    {
+      "mode": "llm",
+      "id": "minimal-waitlist",
+      "run": 1,
+      "ms": 1555,
+      "stopReason": "finish",
+      "valid": true,
+      "repaired": true,
+      "issues": [],
+      "blocks": [
+        "Navbar",
+        "Hero",
+        "Footer"
+      ],
+      "elements": 6,
+      "coverage": 0.5
+    },
+    {
+      "mode": "llm",
+      "id": "logistics-b2b",
+      "run": 1,
+      "ms": 1908,
+      "stopReason": "finish",
+      "valid": true,
+      "repaired": true,
+      "issues": [],
+      "blocks": [
+        "Navbar",
+        "Hero",
+        "LogoCloud",
+        "Stats",
+        "FeatureGrid",
+        "ImageText",
+        "ContactForm",
+        "Footer"
+      ],
+      "elements": 16,
+      "coverage": 1
+    }
+  ],
+  "route": [
+    {
+      "mode": "jev",
+      "prompt": "หน้า landing page แอปออกกำลังกาย มีฟีเจอร์ ราคา และ FAQ",
+      "expect": "new_page",
+      "got": "new_page",
+      "ms": 282,
+      "confidence": 0.93
+    },
+    {
+      "mode": "jev",
+      "prompt": "ทำหน้า pricing สำหรับแอปนี้",
+      "expect": "new_page",
+      "got": "new_page",
+      "ms": 276,
+      "confidence": 0.93
+    },
+    {
+      "mode": "jev",
+      "prompt": "เพิ่มส่วนราคาให้หน่อย",
+      "expect": "edit_selection",
+      "got": "edit_selection",
+      "ms": 290,
+      "confidence": 1
+    },
+    {
+      "mode": "jev",
+      "prompt": "ทำหัวข้อให้สั้นลง",
+      "expect": "edit_selection",
+      "got": "edit_selection",
+      "ms": 270,
+      "confidence": 1
+    },
+    {
+      "mode": "jev",
+      "prompt": "เปลี่ยนเป็นโทนเขียว",
+      "expect": "set_theme",
+      "got": "set_theme",
+      "ms": 258,
+      "confidence": 0.94
+    },
+    {
+      "mode": "jev",
+      "prompt": "สร้างหน้าสมัครสมาชิก",
+      "expect": "new_page",
+      "got": "new_page",
+      "ms": 301,
+      "confidence": 1
+    },
+    {
+      "mode": "jev",
+      "prompt": "ลบ FAQ ออก",
+      "expect": "edit_selection",
+      "got": "edit_selection",
+      "ms": 284,
+      "confidence": 1
+    },
+    {
+      "mode": "jev",
+      "prompt": "เปลี่ยนข้อความทั้งหน้าเป็นร้านชานม",
+      "expect": "edit_selection",
+      "got": "edit_selection",
+      "ms": 275,
+      "confidence": 0.96
+    },
+    {
+      "mode": "jev",
+      "prompt": "ทำหน้า checkout ของร้าน",
+      "expect": "new_page",
+      "got": "new_page",
+      "ms": 281,
+      "confidence": 0.98
+    },
+    {
+      "mode": "jev",
+      "prompt": "dark mode please",
+      "expect": "set_theme",
+      "got": "set_theme",
+      "ms": 259,
+      "confidence": 1
+    },
+    {
+      "mode": "jev",
+      "prompt": "ทำ flow สมัครสมาชิกแอปออมเงิน บนมือถือ",
+      "expect": "new_flow",
+      "got": "new_flow",
+      "ms": 272,
+      "confidence": 1
+    },
+    {
+      "mode": "jev",
+      "prompt": "ทำหน้า home, เมนู และหน้าสั่งกลับบ้าน ของร้านราเมง",
+      "expect": "new_flow",
+      "got": "new_flow",
+      "ms": 300,
+      "confidence": 0.98
+    },
+    {
+      "mode": "jev",
+      "prompt": "อยากได้ checkout flow ของร้านเสื้อผ้า",
+      "expect": "new_flow",
+      "got": "new_flow",
+      "ms": 278,
+      "confidence": 0.98
+    },
+    {
+      "mode": "llm",
+      "prompt": "หน้า landing page แอปออกกำลังกาย มีฟีเจอร์ ราคา และ FAQ",
+      "expect": "new_page",
+      "got": "new_page",
+      "ms": 1309,
+      "confidence": null
+    },
+    {
+      "mode": "llm",
+      "prompt": "ทำหน้า pricing สำหรับแอปนี้",
+      "expect": "new_page",
+      "got": "new_page",
+      "ms": 1457,
+      "confidence": null
+    },
+    {
+      "mode": "llm",
+      "prompt": "เพิ่มส่วนราคาให้หน่อย",
+      "expect": "edit_selection",
+      "got": "edit_selection",
+      "ms": 1235,
+      "confidence": null
+    },
+    {
+      "mode": "llm",
+      "prompt": "ทำหัวข้อให้สั้นลง",
+      "expect": "edit_selection",
+      "got": "edit_selection",
+      "ms": 1305,
+      "confidence": null
+    },
+    {
+      "mode": "llm",
+      "prompt": "เปลี่ยนเป็นโทนเขียว",
+      "expect": "set_theme",
+      "got": "set_theme",
+      "ms": 1040,
+      "confidence": null
+    },
+    {
+      "mode": "llm",
+      "prompt": "สร้างหน้าสมัครสมาชิก",
+      "expect": "new_page",
+      "got": "new_page",
+      "ms": 1092,
+      "confidence": null
+    },
+    {
+      "mode": "llm",
+      "prompt": "ลบ FAQ ออก",
+      "expect": "edit_selection",
+      "got": "edit_selection",
+      "ms": 1374,
+      "confidence": null
+    },
+    {
+      "mode": "llm",
+      "prompt": "เปลี่ยนข้อความทั้งหน้าเป็นร้านชานม",
+      "expect": "edit_selection",
+      "got": "edit_selection",
+      "ms": 1038,
+      "confidence": null
+    },
+    {
+      "mode": "llm",
+      "prompt": "ทำหน้า checkout ของร้าน",
+      "expect": "new_page",
+      "got": "new_page",
+      "ms": 1153,
+      "confidence": null
+    },
+    {
+      "mode": "llm",
+      "prompt": "dark mode please",
+      "expect": "set_theme",
+      "got": "set_theme",
+      "ms": 1448,
+      "confidence": null
+    },
+    {
+      "mode": "llm",
+      "prompt": "ทำ flow สมัครสมาชิกแอปออมเงิน บนมือถือ",
+      "expect": "new_flow",
+      "got": "new_flow",
+      "ms": 913,
+      "confidence": null
+    },
+    {
+      "mode": "llm",
+      "prompt": "ทำหน้า home, เมนู และหน้าสั่งกลับบ้าน ของร้านราเมง",
+      "expect": "new_flow",
+      "got": "new_flow",
+      "ms": 979,
+      "confidence": null
+    },
+    {
+      "mode": "llm",
+      "prompt": "อยากได้ checkout flow ของร้านเสื้อผ้า",
+      "expect": "new_flow",
+      "got": "new_flow",
+      "ms": 1432,
+      "confidence": null
+    }
+  ],
+  "plan": [
+    {
+      "mode": "jev",
+      "prompt": "ทำ flow สมัครสมาชิกแอปออมเงิน บนมือถือ",
+      "expect": "auth",
+      "got": "auth",
+      "device": "mobile",
+      "deviceOk": true,
+      "pages": 3,
+      "ms": 273
+    },
+    {
+      "mode": "jev",
+      "prompt": "checkout flow ร้านเสื้อผ้าออนไลน์",
+      "expect": "ecommerce",
+      "got": "ecommerce",
+      "device": "desktop",
+      "deviceOk": true,
+      "pages": 4,
+      "ms": 277
+    },
+    {
+      "mode": "jev",
+      "prompt": "onboarding ของ SaaS จัดการโปรเจกต์ ตั้งแต่สมัครจนเข้า dashboard",
+      "expect": "saas-onboarding",
+      "got": "saas-onboarding",
+      "device": "desktop",
+      "deviceOk": true,
+      "pages": 3,
+      "ms": 286
+    },
+    {
+      "mode": "jev",
+      "prompt": "ระบบหลังบ้านจัดการสต็อกสินค้า มีหน้าภาพรวม รายการ และเพิ่มสินค้า",
+      "expect": "dashboard-crud",
+      "got": "dashboard-crud",
+      "device": "desktop",
+      "deviceOk": true,
+      "pages": 4,
+      "ms": 410
+    },
+    {
+      "mode": "jev",
+      "prompt": "flow จองคิวร้านทำเล็บ บนมือถือ",
+      "expect": "booking",
+      "got": "booking",
+      "device": "mobile",
+      "deviceOk": true,
+      "pages": 3,
+      "ms": 274
+    },
+    {
+      "mode": "jev",
+      "prompt": "หน้า waitlist เปิดตัวแอปใหม่ พร้อมหน้าขอบคุณ",
+      "expect": "waitlist",
+      "got": "waitlist",
+      "device": "desktop",
+      "deviceOk": true,
+      "pages": 2,
+      "ms": 276
+    },
+    {
+      "mode": "llm",
+      "prompt": "ทำ flow สมัครสมาชิกแอปออมเงิน บนมือถือ",
+      "expect": "auth",
+      "got": "auth",
+      "device": "mobile",
+      "deviceOk": true,
+      "pages": 3,
+      "ms": 1308
+    },
+    {
+      "mode": "llm",
+      "prompt": "checkout flow ร้านเสื้อผ้าออนไลน์",
+      "expect": "ecommerce",
+      "got": "ecommerce",
+      "device": "mobile",
+      "deviceOk": false,
+      "pages": 4,
+      "ms": 1054
+    },
+    {
+      "mode": "llm",
+      "prompt": "onboarding ของ SaaS จัดการโปรเจกต์ ตั้งแต่สมัครจนเข้า dashboard",
+      "expect": "saas-onboarding",
+      "got": "saas-onboarding",
+      "device": "desktop",
+      "deviceOk": true,
+      "pages": 3,
+      "ms": 1101
+    },
+    {
+      "mode": "llm",
+      "prompt": "ระบบหลังบ้านจัดการสต็อกสินค้า มีหน้าภาพรวม รายการ และเพิ่มสินค้า",
+      "expect": "dashboard-crud",
+      "got": "dashboard-crud",
+      "device": "desktop",
+      "deviceOk": true,
+      "pages": 4,
+      "ms": 1027
+    },
+    {
+      "mode": "llm",
+      "prompt": "flow จองคิวร้านทำเล็บ บนมือถือ",
+      "expect": "booking",
+      "got": "booking",
+      "device": "mobile",
+      "deviceOk": true,
+      "pages": 3,
+      "ms": 1115
+    },
+    {
+      "mode": "llm",
+      "prompt": "หน้า waitlist เปิดตัวแอปใหม่ พร้อมหน้าขอบคุณ",
+      "expect": "waitlist",
+      "got": "waitlist",
+      "device": "mobile",
+      "deviceOk": false,
+      "pages": 2,
+      "ms": 1400
+    }
+  ]
+}

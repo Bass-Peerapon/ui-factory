@@ -16,6 +16,36 @@ async function req<T>(method: string, path: string, body?: unknown): Promise<T> 
   return data as T;
 }
 
+export interface ChatBody {
+  text: string;
+  frameId: string | null;
+  elementId?: string | null;
+  wireframe?: boolean;
+  comments?: { elementId: string; text: string }[];
+  brief?: Record<string, string>;
+  skipBrief?: boolean;
+  displayText?: string;
+}
+
+export interface Version {
+  id: number;
+  label: string;
+  createdAt: string;
+}
+
+/** Sends a chat turn for the current project and reports failures in the status bar. */
+export async function sendChat(body: ChatBody) {
+  const s = getState();
+  if (!s.projectId) return false;
+  try {
+    await api.chat(s.projectId, { wireframe: s.wireframe, elementId: null, ...body });
+    return true;
+  } catch (e) {
+    setState({ error: (e as Error).message });
+    return false;
+  }
+}
+
 export interface ProjectSummary {
   id: string;
   name: string;
@@ -27,11 +57,12 @@ export const api = {
   create: (name: string) => req<{ doc: ProjectDoc }>("POST", "/api/projects", { name }),
   get: (id: string) =>
     req<{ doc: ProjectDoc; version: number; messages: ChatMessage[]; turn: TurnState | null }>("GET", `/api/projects/${id}`),
-  chat: (id: string, body: { text: string; frameId: string | null; elementId: string | null; wireframe: boolean }) =>
-    req<{ turnId: string }>("POST", `/api/projects/${id}/chat`, body),
+  chat: (id: string, body: ChatBody) => req<{ turnId: string }>("POST", `/api/projects/${id}/chat`, body),
   stop: (id: string) => req<unknown>("POST", `/api/projects/${id}/stop`),
   undo: (id: string) => req<unknown>("POST", `/api/projects/${id}/undo`),
   fill: (id: string, frameId: string) => req<{ turnId: string }>("POST", `/api/projects/${id}/fill`, { frameId }),
+  versions: (id: string) => req<Version[]>("GET", `/api/projects/${id}/versions`),
+  restore: (id: string, vid: number) => req<unknown>("POST", `/api/projects/${id}/versions/${vid}/restore`),
   op: (id: string, op: string, args: Record<string, unknown>) => req<unknown>("POST", `/api/projects/${id}/ops`, { op, args }),
   exportUrl: (id: string) => `${API}/api/projects/${id}/export`,
 };

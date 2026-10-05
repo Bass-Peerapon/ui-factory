@@ -61,13 +61,13 @@ export function normalizeSpec(input: Spec): { spec: Spec; fixes: string[] } {
     }
     for (const [slot, keys] of Object.entries(el.slots ?? {})) if (keys.length === 0) delete el.slots![slot];
   }
-  // Page chrome: Banner and Navbar open the page, Footer closes it.
-  const order = (id: string) => ({ Banner: 0, Navbar: 1, Footer: 3 })[spec.elements[id]?.type ?? ""] ?? 2;
+  // Page chrome: Banner and Navbar open the page; the closing CTA and the Footer end it.
+  const order = (id: string) => ({ Banner: 0, Navbar: 1, CTA: 3, Footer: 4 })[spec.elements[id]?.type ?? ""] ?? 2;
   const children = root.children ?? [];
   const sorted = [...children].sort((a, b) => order(a) - order(b));
   if (sorted.some((id, i) => id !== children[i])) {
     root.children = sorted;
-    fixes.push("moved page chrome (Banner, Navbar, Footer) to the page edges");
+    fixes.push("moved page chrome (Banner, Navbar, CTA, Footer) to the page edges");
   }
   return { spec, fixes };
 }

@@ -54,10 +54,10 @@ const candidates = compositionCandidates();
 
 /** Page-composition guidance; the anti-template rule follows open-design's craft/anti-ai-slop.md. */
 export const pageGuidance =
-  "Build a focused page for the request: usually a Navbar first and a Footer last, with only the sections the request needs (4 to 7 in between). " +
+  "Build a focused page for the request with only the sections it needs. Marketing pages start with a Navbar and end with a Footer (4 to 7 sections in between). " +
   "Pick the layout variant that fits the domain. Avoid the default template rhythm Hero, FeatureGrid, Pricing, FAQ, CTA; " +
   "include at least one distinctive section that suits the content, such as ImageText, Steps, Quote, LogoCloud, Gallery, Timeline or ComparisonTable. " +
-  "App screens (dashboards, sign-in, settings) skip marketing sections. " +
+  "App screens (sign-in, sign-up, confirmations, dashboards, forms, settings) are not marketing pages: no Footer, no Hero, no marketing sections; dashboards and admin screens may start with a Navbar. " +
   "Put Button primitives into `actions` slots and Input, Textarea or Checkbox primitives into `fields` slots.";
 
 export class JevComposer implements Composer {

@@ -13,7 +13,7 @@ const post = (m: FromFrame) => parent.postMessage({ [FRAME_MSG]: m }, "*");
 
 function App() {
   const [msg, setMsg] = useState<ToFrame>({
-    type: "render", spec: null, theme: themePresets.neutral, mode: "edit", selectedId: null, locale: "th",
+    type: "render", spec: null, theme: themePresets.neutral, mode: "edit", selectedId: null, locale: "th", pins: [],
   });
 
   useEffect(() => {
@@ -28,8 +28,17 @@ function App() {
 
   useEffect(() => applyTheme(msg.theme as Theme, msg.locale ?? "th"), [msg.theme, msg.locale]);
   useEffect(() => {
-    document.body.classList.toggle("mode-edit", msg.mode === "edit");
+    document.body.classList.toggle("mode-edit", msg.mode !== "prototype");
+    document.body.classList.toggle("mode-comment", msg.mode === "comment");
   }, [msg.mode]);
+
+  // Comment pins: numbered badges on the commented elements.
+  useEffect(() => {
+    document.querySelectorAll("[data-pin]").forEach((n) => n.removeAttribute("data-pin"));
+    for (const p of msg.pins ?? []) {
+      document.querySelector(`[data-el-id="${CSS.escape(p.elementId)}"]`)?.setAttribute("data-pin", String(p.n));
+    }
+  });
 
   // Selection highlight
   useEffect(() => {
@@ -37,14 +46,23 @@ function App() {
     if (msg.selectedId) document.querySelector(`[data-el-id="${CSS.escape(msg.selectedId)}"]`)?.classList.add("is-selected");
   });
 
-  // Click to select in edit mode
+  // Click to select (edit mode) or to pick a comment target (comment mode)
   useEffect(() => {
-    if (msg.mode !== "edit") return;
+    if (msg.mode === "prototype") return;
     const onClick = (e: MouseEvent) => {
       e.preventDefault();
       e.stopPropagation();
       const el = (e.target as HTMLElement).closest("[data-el-id]");
-      post({ type: "select", frameId, id: el?.getAttribute("data-el-id") ?? null });
+      const id = el?.getAttribute("data-el-id") ?? null;
+      if (msg.mode === "comment" && el && id) {
+        const r = el.getBoundingClientRect();
+        post({
+          type: "comment-target", frameId, id, elementType: el.getAttribute("data-el-type") ?? "",
+          rect: { x: r.left + scrollX, y: r.top + scrollY, w: r.width, h: r.height },
+        });
+        return;
+      }
+      post({ type: "select", frameId, id });
     };
     document.addEventListener("click", onClick, true);
     return () => document.removeEventListener("click", onClick, true);
@@ -57,7 +75,7 @@ function App() {
     return () => ro.disconnect();
   }, []);
   useEffect(() => {
-    if (msg.mode !== "edit" || !msg.spec) return;
+    if (msg.mode === "prototype" || !msg.spec) return;
     const t = setTimeout(async () => {
       try {
         const w = document.documentElement.clientWidth;

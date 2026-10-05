@@ -1,4 +1,4 @@
-import { Background, Controls, ReactFlow, useReactFlow, type NodeChange, applyNodeChanges } from "@xyflow/react";
+import { Background, MarkerType, ReactFlow, useReactFlow, type Edge, type NodeChange, applyNodeChanges } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { useEffect, useMemo, useState } from "react";
 import { FRAME_MSG, type FromFrame } from "../shared/protocol";
@@ -29,6 +29,28 @@ export function Canvas() {
     [doc, dragging, heights],
   );
 
+  // Prototype links between frames become edges labeled with the button text.
+  const edges = useMemo<Edge[]>(() => {
+    if (!doc) return [];
+    const out: Edge[] = [];
+    const seen = new Set<string>();
+    for (const id of doc.frameOrder) {
+      const sp = doc.frames[id]?.spec;
+      for (const el of Object.values(sp?.elements ?? {})) {
+        const press = (el as { on?: { press?: { action?: string; params?: { frameId?: string } } } }).on?.press;
+        const target = press?.action === "navigate" ? press.params?.frameId : undefined;
+        if (!target || !doc.frames[target] || seen.has(id + target)) continue;
+        seen.add(id + target);
+        out.push({
+          id: `${id}->${target}`, source: id, target, type: "smoothstep", animated: true,
+          label: String((el.props as { label?: string }).label ?? ""),
+          markerEnd: { type: MarkerType.ArrowClosed, width: 16, height: 16 },
+        });
+      }
+    }
+    return out;
+  }, [doc]);
+
   useEffect(() => {
     if (!focusFrame || !nodes.some((n) => n.id === focusFrame)) return;
     const t = setTimeout(() => {
@@ -50,6 +72,12 @@ export function Canvas() {
         }
         case "select":
           setState({ selection: { frameId: m.frameId, elementId: m.id } });
+          break;
+        case "comment-target":
+          setState({
+            selection: { frameId: m.frameId, elementId: m.id },
+            commentDraft: { frameId: m.frameId, elementId: m.id, elementType: m.elementType, rect: m.rect },
+          });
           break;
         case "height":
           if (getState().heights[m.frameId] !== m.height)
@@ -88,9 +116,10 @@ export function Canvas() {
   return (
     <ReactFlow
       nodes={nodes}
+      edges={edges}
       nodeTypes={nodeTypes}
       onNodesChange={onNodesChange}
-      onPaneClick={() => setState({ selection: { frameId: null, elementId: null } })}
+      onPaneClick={() => setState({ selection: { frameId: null, elementId: null }, commentDraft: null })}
       minZoom={0.05}
       maxZoom={2}
       fitView
@@ -102,7 +131,6 @@ export function Canvas() {
       zoomOnPinch
     >
       <Background gap={24} size={1} />
-      <Controls showInteractive={false} />
     </ReactFlow>
   );
 }

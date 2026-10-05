@@ -6,6 +6,8 @@ export interface Frame {
   device: Device;
   x: number;
   y: number;
+  brief?: string;
+  flow?: string;
   spec: Spec | null;
 }
 
@@ -19,12 +21,36 @@ export interface ProjectDoc {
   frameOrder: string[];
 }
 
+export interface NextStep {
+  label: string;
+  prompt?: string;
+  frameId?: string;
+  op?: string;
+  args?: Record<string, unknown>;
+  action?: "prototype";
+}
+
+export interface BriefMeta {
+  kind: "brief";
+  prompt: string;
+  frameId: string | null;
+  defaults: Record<string, string>;
+  sufficient: number;
+}
+
 export interface ChatMessage {
   id: string;
   role: "user" | "assistant" | "system";
   text: string;
   turnId?: string;
+  meta?: Partial<BriefMeta> & { kind?: string; next?: NextStep[]; comments?: { elementId: string; text: string }[] };
   createdAt: string;
+}
+
+export interface TurnStep {
+  label: string;
+  status: "pending" | "active" | "done" | "skipped";
+  detail?: string;
 }
 
 export interface TurnState {
@@ -32,4 +58,13 @@ export interface TurnState {
   frameId: string | null;
   status: "running" | "done" | "stopped" | "error";
   phase: string;
+  steps?: TurnStep[];
+}
+
+export interface PendingComment {
+  id: string;
+  frameId: string;
+  elementId: string;
+  elementType: string;
+  text: string;
 }

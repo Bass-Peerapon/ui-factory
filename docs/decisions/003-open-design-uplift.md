@@ -1,6 +1,6 @@
 # 003: ยกระดับคุณภาพ UI ตามแนวทาง open-design โดยคง catalog + Jev
 
-วันที่ 2026-10-05 · สถานะ: Phase 1 เสร็จ
+วันที่ 2026-10-05 · สถานะ: Phase 1 และ Phase 2 เสร็จ
 
 ## ที่มา
 
@@ -31,3 +31,24 @@ open-design ให้ model เขียน HTML ทั้งหน้า คุ
 
 - props ของ Hero เปลี่ยน (`align` และ `showImage` ถูกแทนด้วย `variant`) DB ทดสอบเดิมย้ายไปที่ `data/ui-factory.v1-backup.db`
 - preset theme เดิม (neutral, coffee, ocean, forest, midnight) ถูกแทนด้วย design system โดย `neutral` ยังเป็น alias ของ shadcn
+
+## Phase 2 UX ของ editor
+
+| เรื่อง | ทำอะไร | อ้างอิงใน open-design |
+|---|---|---|
+| Layout | แชทอยู่คอลัมน์ซ้ายพร้อมแท็บ Layers, Blocks, Patterns, canvas มี toolbar ลอย และ inspector แสดงเมื่อมี selection โทน neutral ใช้สีเขียวเฉพาะปุ่มส่ง | `components/ProjectView.tsx`, `styles/tokens.css` |
+| Form ถามก่อนสร้าง | Jev ตอบทุกคำถามใน call เดียว (noul วัดความชัดของ brief + choice สำหรับประเภทหน้า, อุปกรณ์, design system, โทน, density) ถามเมื่อความชัดต่ำกว่า 0.6 ทุกข้อมีค่าแนะนำ จึงกดสร้างได้ทันที | `prompts/core-slim.ts` question-form, `components/QuestionForm.tsx` |
+| Step N/M | turn มีแผนที่มองเห็นได้ แสดงเป็น pill ในแชทและบน header ของเฟรม | `chat/PlanPill.tsx` |
+| คอมเมนต์ | กด C แล้วคลิก element เพื่อปักหมุดตัวเลข ส่งเป็นชุดได้ agent แก้ได้เฉพาะ subtree ที่ถูกคอมเมนต์ (บังคับที่ tool ไม่ใช่แค่ prompt) | `comments.ts` hard scope, `BoardComposerPopover.tsx` |
+| Version history | แสดง snapshot ทุกอัน แยกเป็น AI edit, Manual edit และ Restored การ restore จะบันทึกสถานะปัจจุบันก่อนเสมอ | `fileViewer.versions.*` |
+| Next steps | แนะนำงานต่อ 3 อย่างจาก spec โดยไม่เรียก model เช่น ทำเวอร์ชันมือถือ, ลอง Hero แบบ split, ต่อเป็น flow | `NextStepActions.tsx` |
+| Flow patterns | มี 8 pattern ให้ Jev เลือกพร้อมอุปกรณ์ หรือให้ Gemini วางแผน flow เอง ระบบวางโครงทุกหน้าแบบขนาน เชื่อมปุ่มหลักไปหน้าถัดไป และแสดงเป็น edge บน canvas | `design-templates/wireframe-mobile-flow`, device frames |
+
+## ผล eval หลัง Phase 2 (`evals/results/2026-10-05T*.md` ล่าสุด)
+
+| composer | pass (raw) | pass after normalize | median | route (13 เคส) | flow pattern | flow device |
+|---|---|---|---|---|---|---|
+| jev | 5/10 | 10/10 | 667 ms | 13/13 | 6/6 | 6/6 |
+| llm | 10/10 | 10/10 | 1,709 ms | 13/13 | 6/6 | 4/6 |
+
+ผลดิบของ Jev ที่ลดลงมาจากกฎใหม่ใน eval ซึ่งนับกรณี "Footer ไม่ใช่ section สุดท้าย" เป็นความผิด ทั้ง 5 เคสเป็นแบบนี้ (Jev ต่อ section ที่แปลกออกไปไว้หลัง Footer) ไม่ใช่การถอยหลังของ schema หรือ placement normalize เรียงใหม่ให้ Banner, Navbar อยู่บนสุด และ CTA, Footer อยู่ท้ายสุด

@@ -1,26 +1,199 @@
 {
   "structure": [
-    { "id": "coffee-landing", "prompt": "ทำหน้า landing page ร้านกาแฟคั่วสด มีจุดเด่น ราคาแพ็กเกจรายเดือน รีวิว และปุ่มสั่งซื้อ", "expect": ["Hero", "Pricing", "Testimonials"] },
-    { "id": "dental-booking", "prompt": "หน้าเว็บคลินิกทันตกรรม ให้ลูกค้านัดหมายผ่านฟอร์ม มีชื่อ เบอร์โทร และข้อความ", "expect": ["Hero", "ContactForm"] },
-    { "id": "saas-pricing", "prompt": "หน้า pricing ของ SaaS จัดการงานทีม 3 แพ็กเกจ พร้อม FAQ เรื่องการชำระเงิน", "expect": ["Pricing", "FAQ"] },
-    { "id": "fitness-signup", "prompt": "หน้าสมัครสมาชิกฟิตเนส มีฟอร์มสมัคร ยอมรับเงื่อนไข และปุ่มสมัคร", "expect": ["ContactForm"] },
-    { "id": "edtech-course", "prompt": "landing page คอร์สเรียนเขียนโปรแกรมออนไลน์ มีสถิติผู้เรียน รีวิวจากศิษย์เก่า และ call to action", "expect": ["Stats", "Testimonials", "CTA"] },
-    { "id": "bank-feature", "prompt": "หน้าแนะนำฟีเจอร์แอปธนาคารดิจิทัล เน้นความปลอดภัยและความเร็ว", "expect": ["Hero", "FeatureGrid"] },
-    { "id": "event-registration", "prompt": "หน้าลงทะเบียนงานสัมมนา AI ในองค์กร มีรายละเอียดงาน คำถามที่พบบ่อย และฟอร์มลงทะเบียน", "expect": ["FAQ", "ContactForm"] },
-    { "id": "hotel-promo", "prompt": "Promo page for a beach resort in Krabi with highlights, guest reviews and a booking call to action", "expect": ["Hero", "Testimonials", "CTA"] },
-    { "id": "minimal-waitlist", "prompt": "หน้า waitlist แบบเรียบง่าย มีแค่หัวข้อ คำอธิบาย และช่องกรอกอีเมล", "expect": ["Hero", "ContactForm"] },
-    { "id": "logistics-b2b", "prompt": "เว็บบริษัทขนส่ง B2B มีตัวเลขผลงาน บริการหลัก ลูกค้าที่ไว้ใจ และฟอร์มขอใบเสนอราคา", "expect": ["Stats", "FeatureGrid", "ContactForm"] }
+    {
+      "id": "coffee-landing",
+      "prompt": "ทำหน้า landing page ร้านกาแฟคั่วสด มีจุดเด่น ราคาแพ็กเกจรายเดือน รีวิว และปุ่มสั่งซื้อ",
+      "expect": [
+        "Hero",
+        "Pricing",
+        "Testimonials"
+      ]
+    },
+    {
+      "id": "dental-booking",
+      "prompt": "หน้าเว็บคลินิกทันตกรรม ให้ลูกค้านัดหมายผ่านฟอร์ม มีชื่อ เบอร์โทร และข้อความ",
+      "expect": [
+        "Hero",
+        "ContactForm"
+      ]
+    },
+    {
+      "id": "saas-pricing",
+      "prompt": "หน้า pricing ของ SaaS จัดการงานทีม 3 แพ็กเกจ พร้อม FAQ เรื่องการชำระเงิน",
+      "expect": [
+        "Pricing",
+        "FAQ"
+      ]
+    },
+    {
+      "id": "fitness-signup",
+      "prompt": "หน้าสมัครสมาชิกฟิตเนส มีฟอร์มสมัคร ยอมรับเงื่อนไข และปุ่มสมัคร",
+      "expect": [
+        "ContactForm"
+      ]
+    },
+    {
+      "id": "edtech-course",
+      "prompt": "landing page คอร์สเรียนเขียนโปรแกรมออนไลน์ มีสถิติผู้เรียน รีวิวจากศิษย์เก่า และ call to action",
+      "expect": [
+        "Stats",
+        "Testimonials",
+        "CTA"
+      ]
+    },
+    {
+      "id": "bank-feature",
+      "prompt": "หน้าแนะนำฟีเจอร์แอปธนาคารดิจิทัล เน้นความปลอดภัยและความเร็ว",
+      "expect": [
+        "Hero",
+        "FeatureGrid"
+      ]
+    },
+    {
+      "id": "event-registration",
+      "prompt": "หน้าลงทะเบียนงานสัมมนา AI ในองค์กร มีรายละเอียดงาน คำถามที่พบบ่อย และฟอร์มลงทะเบียน",
+      "expect": [
+        "FAQ",
+        "ContactForm"
+      ]
+    },
+    {
+      "id": "hotel-promo",
+      "prompt": "Promo page for a beach resort in Krabi with highlights, guest reviews and a booking call to action",
+      "expect": [
+        "Hero",
+        "Testimonials",
+        "CTA"
+      ]
+    },
+    {
+      "id": "minimal-waitlist",
+      "prompt": "หน้า waitlist แบบเรียบง่าย มีแค่หัวข้อ คำอธิบาย และช่องกรอกอีเมล",
+      "expect": [
+        "Hero",
+        "ContactForm"
+      ]
+    },
+    {
+      "id": "logistics-b2b",
+      "prompt": "เว็บบริษัทขนส่ง B2B มีตัวเลขผลงาน บริการหลัก ลูกค้าที่ไว้ใจ และฟอร์มขอใบเสนอราคา",
+      "expect": [
+        "Stats",
+        "FeatureGrid",
+        "ContactForm"
+      ]
+    }
   ],
   "route": [
-    { "prompt": "หน้า landing page แอปออกกำลังกาย มีฟีเจอร์ ราคา และ FAQ", "selection": "the whole page", "currentPage": "landing page ร้านกาแฟ", "expect": "new_page" },
-    { "prompt": "ทำหน้า pricing สำหรับแอปนี้", "selection": "the whole page", "currentPage": "landing page ร้านกาแฟ", "expect": "new_page" },
-    { "prompt": "เพิ่มส่วนราคาให้หน่อย", "selection": "the whole page", "currentPage": "landing page ร้านกาแฟ", "expect": "edit_selection" },
-    { "prompt": "ทำหัวข้อให้สั้นลง", "selection": "Hero element", "currentPage": "landing page ร้านกาแฟ", "expect": "edit_selection" },
-    { "prompt": "เปลี่ยนเป็นโทนเขียว", "selection": "the whole page", "currentPage": "landing page ร้านกาแฟ", "expect": "set_theme" },
-    { "prompt": "สร้างหน้าสมัครสมาชิก", "selection": "nothing", "currentPage": "", "expect": "new_page" },
-    { "prompt": "ลบ FAQ ออก", "selection": "the whole page", "currentPage": "landing page ร้านกาแฟ", "expect": "edit_selection" },
-    { "prompt": "เปลี่ยนข้อความทั้งหน้าเป็นร้านชานม", "selection": "the whole page", "currentPage": "landing page ร้านกาแฟ", "expect": "edit_selection" },
-    { "prompt": "ทำหน้า checkout ของร้าน", "selection": "Hero element", "currentPage": "landing page ร้านกาแฟ", "expect": "new_page" },
-    { "prompt": "dark mode please", "selection": "nothing", "currentPage": "landing page ร้านกาแฟ", "expect": "set_theme" }
+    {
+      "prompt": "หน้า landing page แอปออกกำลังกาย มีฟีเจอร์ ราคา และ FAQ",
+      "selection": "the whole page",
+      "currentPage": "landing page ร้านกาแฟ",
+      "expect": "new_page"
+    },
+    {
+      "prompt": "ทำหน้า pricing สำหรับแอปนี้",
+      "selection": "the whole page",
+      "currentPage": "landing page ร้านกาแฟ",
+      "expect": "new_page"
+    },
+    {
+      "prompt": "เพิ่มส่วนราคาให้หน่อย",
+      "selection": "the whole page",
+      "currentPage": "landing page ร้านกาแฟ",
+      "expect": "edit_selection"
+    },
+    {
+      "prompt": "ทำหัวข้อให้สั้นลง",
+      "selection": "Hero element",
+      "currentPage": "landing page ร้านกาแฟ",
+      "expect": "edit_selection"
+    },
+    {
+      "prompt": "เปลี่ยนเป็นโทนเขียว",
+      "selection": "the whole page",
+      "currentPage": "landing page ร้านกาแฟ",
+      "expect": "set_theme"
+    },
+    {
+      "prompt": "สร้างหน้าสมัครสมาชิก",
+      "selection": "nothing",
+      "currentPage": "",
+      "expect": "new_page"
+    },
+    {
+      "prompt": "ลบ FAQ ออก",
+      "selection": "the whole page",
+      "currentPage": "landing page ร้านกาแฟ",
+      "expect": "edit_selection"
+    },
+    {
+      "prompt": "เปลี่ยนข้อความทั้งหน้าเป็นร้านชานม",
+      "selection": "the whole page",
+      "currentPage": "landing page ร้านกาแฟ",
+      "expect": "edit_selection"
+    },
+    {
+      "prompt": "ทำหน้า checkout ของร้าน",
+      "selection": "Hero element",
+      "currentPage": "landing page ร้านกาแฟ",
+      "expect": "new_page"
+    },
+    {
+      "prompt": "dark mode please",
+      "selection": "nothing",
+      "currentPage": "landing page ร้านกาแฟ",
+      "expect": "set_theme"
+    },
+    {
+      "prompt": "ทำ flow สมัครสมาชิกแอปออมเงิน บนมือถือ",
+      "selection": "nothing",
+      "currentPage": "",
+      "expect": "new_flow"
+    },
+    {
+      "prompt": "ทำหน้า home, เมนู และหน้าสั่งกลับบ้าน ของร้านราเมง",
+      "selection": "nothing",
+      "currentPage": "",
+      "expect": "new_flow"
+    },
+    {
+      "prompt": "อยากได้ checkout flow ของร้านเสื้อผ้า",
+      "selection": "the whole page",
+      "currentPage": "landing page ร้านกาแฟ",
+      "expect": "new_flow"
+    }
+  ],
+  "plan": [
+    {
+      "prompt": "ทำ flow สมัครสมาชิกแอปออมเงิน บนมือถือ",
+      "expect": "auth",
+      "device": "mobile"
+    },
+    {
+      "prompt": "checkout flow ร้านเสื้อผ้าออนไลน์",
+      "expect": "ecommerce",
+      "device": "desktop"
+    },
+    {
+      "prompt": "onboarding ของ SaaS จัดการโปรเจกต์ ตั้งแต่สมัครจนเข้า dashboard",
+      "expect": "saas-onboarding",
+      "device": "desktop"
+    },
+    {
+      "prompt": "ระบบหลังบ้านจัดการสต็อกสินค้า มีหน้าภาพรวม รายการ และเพิ่มสินค้า",
+      "expect": "dashboard-crud",
+      "device": "desktop"
+    },
+    {
+      "prompt": "flow จองคิวร้านทำเล็บ บนมือถือ",
+      "expect": "booking",
+      "device": "mobile"
+    },
+    {
+      "prompt": "หน้า waitlist เปิดตัวแอปใหม่ พร้อมหน้าขอบคุณ",
+      "expect": "waitlist",
+      "device": "desktop"
+    }
   ]
 }
