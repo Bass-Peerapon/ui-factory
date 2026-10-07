@@ -1,5 +1,5 @@
 import { JSONUIProvider, Renderer } from "@json-render/react";
-import { themePresets, type Spec, type Theme } from "@ui-factory/catalog";
+import { designSystems, themePresets, type Spec, type Theme } from "@ui-factory/catalog";
 import { toJpeg } from "html-to-image";
 import { StrictMode, useEffect, useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
@@ -8,8 +8,31 @@ import "./frame.css";
 import { registry, tagSpec } from "./registry";
 import { applyTheme } from "./theme";
 
-const frameId = new URLSearchParams(location.search).get("f") ?? "";
+const params = new URLSearchParams(location.search);
+const frameId = params.get("f") ?? "";
 const post = (m: FromFrame) => parent.postMessage({ [FRAME_MSG]: m }, "*");
+
+const fixtures = import.meta.glob("../../../../packages/catalog/fixtures/*.json", { import: "default" });
+const API = (import.meta.env.VITE_API_URL as string | undefined) ?? "http://localhost:8080";
+
+/**
+ * Standalone render for design audits (`make audit` runs impeccable's detector on these URLs):
+ * `?project=<id>&f=<frameId>` renders a saved frame, `?fixture=<name>&ds=<design system>` a catalog fixture.
+ */
+async function loadStandalone(): Promise<ToFrame | null> {
+  const base = { type: "render" as const, mode: "prototype" as const, selectedId: null, pins: [] };
+  const project = params.get("project");
+  if (project) {
+    const r = await fetch(`${API}/api/projects/${encodeURIComponent(project)}`);
+    const { doc } = await r.json();
+    return { ...base, spec: doc.frames[frameId]?.spec ?? null, theme: doc.theme, locale: doc.locale ?? "th" };
+  }
+  const fixture = params.get("fixture");
+  const load = fixture && fixtures[`../../../../packages/catalog/fixtures/${fixture}.json`];
+  if (!load) return null;
+  const ds = designSystems.find((d) => d.id === params.get("ds"));
+  return { ...base, spec: (await load()) as Spec, theme: ds?.theme ?? themePresets.neutral, locale: "th" };
+}
 
 function App() {
   const [msg, setMsg] = useState<ToFrame>({
@@ -22,7 +45,8 @@ function App() {
       if (m?.type === "render") setMsg(m);
     };
     addEventListener("message", onMsg);
-    post({ type: "ready", frameId });
+    if (params.has("project") || params.has("fixture")) void loadStandalone().then((m) => m && setMsg(m));
+    else post({ type: "ready", frameId });
     return () => removeEventListener("message", onMsg);
   }, []);
 

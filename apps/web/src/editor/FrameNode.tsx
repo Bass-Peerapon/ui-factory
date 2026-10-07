@@ -1,17 +1,18 @@
 import { DEVICES } from "@ui-factory/catalog";
 import { Handle, Position, useStore, type Node, type NodeProps } from "@xyflow/react";
-import { Loader2, Monitor, Smartphone, Tablet } from "lucide-react";
+import { Copy, Loader2, MoreHorizontal, Trash2 } from "lucide-react";
 import { memo, useEffect, useRef, useState } from "react";
 import { FRAME_MSG, type ToFrame } from "../shared/protocol";
 import type { Frame } from "../shared/doc";
+import { runOp } from "./api";
+import { deviceIcon } from "./icons";
 import { setState, useEditor, type EditorState } from "./store";
 
 export type FrameNodeData = { frameId: string };
 export type FrameNodeType = Node<FrameNodeData, "frame">;
 
-const deviceIcon = { desktop: Monitor, tablet: Tablet, mobile: Smartphone };
 export const MIN_FRAME_HEIGHT = 720;
-const HEADER = 32;
+export const FRAME_HEADER = 44;
 
 /** Registry of live iframes so the canvas can route postMessage traffic. */
 export const frameWindows = new Map<string, Window>();
@@ -26,7 +27,7 @@ function useOnScreen(frame: Frame | undefined, height: number) {
     const [tx, ty, zoom] = s.transform;
     const w = DEVICES[frame.device].width;
     const x0 = frame.x * zoom + tx, y0 = frame.y * zoom + ty;
-    const x1 = x0 + w * zoom, y1 = y0 + (height + HEADER) * zoom;
+    const x1 = x0 + w * zoom, y1 = y0 + (height + FRAME_HEADER) * zoom;
     const margin = 200;
     return x1 > -margin && y1 > -margin && x0 < s.width + margin && y0 < s.height + margin;
   });
@@ -84,16 +85,22 @@ export const FrameNode = memo(function FrameNode({ data }: NodeProps<FrameNodeTy
     <div className={`frame-node ${active ? "is-active" : ""}`} style={{ width }}>
       <Handle type="target" position={Position.Left} />
       <Handle type="source" position={Position.Right} />
-      <div className="frame-header frame-drag">
-        <Icon size={14} />
-        <span className="frame-name">{frame.name}</span>
-        {frame.flow && <span className="frame-flow">{frame.flow}</span>}
-        <span className="frame-device">{DEVICES[frame.device].label} · {width}px</span>
-        {locked && (
-          <span className="frame-lock">
-            <Loader2 size={12} className="spin" /> {activeStep ? `${activeStep.label}${activeStep.detail ? ` · ${activeStep.detail}` : ""}` : "AI กำลังทำงาน"}
+      {/* Header keeps a constant on-screen size: laid out at the frame's screen width, then counter-scaled. */}
+      <div className="frame-header-anchor" style={{ height: FRAME_HEADER }}>
+        <div className={`frame-header frame-drag ${width * zoom < 160 ? "is-compact" : width * zoom < 280 ? "is-narrow" : ""}`} style={{ width: width * zoom, transform: `scale(${1 / zoom})` }}>
+          {locked && (
+            <span className="frame-status">
+              <Loader2 size={13} className="spin" /> {activeStep ? `${activeStep.label}${activeStep.detail ? ` · ${activeStep.detail}` : ""}` : "AI กำลังทำงาน"}
+            </span>
+          )}
+          <Icon size={18} />
+          <span className="frame-title">
+            <span className="frame-name">{frame.name}</span>
+            <span className="frame-device">{DEVICES[frame.device].label} · {width}px</span>
           </span>
-        )}
+          {frame.flow && <span className="tag">{frame.flow}</span>}
+          <FrameMenu frameId={frame.id} disabled={locked} />
+        </div>
       </div>
       <div className="frame-body" style={{ height }}>
         {onScreen ? (
@@ -125,6 +132,30 @@ export const FrameNode = memo(function FrameNode({ data }: NodeProps<FrameNodeTy
     </div>
   );
 });
+
+function FrameMenu({ frameId, disabled }: { frameId: string; disabled: boolean }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <span className="frame-menu relative nodrag" onMouseLeave={() => setOpen(false)}>
+      <button className="icon-btn" title="ตัวเลือกเฟรม" disabled={disabled} onClick={() => setOpen(!open)}>
+        <MoreHorizontal size={18} />
+      </button>
+      {open && (
+        <div className="popover absolute top-8 right-0 z-30 w-44 p-1">
+          <button className="layer w-full border-0 bg-transparent px-2.5 text-left" onClick={() => (setOpen(false), void runOp("duplicate_frame", { frameId }))}>
+            <Copy size={14} /> ทำสำเนา
+          </button>
+          <button
+            className="layer w-full border-0 bg-transparent px-2.5 text-left text-[var(--ed-danger)]"
+            onClick={() => (setOpen(false), confirm("ลบเฟรมนี้?") && void runOp("delete_frame", { frameId }))}
+          >
+            <Trash2 size={14} /> ลบเฟรม
+          </button>
+        </div>
+      )}
+    </span>
+  );
+}
 
 /** Comment input anchored under the picked element; counter-scaled so it stays readable at any zoom. */
 function CommentPopover({ draft, zoom }: { draft: NonNullable<EditorState["commentDraft"]>; zoom: number }) {

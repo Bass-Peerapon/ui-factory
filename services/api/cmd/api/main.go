@@ -17,6 +17,7 @@ import (
 	"github.com/Bass-Peerapon/ui-factory/services/api/internal/config"
 	"github.com/Bass-Peerapon/ui-factory/services/api/internal/httpapi"
 	"github.com/Bass-Peerapon/ui-factory/services/api/internal/hub"
+	"github.com/Bass-Peerapon/ui-factory/services/api/internal/images"
 	"github.com/Bass-Peerapon/ui-factory/services/api/internal/llm"
 	"github.com/Bass-Peerapon/ui-factory/services/api/internal/pipeline"
 	"github.com/Bass-Peerapon/ui-factory/services/api/internal/store"
@@ -46,21 +47,26 @@ func run() error {
 	model, err := llm.NewGemini(ctx, llm.Options{
 		APIKey: cfg.GeminiAPIKey, Model: cfg.GeminiModel, FastModel: cfg.GeminiFastModel,
 		RPM: cfg.GeminiRPM, FastRPM: cfg.GeminiFastRPM,
+		ImageModel: cfg.ImageModel, ImageRPM: cfg.ImageRPM,
 	})
 	if err != nil {
 		return err
 	}
 
 	h := hub.New(st, cat)
+	imgs := &images.Store{Dir: cfg.ImagesDir}
 	srv := &httpapi.Server{
 		Hub:         h,
 		FixturesDir: cfg.FixturesDir,
 		ComposerURL: cfg.ComposerURL,
+		Images:      imgs,
 		Runner: &pipeline.Runner{
 			Cat:        cat,
 			Composer:   composer.New(cfg.ComposerURL, cfg.ComposerMode),
 			Model:      model,
 			MaxRetries: cfg.MaxRetries,
+			Images:     model,
+			ImageStore: imgs,
 		},
 	}
 	httpSrv := &http.Server{Addr: fmt.Sprintf(":%d", cfg.Port), Handler: srv.Handler(), ReadHeaderTimeout: 10 * time.Second}
@@ -71,7 +77,7 @@ func run() error {
 		_ = httpSrv.Shutdown(shutdown)
 	}()
 	slog.Info("api listening", "port", cfg.Port, "db", cfg.DatabasePath, "composer", cfg.ComposerURL,
-		"mode", cfg.ComposerMode, "model", cfg.GeminiModel, "fast", cfg.GeminiFastModel)
+		"mode", cfg.ComposerMode, "model", cfg.GeminiModel, "fast", cfg.GeminiFastModel, "image", cfg.ImageModel)
 	if err := httpSrv.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) {
 		return err
 	}

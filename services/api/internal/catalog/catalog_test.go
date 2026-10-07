@@ -25,3 +25,39 @@ func TestValidateProps(t *testing.T) {
 		t.Fatal("skeleton should be stripped")
 	}
 }
+
+func TestContentSchemaWithholdsEyebrow(t *testing.T) {
+	c, err := Load()
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, typ := range []string{"Hero", "ImageText"} {
+		s := c.ContentSchema(typ)
+		props := s["properties"].(map[string]any)
+		if _, ok := props["eyebrow"]; ok {
+			t.Errorf("%s: eyebrow must not be offered to the fill step", typ)
+		}
+		if _, ok := props["imageAlt"]; !ok {
+			t.Errorf("%s: imageAlt missing", typ)
+		}
+		req, _ := s["required"].([]any)
+		found := false
+		for _, r := range req {
+			found = found || r == "imageAlt"
+		}
+		if !found {
+			t.Errorf("%s: imageAlt should be required for the fill step, got %v", typ, req)
+		}
+	}
+}
+
+func TestContentSchemaWithholdsNestedImage(t *testing.T) {
+	c, err := Load()
+	if err != nil {
+		t.Fatal(err)
+	}
+	items := c.ContentSchema("Gallery")["properties"].(map[string]any)["items"].(map[string]any)["items"].(map[string]any)
+	if _, ok := items["properties"].(map[string]any)["image"]; ok {
+		t.Fatal("Gallery item image must not be offered to the fill step")
+	}
+}

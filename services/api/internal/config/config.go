@@ -21,6 +21,9 @@ type Config struct {
 	MaxRetries      int
 	GeminiRPM       int
 	GeminiFastRPM   int
+	ImageModel      string
+	ImageRPM        int
+	ImagesDir       string
 	FixturesDir     string
 }
 
@@ -45,8 +48,19 @@ func Load() Config {
 		MaxRetries:      atoi(os.Getenv("AGENT_MAX_RETRIES"), 3),
 		GeminiRPM:       atoi(os.Getenv("GEMINI_RPM"), 5),
 		GeminiFastRPM:   atoi(os.Getenv("GEMINI_FAST_RPM"), 15),
+		ImageModel:      envOr("GEMINI_IMAGE_MODEL", "gemini-3.1-flash-image"),
+		ImageRPM:        atoi(os.Getenv("GEMINI_IMAGE_RPM"), 10),
+		ImagesDir:       filepath.Join(filepath.Dir(db), "images"),
 		FixturesDir:     filepath.Join(root, "packages/catalog/fixtures"),
 	}
+}
+
+// envOr returns the variable when it is set, even to "" (which disables a feature), else def.
+func envOr(key, def string) string {
+	if v, ok := os.LookupEnv(key); ok {
+		return v
+	}
+	return def
 }
 
 func atoi(s string, def int) int {

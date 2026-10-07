@@ -1,15 +1,10 @@
 // Blocks added in M5. Shared helpers live in blocks.tsx.
-import { ArrowDownRight, ArrowRight, ArrowUpRight, Check, ImageIcon, Minus, Quote as QuoteIcon } from "lucide-react";
+import { ArrowDownRight, ArrowRight, ArrowUpRight, Check, Minus } from "lucide-react";
 import type { ReactNode } from "react";
 import { cn } from "../lib/utils";
-import { Bar, Heading, Section, SkCards, SkHeading, hasSlot, icons, type BlockProps } from "./blocks-shared";
+import { Bar, Heading, Photo, Section, SkCards, SkHeading, hasSlot, icons, type BlockProps } from "./blocks-shared";
 import { Badge } from "./ui/badge";
 
-const ImagePlaceholder = ({ className }: { className?: string }) => (
-  <div className={cn("grid place-items-center rounded-lg border bg-gradient-to-br from-muted via-accent to-muted text-muted-foreground", className)}>
-    <ImageIcon className="size-8 opacity-60" />
-  </div>
-);
 
 export const Banner = ({ props }: BlockProps<"Banner">) => (
   <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 bg-primary px-4 py-2 text-center text-sm text-primary-foreground">
@@ -34,10 +29,10 @@ export const LogoCloud = ({ props }: BlockProps<"LogoCloud">) => (
 export const ImageText = ({ props, slots }: BlockProps<"ImageText">) => (
   <Section>
     <div className="grid items-center gap-10 md:grid-cols-2 md:gap-16">
-      <ImagePlaceholder className={cn("aspect-[4/3]", props.imageSide === "left" ? "md:order-first" : "md:order-last")} />
+      <Photo alt={props.imageAlt} image={props.image} className={cn("aspect-[4/3]", props.imageSide === "left" ? "md:order-first" : "md:order-last")} />
       <div>
-        <div className="eyebrow text-primary">{props.eyebrow}</div>
-        <h2 className="mt-3 text-3xl font-semibold md:text-4xl">{props.title}</h2>
+        {props.eyebrow && <div className="eyebrow mb-3 text-primary">{props.eyebrow}</div>}
+        <h2 className="text-3xl font-semibold md:text-4xl">{props.title}</h2>
         <p className="mt-4 text-lg leading-relaxed text-muted-foreground">{props.description}</p>
         {props.bullets.length > 0 && (
           <ul className="mt-6 space-y-3">
@@ -74,7 +69,7 @@ export const ProductGrid = ({ props }: BlockProps<"ProductGrid">) => (
       {props.products.map((p, i) => (
         <div key={i} className="group">
           <div className="relative">
-            <ImagePlaceholder className="aspect-square" />
+            <Photo alt={p.name} className="aspect-square" />
             {p.badge && <Badge className="absolute top-3 left-3">{p.badge}</Badge>}
           </div>
           <div className="mt-3 flex items-start justify-between gap-2">
@@ -88,30 +83,35 @@ export const ProductGrid = ({ props }: BlockProps<"ProductGrid">) => (
   </Section>
 );
 
-export const Gallery = ({ props }: BlockProps<"Gallery">) => (
-  <Section>
-    <Heading title={props.title} />
-    <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-      {props.items.map((it, i) => (
-        <figure key={i}>
-          <ImagePlaceholder className={i % 5 === 0 ? "aspect-[4/5]" : "aspect-[4/3]"} />
-          <figcaption className="mt-2 text-sm text-muted-foreground">{it.caption}</figcaption>
-        </figure>
-      ))}
-    </div>
-  </Section>
-);
+export const Gallery = ({ props }: BlockProps<"Gallery">) => {
+  // Once photos exist, show only the drawn ones: a half-empty gallery reads as unfinished.
+  const drawn = props.items.filter((it) => it.image);
+  const items = drawn.length >= 3 ? drawn : props.items;
+  return (
+    <Section>
+      <Heading title={props.title} />
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
+        {items.map((it, i) => (
+          <figure key={i} className={cn("flex flex-col", i === 0 && "md:row-span-2")}>
+            <Photo alt={it.caption} image={it.image} className={i === 0 ? "aspect-[4/3] md:aspect-auto md:min-h-0 md:flex-1" : "aspect-[4/3]"} />
+            <figcaption className="mt-2 text-sm text-muted-foreground">{it.caption}</figcaption>
+          </figure>
+        ))}
+      </div>
+    </Section>
+  );
+};
 
 export const Team = ({ props }: BlockProps<"Team">) => (
   <Section>
     <Heading title={props.title} />
-    <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+    {/* No portraits to show, so no initial-in-a-circle stand-ins: names, roles and bios set as type. */}
+    <div className={cn("grid gap-x-12 border-t sm:grid-cols-2", props.members.length >= 4 ? "lg:grid-cols-4" : props.members.length === 3 && "lg:grid-cols-3")}>
       {props.members.map((m, i) => (
-        <div key={i} className="text-center">
-          <div className="mx-auto grid size-24 place-items-center rounded-full bg-muted text-2xl font-semibold text-foreground">{m.name.slice(0, 1)}</div>
-          <h3 className="mt-4 font-semibold">{m.name}</h3>
-          <div className="text-sm text-muted-foreground">{m.role}</div>
-          <p className="mt-2 text-sm text-muted-foreground">{m.bio}</p>
+        <div key={i} className="border-b py-6">
+          <h3 className="text-xl font-semibold">{m.name}</h3>
+          <div className="mt-1 text-sm text-muted-foreground">{m.role}</div>
+          <p className="mt-4 text-muted-foreground">{m.bio}</p>
         </div>
       ))}
     </div>
@@ -137,18 +137,18 @@ export const Timeline = ({ props }: BlockProps<"Timeline">) => (
 export const ComparisonTable = ({ props }: BlockProps<"ComparisonTable">) => (
   <Section>
     <Heading title={props.title} />
-    <div className="overflow-x-auto rounded-lg border">
+    <div className="overflow-x-auto">
       <table className="w-full text-sm">
-        <thead className="bg-muted/60">
+        <thead className="border-b-2 border-foreground/20">
           <tr>
-            <th className="p-4 text-left font-semibold" />
-            {props.columns.map((c, i) => <th key={i} className="p-4 text-center font-semibold">{c}</th>)}
+            <th className="py-4 pr-4 text-left font-semibold" />
+            {props.columns.map((c, i) => <th key={i} className="p-4 text-center text-base font-semibold">{c}</th>)}
           </tr>
         </thead>
-        <tbody className="divide-y">
+        <tbody className="divide-y border-b">
           {props.rows.map((r, i) => (
             <tr key={i}>
-              <td className="p-4 font-medium">{r.feature}</td>
+              <td className="py-4 pr-4 font-medium">{r.feature}</td>
               {props.columns.map((_, j) => {
                 const v = r.values[j] ?? "";
                 const yes = /^(✓|yes|true|มี|ได้)$/i.test(v);
@@ -173,7 +173,7 @@ export const BlogList = ({ props }: BlockProps<"BlogList">) => (
     <div className="grid gap-8 md:grid-cols-3">
       {props.posts.map((p, i) => (
         <article key={i}>
-          <ImagePlaceholder className="aspect-video" />
+          <Photo className="aspect-video" />
           <div className="mt-4 flex items-center gap-2 text-xs text-muted-foreground">
             <Badge variant="secondary">{p.category}</Badge>
             <span>{p.date}</span>
@@ -186,11 +186,29 @@ export const BlogList = ({ props }: BlockProps<"BlogList">) => (
   </Section>
 );
 
+/** Menu or service list set as type: name and price on one line with a dotted leader. */
+export const PriceList = ({ props }: BlockProps<"PriceList">) => (
+  <Section>
+    <Heading title={props.title} subtitle={props.note || undefined} />
+    <ul className={cn("grid gap-x-16 border-t", props.items.length >= 6 ? "md:grid-cols-2" : "max-w-3xl")}>
+      {props.items.map((it, i) => (
+        <li key={i} className="border-b py-5">
+          <div className="flex items-baseline gap-3">
+            <h3 className="text-lg">{it.name}</h3>
+            <span aria-hidden className="mb-1 flex-1 border-b border-dotted border-foreground/30" />
+            <span className="tabular shrink-0 font-medium">{it.price}</span>
+          </div>
+          {it.description && <p className="mt-1.5 max-w-[46ch] text-sm text-muted-foreground">{it.description}</p>}
+        </li>
+      ))}
+    </ul>
+  </Section>
+);
+
 export const Quote = ({ props }: BlockProps<"Quote">) => (
   <Section>
-    <figure className="mx-auto max-w-3xl text-center">
-      <QuoteIcon className="mx-auto size-10 text-muted-foreground/40" />
-      <blockquote className="mt-6 text-2xl font-medium leading-relaxed md:text-3xl">{props.quote}</blockquote>
+    <figure className="max-w-4xl">
+      <blockquote className="font-display text-3xl leading-snug md:text-[2.6rem]">“{props.quote}”</blockquote>
       <figcaption className="mt-6">
         <div className="font-semibold">{props.author}</div>
         <div className="text-sm text-muted-foreground">{props.role}</div>
@@ -217,26 +235,26 @@ export const Newsletter = ({ props, slots }: BlockProps<"Newsletter">) => (
 export const ContactInfo = ({ props }: BlockProps<"ContactInfo">) => (
   <Section>
     <Heading title={props.title} />
-    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    <dl className="grid gap-x-12 border-t sm:grid-cols-2 lg:grid-cols-[repeat(auto-fit,minmax(15rem,1fr))]">
       {props.items.map((it, i) => {
         const Icon = icons[it.icon];
         return (
-          <div key={i} className="flex gap-4 rounded-lg border p-5">
-            <div className="grid size-10 shrink-0 place-items-center rounded-md bg-muted text-foreground"><Icon className="size-5" /></div>
-            <div>
-              <div className="text-sm text-muted-foreground">{it.label}</div>
-              <div className="mt-0.5 font-medium">{it.value}</div>
+          <div key={i} className="flex min-w-0 gap-3 border-b py-5">
+            <Icon className="mt-0.5 size-4 shrink-0 text-muted-foreground" strokeWidth={1.7} />
+            <div className="min-w-0">
+              <dt className="text-sm text-muted-foreground">{it.label}</dt>
+              <dd className="mt-1 font-medium [overflow-wrap:anywhere]">{it.value}</dd>
             </div>
           </div>
         );
       })}
-    </div>
+    </dl>
   </Section>
 );
 
 export const AuthForm = ({ props, slots }: BlockProps<"AuthForm">) => (
   <div className="grid min-h-[640px] place-items-center bg-muted/40 px-6 py-16">
-    <div className="w-full max-w-sm rounded-xl border bg-background p-8 shadow-sm">
+    <div className="w-full max-w-sm rounded-xl border bg-background p-8">
       <h1 className="text-2xl font-semibold">{props.title}</h1>
       <p className="mt-1 text-sm text-muted-foreground">{props.subtitle}</p>
       <div className="mt-6 space-y-4">{slots.fields}</div>
@@ -256,7 +274,7 @@ export const KPIGrid = ({ props }: BlockProps<"KPIGrid">) => (
       {props.items.map((k, i) => {
         const T = trendIcon[k.trend];
         return (
-          <div key={i} className="rounded-lg border bg-background p-5 shadow-sm">
+          <div key={i} className="rounded-lg border bg-background p-5">
             <div className="text-sm text-muted-foreground">{k.label}</div>
             <div className="mt-2 text-3xl font-bold">{k.value}</div>
             <div className={cn("mt-1 flex items-center gap-1 text-sm font-medium", trendColor[k.trend])}>
@@ -341,6 +359,11 @@ export const skeletons2: Record<keyof typeof renders2, Sk> = {
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3">{[0, 1, 2, 3, 4, 5].map((i) => <div key={i} className="sk aspect-[4/3]" />)}</div>
     </Section>
   ),
+  PriceList: () => (
+    <Section><SkHeading />
+      <div className="grid gap-x-16 md:grid-cols-2">{[0, 1, 2, 3, 4, 5].map((i) => <div key={i} className="border-b py-5"><div className="flex justify-between"><Bar className="w-1/2" /><Bar className="w-14" /></div><Bar className="mt-2 w-3/4" /></div>)}</div>
+    </Section>
+  ),
   Team: () => (
     <Section><SkHeading />
       <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">{[0, 1, 2, 3].map((i) => <div key={i} className="flex flex-col items-center gap-3"><div className="sk size-24 rounded-full" /><Bar className="w-24" /><Bar className="w-16" /></div>)}</div>
@@ -405,6 +428,6 @@ export const skeletons2: Record<keyof typeof renders2, Sk> = {
 };
 
 export const renders2 = {
-  Banner, LogoCloud, ImageText, Steps, ProductGrid, Gallery, Team, Timeline, ComparisonTable, BlogList, Quote,
+  Banner, LogoCloud, ImageText, Steps, ProductGrid, Gallery, PriceList, Team, Timeline, ComparisonTable, BlogList, Quote,
   Newsletter, ContactInfo, AuthForm, KPIGrid, DataTable, EmptyState,
 };

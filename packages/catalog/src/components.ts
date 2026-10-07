@@ -35,15 +35,19 @@ export const blocks = {
   }),
   Hero: def({
     kind: "block",
-    description: "Hero section: eyebrow, large headline, supporting subtitle and a slot for action buttons.",
+    description: "Hero section: large headline, supporting subtitle, a slot for action buttons and a described photo.",
     props: z.object({
       variant: z.enum(["centered", "split", "editorial", "immersive"]),
-      eyebrow: str(),
+      // Kept optional for older projects; the fill step never writes it (impeccable bans eyebrows).
+      eyebrow: z.string().optional(),
       title: str(),
       subtitle: str(),
+      imageAlt: z.string().optional(),
+      // Generated photo URL, set by the image step after fill.
+      image: z.string().optional(),
     }),
     slots: ["actions"],
-    placeholder: { variant: "centered", eyebrow: P, title: P, subtitle: P },
+    placeholder: { variant: "centered", title: P, subtitle: P, imageAlt: P },
     variants: [
       { value: "centered", description: "centered headline with a wide product image below; general landing pages" },
       { value: "split", description: "headline and actions on the left, product image on the right; apps, SaaS and products" },
@@ -64,7 +68,7 @@ export const blocks = {
         .max(6),
     }),
     variants: [
-      { value: "cards", description: "three-column cards; the default feature overview" },
+      { value: "cards", description: "three equal cards; only for truly parallel items and never next to another card grid" },
       { value: "list", description: "two-column list with the heading on the left; calm, text-led sites" },
       { value: "bento", description: "asymmetric bento grid with one large tile; product capability showcases" },
     ],
@@ -82,7 +86,7 @@ export const blocks = {
   }),
   Stats: def({
     kind: "block",
-    description: "Row of key numbers or metrics with labels, e.g. customers served or uptime.",
+    description: "Row of key numbers with labels. Only for real, specific figures the business can prove; never directly under the Hero.",
     props: z.object({
       items: z.array(z.object({ value: str(), label: str() })).min(2).max(4),
     }),
@@ -209,16 +213,18 @@ export const blocks = {
   }),
   ImageText: def({
     kind: "block",
-    description: "Split section: image on one side, eyebrow, title, description and bullet points on the other, with an actions slot.",
+    description: "Split section: a described photo on one side, title, description and bullet points on the other, with an actions slot.",
     props: z.object({
-      eyebrow: str(),
+      eyebrow: z.string().optional(),
       title: str(),
       description: str(),
       bullets: z.array(str()).min(0).max(5),
       imageSide: z.enum(["left", "right"]),
+      imageAlt: z.string().optional(),
+      image: z.string().optional(),
     }),
     slots: ["actions"],
-    placeholder: { eyebrow: P, title: P, description: P, bullets: [P, P, P], imageSide: "right" },
+    placeholder: { title: P, description: P, bullets: [P, P, P], imageSide: "right", imageAlt: P },
     maxUses: 3,
   }),
   Steps: def({
@@ -253,8 +259,30 @@ export const blocks = {
   Gallery: def({
     kind: "block",
     description: "Image gallery grid with captions, e.g. portfolio, rooms, menu photos.",
-    props: z.object({ title: str(), items: z.array(z.object({ caption: str() })).min(3).max(9) }),
+    props: z.object({ title: str(), items: z.array(z.object({ caption: str(), image: z.string().optional() })).min(3).max(9) }),
     placeholder: { title: P, items: [{ caption: P }, { caption: P }, { caption: P }, { caption: P }, { caption: P }, { caption: P }] },
+  }),
+  PriceList: def({
+    kind: "block",
+    description:
+      "Menu or service price list set as typography: item name, one-line description and price in rows, e.g. a restaurant tasting menu, salon or clinic services, course fees.",
+    props: z.object({
+      title: str(),
+      note: z.string(),
+      items: z.array(z.object({ name: str(), description: z.string(), price: str() })).min(3).max(12),
+    }),
+    placeholder: {
+      title: P,
+      note: P,
+      items: [
+        { name: P, description: P, price: P },
+        { name: P, description: P, price: P },
+        { name: P, description: P, price: P },
+        { name: P, description: P, price: P },
+        { name: P, description: P, price: P },
+        { name: P, description: P, price: P },
+      ],
+    },
   }),
   Team: def({
     kind: "block",

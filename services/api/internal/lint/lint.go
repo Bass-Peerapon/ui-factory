@@ -16,7 +16,7 @@ var Budgets = map[string]int{
 	"eyebrow": 28, "title": 64, "subtitle": 160, "description": 140, "label": 24, "ctaLabel": 22,
 	"linkLabel": 22, "quote": 200, "question": 90, "answer": 240, "bio": 130, "excerpt": 150,
 	"text": 100, "value": 18, "name": 42, "role": 42, "caption": 60, "brand": 28, "footerText": 80,
-	"feature": 40, "date": 24, "delta": 14, "category": 20, "copyright": 80, "placeholder": 40,
+	"feature": 40, "imageAlt": 90, "note": 120, "price": 18, "date": 24, "delta": 14, "category": 20, "copyright": 80, "placeholder": 40,
 }
 
 const overflow = 1.4
@@ -24,7 +24,9 @@ const overflow = 1.4
 var (
 	filler = regexp.MustCompile(`(?i)lorem ipsum|placeholder text|sample content|feature (one|two|three|1|2|3)\b|ฟีเจอร์ที่ ?[0-9]|ข้อความตัวอย่าง|…`)
 	hype   = regexp.MustCompile(`(?i)\d+(\.\d+)?\s?[x×](\s|$)|(เร็ว|ดี|มาก|ประหยัด)ขึ้น\s?\d+\s?เท่า|99\.9+\s?%|อันดับ\s?(1|หนึ่ง)\s?(ของ|ใน)?\s?(ประเทศ|โลก)|ที่สุดในโลก|best in the world|#1 in`)
-	emoji  = regexp.MustCompile(`[\x{1F300}-\x{1FAFF}\x{2600}-\x{27BF}\x{1F000}-\x{1F2FF}]`)
+	// Generic SaaS and Thai marketing phrases, after impeccable's marketing-buzzword and aphoristic-cadence rules.
+	buzz  = regexp.MustCompile(`(?i)\b(streamline[sd]?|empower(s|ing)?|supercharge|world-class|enterprise-grade|next-gen(eration)?|cutting-edge|seamless(ly)?|elevate[sd]?|unlock|revolutioni[sz]e|game-?changer|leverage)\b|ยกระดับ|เหนือระดับ|ไร้รอยต่อ|ครบวงจร|อย่างแท้จริง|ตอบโจทย์ทุก|ที่สุดแห่ง|นวัตกรรมล้ำสมัย|ประสบการณ์สุดพิเศษ|ไม่ใช่แค่.{1,30}แต่(คือ|เป็น)`)
+	emoji = regexp.MustCompile(`[\x{1F300}-\x{1FAFF}\x{2600}-\x{27BF}\x{1F000}-\x{1F2FF}]`)
 )
 
 type Finding struct {
@@ -45,6 +47,8 @@ func Props(props map[string]any) []Finding {
 			out = append(out, Finding{path, "remove emoji; icons come from the icon prop"})
 		case hype.MatchString(s):
 			out = append(out, Finding{path, "invented hype metric or superlative; use a plausible, specific figure or plain wording"})
+		case buzz.MatchString(s):
+			out = append(out, Finding{path, fmt.Sprintf("marketing buzzword %q; say what the business literally does", buzz.FindString(s))})
 		}
 		if b, ok := Budgets[key]; ok {
 			if n := utf8.RuneCountInString(s); float64(n) > float64(b)*overflow {

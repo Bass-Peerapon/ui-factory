@@ -1,6 +1,10 @@
 // Design systems adapted from nexu-io/open-design (Apache-2.0), design-systems/<id>/tokens.css and DESIGN.md.
 // Changes: token values mapped onto our shadcn-style theme, rgba borders flattened to hex on the
 // background, Thai-capable font stacks added, posture rules condensed. See THIRD_PARTY_NOTICES.md.
+// Primary and muted-foreground were later darkened (same hue) until they pass WCAG AA 4.5:1 on every
+// surface, after impeccable's detector flagged them; scripts/check-contrast.ts keeps them there.
+// Shadcn (the default system) and Linear set type in IBM Plex instead of Geist and Inter, which impeccable's
+// detector flags as overused (rule overused-font); Vercel keeps Geist because the face is the brand.
 import { fontStacks as stack } from "./fonts";
 import type { Theme } from "./theme";
 
@@ -28,8 +32,8 @@ export const designSystems: DesignSystem[] = [
     ],
     theme: {
       designSystem: "shadcn", primary: "#111111", primaryForeground: "#ffffff", background: "#ffffff", foreground: "#111827",
-      muted: "#f5f5f5", mutedForeground: "#64748b", accent: "#f4f4f5", border: "#e5e7eb", radius: 0.5,
-      font: "sans", displayFont: stack.geist, bodyFont: stack.geist, density: "standard",
+      muted: "#f5f5f5", mutedForeground: "#606f86", accent: "#f4f4f5", border: "#e5e7eb", radius: 0.5,
+      font: "sans", displayFont: stack.plex, bodyFont: stack.plex, density: "standard",
     },
   }),
   ds({
@@ -56,7 +60,7 @@ export const designSystems: DesignSystem[] = [
     ],
     theme: {
       designSystem: "clean", primary: "#111111", primaryForeground: "#ffffff", background: "#ffffff", foreground: "#111111",
-      muted: "#f7f7f7", mutedForeground: "#707070", accent: "#f0f0f0", border: "#d9d9d9", radius: 0.5,
+      muted: "#f7f7f7", mutedForeground: "#6c6c6c", accent: "#f0f0f0", border: "#d9d9d9", radius: 0.5,
       font: "sans", displayFont: stack.anuphan, bodyFont: stack.anuphan, density: "relaxed",
     },
   }),
@@ -70,7 +74,7 @@ export const designSystems: DesignSystem[] = [
     ],
     theme: {
       designSystem: "editorial", primary: "#9a5a2f", primaryForeground: "#ffffff", background: "#fbf7f0", foreground: "#1f1a16",
-      muted: "#f3ece1", mutedForeground: "#7d7168", accent: "#efe6d8", border: "#ded3c5", radius: 0.5,
+      muted: "#f3ece1", mutedForeground: "#6f645c", accent: "#efe6d8", border: "#ded3c5", radius: 0.5,
       font: "serif", displayFont: stack.notoSerif, bodyFont: stack.sarabun, density: "relaxed",
     },
   }),
@@ -84,7 +88,7 @@ export const designSystems: DesignSystem[] = [
     ],
     theme: {
       designSystem: "warm-editorial", primary: "#9b5b32", primaryForeground: "#ffffff", background: "#fbf6ee", foreground: "#201914",
-      muted: "#f4ece0", mutedForeground: "#7a6d63", accent: "#efe4d4", border: "#ded2c3", radius: 1,
+      muted: "#f4ece0", mutedForeground: "#6f635a", accent: "#efe4d4", border: "#ded2c3", radius: 1,
       font: "serif", displayFont: stack.trirong, bodyFont: stack.anuphan, density: "relaxed",
     },
   }),
@@ -97,8 +101,8 @@ export const designSystems: DesignSystem[] = [
       "Use semantic colors (success, danger) for data, never for decoration.",
     ],
     theme: {
-      designSystem: "dashboard", primary: "#0284c7", primaryForeground: "#ffffff", background: "#f4f7fb", foreground: "#111827",
-      muted: "#eaf0f7", mutedForeground: "#64748b", accent: "#e6eef8", border: "#d8e2ee", radius: 0.75,
+      designSystem: "dashboard", primary: "#0275b1", primaryForeground: "#ffffff", background: "#f4f7fb", foreground: "#111827",
+      muted: "#eaf0f7", mutedForeground: "#5c6b81", accent: "#e6eef8", border: "#d8e2ee", radius: 0.75,
       font: "sans", displayFont: stack.chakra, bodyFont: stack.plex, density: "compact",
     },
   }),
@@ -112,7 +116,7 @@ export const designSystems: DesignSystem[] = [
     ],
     theme: {
       designSystem: "corporate", primary: "#2563eb", primaryForeground: "#ffffff", background: "#f5f8ff", foreground: "#101828",
-      muted: "#eaf0fb", mutedForeground: "#667085", accent: "#e3ebfb", border: "#d7e0ef", radius: 1,
+      muted: "#eaf0fb", mutedForeground: "#5f697e", accent: "#e3ebfb", border: "#d7e0ef", radius: 1,
       font: "sans", displayFont: stack.baiJamjuree, bodyFont: stack.plex, density: "standard",
     },
   }),
@@ -125,8 +129,8 @@ export const designSystems: DesignSystem[] = [
       "Illustration-like placeholders are fine; keep text short and warm.",
     ],
     theme: {
-      designSystem: "friendly", primary: "#ea580c", primaryForeground: "#ffffff", background: "#fff8d7", foreground: "#1d1836",
-      muted: "#fff1b8", mutedForeground: "#796f91", accent: "#ffeeb0", border: "#eadfba", radius: 1.25,
+      designSystem: "friendly", primary: "#c2490a", primaryForeground: "#ffffff", background: "#fff8d7", foreground: "#1d1836",
+      muted: "#fff1b8", mutedForeground: "#6f6587", accent: "#ffeeb0", border: "#eadfba", radius: 1.25,
       font: "rounded", displayFont: stack.mitr, bodyFont: stack.anuphan, density: "standard",
     },
   }),
@@ -153,8 +157,8 @@ export const designSystems: DesignSystem[] = [
       "Short punchy copy.",
     ],
     theme: {
-      designSystem: "neobrutalism", primary: "#d24b1f", primaryForeground: "#ffffff", background: "#fff4cf", foreground: "#2a1810",
-      muted: "#fffaf0", mutedForeground: "#8a6652", accent: "#ffe9a8", border: "#2a1810", radius: 0.25,
+      designSystem: "neobrutalism", primary: "#c1451d", primaryForeground: "#ffffff", background: "#fff4cf", foreground: "#2a1810",
+      muted: "#fffaf0", mutedForeground: "#83614d", accent: "#ffe9a8", border: "#2a1810", radius: 0.25,
       font: "sans", displayFont: stack.kanit, bodyFont: stack.prompt, density: "standard",
     },
   }),
@@ -183,7 +187,7 @@ export const designSystems: DesignSystem[] = [
     theme: {
       designSystem: "linear-app", primary: "#5e6ad2", primaryForeground: "#ffffff", background: "#08090a", foreground: "#f7f8f8",
       muted: "#191a1b", mutedForeground: "#8a8f98", accent: "#1c1d1f", border: "#1d1e20", radius: 0.5,
-      font: "sans", displayFont: stack.inter, bodyFont: stack.inter, density: "standard",
+      font: "sans", displayFont: stack.plex, bodyFont: stack.plex, density: "standard",
     },
   }),
 ];

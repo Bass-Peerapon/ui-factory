@@ -2,6 +2,7 @@ package pipeline
 
 import (
 	"context"
+	"encoding/json/jsontext"
 	"encoding/json/v2"
 	"fmt"
 	"slices"
@@ -9,6 +10,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/Bass-Peerapon/ui-factory/services/api/internal/catalog"
 	"github.com/Bass-Peerapon/ui-factory/services/api/internal/doc"
 	"github.com/Bass-Peerapon/ui-factory/services/api/internal/hub"
 	"github.com/Bass-Peerapon/ui-factory/services/api/internal/lint"
@@ -65,8 +67,14 @@ func skeletonGroups(s *doc.Spec) []fillGroup {
 }
 
 // fillSystem carries the writing and craft rules. The craft part is adapted from open-design's
-// craft/anti-ai-slop.md, color.md and typography.md (Apache-2.0); see THIRD_PARTY_NOTICES.md.
+// craft/anti-ai-slop.md, color.md and typography.md, and the copy and mode rules from impeccable's
+// craft-floor.md, clarify.md and mode-*.md (all Apache-2.0); see THIRD_PARTY_NOTICES.md.
 const fillSystem = `You write the content of UI components for a realistic product prototype.
+
+Page mode (from the brief; default persuade for marketing pages, operate for app screens):
+- persuade: the headline makes the offer intelligible in one line and says what only this business can prove; the primary action is the one visitors came to take (book a slot, order, register), named in its working form.
+- operate: labels name the data and the task plainly; no slogans, no marketing adjectives; numbers and states read like a real working day.
+- read: titles answer the reader's question; excerpts carry substance, not teasers.
 
 Writing rules:
 - Write in %s. Natural, idiomatic copy a local designer would ship; keep brand names as they are.
@@ -78,6 +86,14 @@ Writing rules:
 - In a block's actions, exactly one Button may use variant "default"; the rest use "outline" or "ghost".
 - Pick icons that match the meaning of each item.
 - Vary the copy between sections: do not repeat the same headline pattern or phrase on one page.
+- A PriceList carries 5 to 8 real items from the facts' offerings and more like them; a menu names actual dishes with their main ingredient.
+- Use the facts exactly when they are given: the same brand name, people, prices, address, phone and hours on every block. Never invent a second name for the business.
+- No marketing buzzwords (streamline, empower, seamless, elevate, world-class, cutting-edge, ยกระดับ, เหนือระดับ, ไร้รอยต่อ, ครบวงจร, อย่างแท้จริง, ตอบโจทย์ทุกไลฟ์สไตล์). Say what the business literally does.
+- No aphorism cadence ("ไม่ใช่แค่ X แต่คือ Y", "Not a feature. A platform.") and no flowery abstractions ("รสชาติแห่งความวิจิตร"); prefer a concrete detail (a dish, a street, a price, a time).
+- Headings carry their own weight; never write a kicker or label above them.
+- Controls name their action; form errors and empty states name the problem and the way forward.
+- imageAlt describes one specific photo a designer would shoot for this business (subject, setting, light), in the page language.
+- Claims come from the brief; when a figure is illustrative, keep it plausible and modest rather than impressive.
 
 %s
 
@@ -119,6 +135,7 @@ func (r *Runner) fill(ctx context.Context, s *hub.Session, t *hub.Turn, frameID 
 	if brief == "" {
 		brief = frame.Name
 	}
+	facts := frame.Facts
 	guide := r.Cat.DesignGuide(fmt.Sprint(p.Theme["designSystem"]))
 	if guide == "" {
 		guide = "Design system: neutral, restrained; one accent color used only for the primary action."
@@ -136,7 +153,7 @@ func (r *Runner) fill(ctx context.Context, s *hub.Session, t *hub.Turn, frameID 
 				return
 			}
 			defer func() { <-sem }()
-			filled, polished, failures := r.fillGroup(ctx, s, frameID, spec, g, system, brief, outline)
+			filled, polished, failures := r.fillGroup(ctx, s, frameID, spec, g, system, brief, facts, outline)
 			mu.Lock()
 			res.Filled += filled
 			res.Polished += polished
@@ -156,7 +173,7 @@ func (r *Runner) fill(ctx context.Context, s *hub.Session, t *hub.Turn, frameID 
 }
 
 func (r *Runner) fillGroup(ctx context.Context, s *hub.Session, frameID string, spec *doc.Spec, g fillGroup,
-	system, brief string, outline []string) (int, int, []string) {
+	system, brief, facts string, outline []string) (int, int, []string) {
 	pending := slices.Clone(g.ids)
 	valid := map[string]map[string]any{}
 	fallback := map[string]map[string]any{}
@@ -184,13 +201,17 @@ func (r *Runner) fillGroup(ctx context.Context, s *hub.Session, frameID string, 
 			}
 			elements = append(elements, item)
 		}
-		prompt, _ := json.Marshal(map[string]any{
+		req := map[string]any{
 			"length_budgets": lint.Budgets,
 			"brief":          brief,
 			"page_outline":   outline,
 			"block":          spec.Elements[g.block].Type,
 			"elements":       elements,
-		})
+		}
+		if facts != "" {
+			req["facts"] = jsontext.Value(facts)
+		}
+		prompt, _ := json.Marshal(req)
 		out, err := r.Model.GenerateJSON(ctx, llm.JSONRequest{
 			System: system,
 			Prompt: string(prompt),
@@ -222,6 +243,9 @@ func (r *Runner) fillGroup(ctx context.Context, s *hub.Session, frameID string, 
 				continue
 			}
 			delete(pr, "skeleton")
+			for _, k := range catalog.WithheldProps {
+				delete(pr, k)
+			}
 			if v, ok := spec.Elements[id].Props["variant"]; ok {
 				pr["variant"] = v // the composer chose the layout; content fill must not change it
 			}

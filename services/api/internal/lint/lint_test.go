@@ -27,3 +27,17 @@ func TestPrimaryButtons(t *testing.T) {
 		t.Fatalf("want [c], got %v", d)
 	}
 }
+
+func TestBuzzwords(t *testing.T) {
+	for _, s := range []string{
+		"ยกระดับรอยยิ้มของคุณ", "บริการทันตกรรมครบวงจร", "Elevate your mornings", "A seamless checkout",
+		"ไม่ใช่แค่ร้านกาแฟ แต่คือบ้านหลังที่สอง",
+	} {
+		if f := Props(map[string]any{"title": s}); len(f) != 1 {
+			t.Errorf("%q: want one finding, got %v", s, f)
+		}
+	}
+	if f := Props(map[string]any{"title": "จัดฟันใส 3 มิติ เริ่ม 55,000 บาท ผ่อน 0% 10 เดือน"}); len(f) != 0 {
+		t.Errorf("plain copy flagged: %v", f)
+	}
+}

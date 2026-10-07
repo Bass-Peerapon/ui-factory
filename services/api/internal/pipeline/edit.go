@@ -45,6 +45,8 @@ type editSession struct {
 	attempts map[string]int
 	failures []string
 	applied  int
+	// calls lists each successful tool call as "tool target" for the chat transcript.
+	calls []string
 	// scope limits edits to commented elements and their subtrees; nil means the whole frame.
 	scope map[string]bool
 }
@@ -83,6 +85,7 @@ func (e *editSession) apply(ctx context.Context, key string, op func(p *doc.Proj
 	defer e.mu.Unlock()
 	if err == nil {
 		e.applied++
+		e.calls = append(e.calls, key)
 		return toolResult{OK: true, ID: id}
 	}
 	e.attempts[key]++
@@ -365,9 +368,32 @@ func (r *Runner) edit(ctx context.Context, s *hub.Session, t *hub.Turn, req Chat
 		}
 	}
 	if frameID == "" {
-		return reply{text: out}, nil
+		return reply{text: out, meta: map[string]any{"tools": toolSummary(es.calls)}}, nil
 	}
-	return r.withNext(s, frameID, out), nil
+	rep := r.withNext(s, frameID, out)
+	rep.meta["tools"] = toolSummary(es.calls)
+	return rep, nil
+}
+
+// toolSummary groups successful tool calls by tool, keeping first-seen order, e.g.
+// {"tool": "update_props", "targets": ["hero"], "count": 2}.
+func toolSummary(calls []string) []map[string]any {
+	out := []map[string]any{}
+	idx := map[string]int{}
+	for _, c := range calls {
+		tool, target, _ := strings.Cut(c, " ")
+		i, ok := idx[tool]
+		if !ok {
+			i = len(out)
+			idx[tool] = i
+			out = append(out, map[string]any{"tool": tool, "targets": []string{}, "count": 0})
+		}
+		out[i]["count"] = out[i]["count"].(int) + 1
+		if t := out[i]["targets"].([]string); target != "" && !slices.Contains(t, target) {
+			out[i]["targets"] = append(t, target)
+		}
+	}
+	return out
 }
 
 // editContext builds the user message: selection subtree, frame outline, theme and the last 10 chat turns.

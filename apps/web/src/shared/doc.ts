@@ -7,6 +7,7 @@ export interface Frame {
   x: number;
   y: number;
   brief?: string;
+  facts?: string;
   flow?: string;
   spec: Spec | null;
 }
@@ -38,12 +39,26 @@ export interface BriefMeta {
   sufficient: number;
 }
 
+export interface ToolCallSummary {
+  tool: string;
+  targets: string[];
+  count: number;
+}
+
 export interface ChatMessage {
   id: string;
   role: "user" | "assistant" | "system";
   text: string;
   turnId?: string;
-  meta?: Partial<BriefMeta> & { kind?: string; next?: NextStep[]; comments?: { elementId: string; text: string }[] };
+  meta?: Partial<BriefMeta> & {
+    kind?: string;
+    next?: NextStep[];
+    comments?: { elementId: string; text: string }[];
+    /** Frames a page or flow turn created or changed. */
+    frames?: string[];
+    /** Successful edit tool calls, grouped by tool. */
+    tools?: ToolCallSummary[];
+  };
   createdAt: string;
 }
 

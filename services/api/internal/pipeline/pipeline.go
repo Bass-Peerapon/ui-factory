@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+	"slices"
 	"strings"
 	"sync"
 	"unicode/utf8"
@@ -15,6 +16,7 @@ import (
 	"github.com/Bass-Peerapon/ui-factory/services/api/internal/composer"
 	"github.com/Bass-Peerapon/ui-factory/services/api/internal/doc"
 	"github.com/Bass-Peerapon/ui-factory/services/api/internal/hub"
+	"github.com/Bass-Peerapon/ui-factory/services/api/internal/images"
 	"github.com/Bass-Peerapon/ui-factory/services/api/internal/llm"
 )
 
@@ -23,6 +25,9 @@ type Runner struct {
 	Composer   *composer.Client
 	Model      llm.Model
 	MaxRetries int
+	// Images draws photos for image slots after fill; nil or an unset model keeps the placeholders.
+	Images     llm.ImageModel
+	ImageStore *images.Store
 }
 
 // Comment is a note pinned on one element; a turn with comments only edits those elements.
@@ -37,7 +42,7 @@ type ChatRequest struct {
 	ElementID string    `json:"elementId"`
 	Wireframe bool      `json:"wireframe"`
 	Comments  []Comment `json:"comments"`
-	// Brief holds the clarify-form answers (pageType, platform, designSystem, density, tone).
+	// Brief holds the clarify-form answers (pageType, mode, platform, designSystem, density, tone).
 	Brief     map[string]string `json:"brief"`
 	SkipBrief bool              `json:"skipBrief"`
 	// DisplayText replaces Text in the chat bubble (e.g. a summary of form answers).
@@ -97,13 +102,16 @@ func (r *Runner) Fill(ctx context.Context, s *hub.Session, frameID string) (stri
 		return "", err
 	}
 	go r.run(tctx, s, t, func(ctx context.Context) (reply, error) {
-		s.Plan(t, "เติมเนื้อหาด้วย Gemini", "ตรวจคุณภาพ")
+		s.Plan(t, "เติมเนื้อหาด้วย Gemini", "สร้างภาพ", "ตรวจคุณภาพ")
 		res, err := r.fillFrames(ctx, s, t, frames, 0)
 		if err != nil {
 			return reply{}, err
 		}
-		s.Step(t, 1, res.QualityDetail())
-		return reply{text: res.Summary()}, nil
+		s.Step(t, 1, "")
+		pics := imagesSummary(r.illustrate(ctx, s, t, frames, 1))
+		detail, summary, fixes := r.review(s, frames, res)
+		s.Step(t, 2, detail)
+		return withReview(reply{text: joinLines(res.Summary(), pics)}, summary, fixes, frames), nil
 	})
 	return t.ID, nil
 }
@@ -243,6 +251,9 @@ func (r *Runner) brief(ctx context.Context, s *hub.Session, req ChatRequest, int
 	if v := answers["pageType"]; v != "" {
 		ctxParts = append(ctxParts, "page type: "+v)
 	}
+	if v := answers["mode"]; v != "" {
+		ctxParts = append(ctxParts, "page mode: "+v)
+	}
 	if v := answers["tone"]; v != "" {
 		ctxParts = append(ctxParts, "tone: "+v)
 	}
@@ -281,7 +292,7 @@ func (b pageBrief) prompt(text string) string {
 }
 
 func (r *Runner) newPage(ctx context.Context, s *hub.Session, t *hub.Turn, req ChatRequest, selected *doc.Frame, b pageBrief) (reply, error) {
-	s.Plan(t, "เข้าใจคำสั่ง", "วางโครงด้วย Jev", "เติมเนื้อหาด้วย Gemini", "ตรวจคุณภาพ")
+	s.Plan(t, "เข้าใจคำสั่ง", "วางโครงด้วย Jev", "เติมเนื้อหาด้วย Gemini", "สร้างภาพ", "ตรวจคุณภาพ")
 	frameID := ""
 	err := s.Mutate(ctx, hub.MutateOpts{}, func(p *doc.Project) error {
 		if selected != nil && selected.Spec == nil && (b.device == "" || b.device == selected.Device) {
@@ -322,8 +333,11 @@ func (r *Runner) newPage(ctx context.Context, s *hub.Session, t *hub.Turn, req C
 	if err != nil {
 		return reply{}, err
 	}
-	s.Step(t, 3, res.QualityDetail())
-	return r.withNext(s, frameID, head+"\n"+res.Summary()), nil
+	s.Step(t, 3, "")
+	pics := imagesSummary(r.illustrate(ctx, s, t, []string{frameID}, 3))
+	detail, summary, fixes := r.review(s, []string{frameID}, res)
+	s.Step(t, 4, detail)
+	return withReview(r.withNext(s, frameID, joinLines(head, res.Summary(), pics)), summary, fixes, []string{frameID}), nil
 }
 
 type structureResult struct {
@@ -371,7 +385,7 @@ func (r *Runner) structure(ctx context.Context, s *hub.Session, frameID, prompt 
 
 // newFlow builds every screen of a flow pattern side by side and wires their buttons together.
 func (r *Runner) newFlow(ctx context.Context, s *hub.Session, t *hub.Turn, req ChatRequest, b pageBrief) (reply, error) {
-	s.Plan(t, "เข้าใจคำสั่ง", "วางแผน flow", "วางโครงทุกหน้า", "เชื่อมปุ่มข้ามหน้า", "เติมเนื้อหาด้วย Gemini", "ตรวจคุณภาพ")
+	s.Plan(t, "เข้าใจคำสั่ง", "วางแผน flow", "วางโครงทุกหน้า", "เชื่อมปุ่มข้ามหน้า", "เติมเนื้อหาด้วย Gemini", "สร้างภาพ", "ตรวจคุณภาพ")
 	s.UpdateTurn(t, "", "plan")
 	s.Step(t, 1, "")
 	plan, err := r.Composer.Plan(ctx, b.prompt(req.Text))
@@ -453,15 +467,21 @@ func (r *Runner) newFlow(ctx context.Context, s *hub.Session, t *hub.Turn, req C
 	if err != nil {
 		return reply{}, err
 	}
-	s.Step(t, 5, res.QualityDetail())
-	out := r.withNext(s, frameIDs[0], head+"\n"+res.Summary())
+	s.Step(t, 5, "")
+	pics := imagesSummary(r.illustrate(ctx, s, t, frameIDs, 5))
+	detail, summary, fixes := r.review(s, frameIDs, res)
+	s.Step(t, 6, detail)
+	out := r.withNext(s, frameIDs[0], joinLines(head, res.Summary(), pics))
+	out.meta["frames"] = frameIDs
 	out.meta["next"] = append([]map[string]any{{"label": "เปิด Prototype ของ flow", "action": "prototype", "frameId": frameIDs[0]}},
 		out.meta["next"].([]map[string]any)...)
-	return out, nil
+	return withReview(out, summary, fixes, frameIDs), nil
 }
 
 // fillFrames fills several frames concurrently and reports progress on the given step.
 func (r *Runner) fillFrames(ctx context.Context, s *hub.Session, t *hub.Turn, frameIDs []string, step int) (FillResult, error) {
+	s.Step(t, step, "เตรียมข้อมูลธุรกิจ")
+	r.ensureFacts(ctx, s, frameIDs)
 	var total FillResult
 	var mu sync.Mutex
 	var wg sync.WaitGroup
@@ -500,6 +520,10 @@ func (f *fillProgress) add(total, done int) {
 	d, a := f.done, f.total
 	f.mu.Unlock()
 	f.report(d, a)
+}
+
+func joinLines(parts ...string) string {
+	return strings.Join(slices.DeleteFunc(parts, func(s string) bool { return s == "" }), "\n")
 }
 
 func commentsText(cs []Comment) string {

@@ -15,6 +15,7 @@ import (
 
 	"github.com/Bass-Peerapon/ui-factory/services/api/internal/doc"
 	"github.com/Bass-Peerapon/ui-factory/services/api/internal/hub"
+	"github.com/Bass-Peerapon/ui-factory/services/api/internal/images"
 	"github.com/Bass-Peerapon/ui-factory/services/api/internal/pipeline"
 	"github.com/Bass-Peerapon/ui-factory/services/api/internal/store"
 )
@@ -24,6 +25,7 @@ type Server struct {
 	Runner      *pipeline.Runner
 	FixturesDir string
 	ComposerURL string
+	Images      *images.Store
 }
 
 func (s *Server) Handler() http.Handler {
@@ -41,6 +43,9 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("POST /api/projects/{id}/ops", s.op)
 	mux.HandleFunc("GET /api/projects/{id}/versions", s.versions)
 	mux.HandleFunc("POST /api/projects/{id}/versions/{vid}/restore", s.restore)
+	if s.Images != nil {
+		mux.HandleFunc("GET /api/images/{name}", s.Images.Serve)
+	}
 	return cors(mux)
 }
 

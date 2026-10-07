@@ -1,4 +1,4 @@
-import { Plus, X } from "lucide-react";
+import { PlusCircle, Trash2 } from "lucide-react";
 
 /** Minimal JSON Schema shape produced by z.toJSONSchema for catalog props. */
 export interface JSONSchema {
@@ -30,19 +30,32 @@ function defaultFor(s: JSONSchema): Json {
   }
 }
 
-const isLong = (v: unknown) => typeof v === "string" && v.length > 40;
+const isLong = (v: unknown, label?: string) =>
+  (typeof v === "string" && v.length > 36) || (!!label && /^(title|subtitle|description|body|quote|text)$/.test(label));
 
 /** Renders an editable form for any value described by a JSON Schema. */
 export function SchemaField({ schema, value, onChange, label }: {
   schema: JSONSchema; value: Json; onChange: (v: Json) => void; label?: string;
 }) {
   const wrap = (el: React.ReactNode) => (
-    <label className="block space-y-1">
-      {label && <span className="label block">{label}</span>}
+    <label className="block space-y-1.5">
+      {label && <span className="field-label">{label}</span>}
       {el}
     </label>
   );
 
+  if (schema.enum && schema.enum.length <= 4) {
+    return (
+      <div className="space-y-1.5">
+        {label && <span className="field-label">{label}</span>}
+        <div className="seg seg-block">
+          {schema.enum.map((o) => (
+            <button key={String(o)} type="button" className={value === o ? "is-on" : ""} onClick={() => onChange(o)}>{String(o)}</button>
+          ))}
+        </div>
+      </div>
+    );
+  }
   if (schema.enum) {
     return wrap(
       <select className="field" value={String(value)} onChange={(e) => onChange(e.target.value)}>
@@ -53,8 +66,8 @@ export function SchemaField({ schema, value, onChange, label }: {
   switch (schema.type) {
     case "string":
       return wrap(
-        isLong(value) ? (
-          <textarea className="field" value={String(value ?? "")} onChange={(e) => onChange(e.target.value)} rows={3} />
+        isLong(value, label) ? (
+          <textarea className="field" value={String(value ?? "")} onChange={(e) => onChange(e.target.value)} rows={2} />
         ) : (
           <input className="field" value={String(value ?? "")} onChange={(e) => onChange(e.target.value)} />
         ),
@@ -73,8 +86,8 @@ export function SchemaField({ schema, value, onChange, label }: {
     case "boolean":
       return (
         <label className="flex items-center gap-2">
-          <input type="checkbox" checked={!!value} onChange={(e) => onChange(e.target.checked)} />
-          <span className="label">{label}</span>
+          <input type="checkbox" className="size-4 accent-[var(--ed-brand)]" checked={!!value} onChange={(e) => onChange(e.target.checked)} />
+          <span className="field-label">{label}</span>
         </label>
       );
     case "array": {
@@ -83,28 +96,29 @@ export function SchemaField({ schema, value, onChange, label }: {
       const canAdd = schema.maxItems === undefined || arr.length < schema.maxItems;
       const canRemove = arr.length > (schema.minItems ?? 0);
       return (
-        <div className="space-y-1">
-          {label && <span className="label block">{label} ({arr.length})</span>}
-          <div className="space-y-2 border-l-2 border-[var(--ed-border)] pl-2">
+        <div className="space-y-1.5">
+          {label && <span className="field-label font-semibold">{label} ({arr.length})</span>}
+          <div className="space-y-2">
             {arr.map((v, i) => (
-              <div key={i} className="relative pr-6">
+              <div key={i} className="relative rounded-lg border border-[var(--ed-border)] bg-[var(--ed-panel-2)] p-2.5 pr-9">
                 <SchemaField
                   schema={item}
                   value={v}
                   onChange={(nv) => onChange(arr.map((x, j) => (j === i ? nv : x)))}
                 />
                 <button
-                  className="icon-btn absolute top-0 right-0"
+                  type="button"
+                  className="icon-btn !size-7 absolute top-1.5 right-1.5"
                   disabled={!canRemove}
                   onClick={() => onChange(arr.filter((_, j) => j !== i))}
                   title="ลบ"
                 >
-                  <X size={12} />
+                  <Trash2 size={14} />
                 </button>
               </div>
             ))}
-            <button className="btn !h-6 !text-[12px]" disabled={!canAdd} onClick={() => onChange([...arr, defaultFor(item)])}>
-              <Plus size={12} /> เพิ่ม
+            <button type="button" className="btn btn-soft btn-sm" disabled={!canAdd} onClick={() => onChange([...arr, defaultFor(item)])}>
+              <PlusCircle size={14} /> เพิ่ม
             </button>
           </div>
         </div>
@@ -113,8 +127,8 @@ export function SchemaField({ schema, value, onChange, label }: {
     case "object": {
       const obj = (value ?? {}) as Record<string, Json>;
       return (
-        <div className="space-y-2">
-          {label && <span className="label block">{label}</span>}
+        <div className="space-y-3">
+          {label && <span className="field-label font-semibold">{label}</span>}
           {Object.entries(schema.properties ?? {}).map(([k, s]) => (
             <SchemaField key={k} label={k} schema={s} value={obj[k]} onChange={(nv) => onChange({ ...obj, [k]: nv })} />
           ))}

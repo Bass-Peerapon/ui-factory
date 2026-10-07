@@ -54,7 +54,7 @@ func TestMutateBroadcastsPatchAndUndo(t *testing.T) {
 	}
 	b, _ := json.Marshal(ev.Data)
 	t.Logf("patch: %s", b)
-	if p, v := s.Doc(); p.Theme["primary"] != "#ea580c" || v != 2 {
+	if p, v := s.Doc(); p.Theme["primary"] != "#c2490a" || v != 2 {
 		t.Fatalf("theme not applied: %v v=%d", p.Theme["primary"], v)
 	}
 	label, err := s.Undo(t.Context())

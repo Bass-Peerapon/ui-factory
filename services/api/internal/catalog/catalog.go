@@ -108,18 +108,56 @@ func (c *Catalog) ValidateTheme(theme map[string]any) error {
 	return describe(c.themeSchema.Validate(normalize(theme)))
 }
 
-// ContentSchema returns the props schema without the skeleton flag and with only the keywords
-// Gemini structured output supports.
+// WithheldProps are never written by the fill step, at any depth. Eyebrows (kickers above a heading)
+// are banned outright by impeccable's craft floor (skill/reference/craft-floor.md, rule
+// skill-ban-eyebrow-on-every-section) and stay only for older projects; image URLs come from the image step.
+var WithheldProps = []string{"eyebrow", "image"}
+
+// requiredContent are optional props the fill step must still write when a component has them.
+var requiredContent = []string{"imageAlt"}
+
+// ContentSchema returns the props schema without the skeleton flag and withheld props, with only
+// the keywords Gemini structured output supports.
 func (c *Catalog) ContentSchema(t string) map[string]any {
 	cp := c.Components[t]
 	if cp == nil {
 		return nil
 	}
 	s := geminiSafe(cp.Props).(map[string]any)
-	if props, ok := s["properties"].(map[string]any); ok {
-		delete(props, "skeleton")
+	props, ok := s["properties"].(map[string]any)
+	if !ok {
+		return s
+	}
+	delete(props, "skeleton")
+	withhold(s)
+	req, _ := s["required"].([]any)
+	for _, k := range requiredContent {
+		if _, has := props[k]; has && !slices.Contains(req, any(k)) {
+			req = append(req, k)
+		}
+	}
+	if req != nil {
+		s["required"] = req
 	}
 	return s
+}
+
+func withhold(v any) {
+	switch t := v.(type) {
+	case map[string]any:
+		if props, ok := t["properties"].(map[string]any); ok {
+			for _, k := range WithheldProps {
+				delete(props, k)
+			}
+		}
+		for _, val := range t {
+			withhold(val)
+		}
+	case []any:
+		for _, val := range t {
+			withhold(val)
+		}
+	}
 }
 
 var unsupported = []string{"$schema", "minLength", "maxLength", "pattern", "additionalProperties"}

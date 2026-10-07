@@ -28,6 +28,15 @@ export const briefQuestions = {
       booking: "booking, reservation or appointment page",
     },
   },
+  // Impeccable's surface modes (pbakaus/impeccable, skill/reference/mode-persuade.md, mode-operate.md, mode-read.md).
+  mode: {
+    instructions: "What is the page in `request` for?",
+    criteria: {
+      persuade: "convince a visitor to act: marketing, landing, pricing, shop, event, booking or portfolio pages",
+      operate: "get a task done: sign-in, forms, dashboards, back office, settings and app screens",
+      read: "read or look something up: articles, documentation, news, menus or policies",
+    },
+  },
   tone: {
     instructions: "Which tone fits the business in `request`?",
     criteria: {

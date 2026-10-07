@@ -45,6 +45,9 @@ docs/                spec และ decision notes
 | Structure | composer | `experimental_composeSpec` เลือก candidate ที่มี placeholder props (`skeleton: true`) แล้ว `normalizeSpec` ซ่อม placement ก่อนส่งกลับ |
 | Fill | api | Gemini เติม props ทีละ block แบบขนาน (structured output ตาม JSON Schema ของ block) แต่ละ block ส่งเป็น JSON Patch ทาง SSE ทันทีที่เสร็จ |
 | Edit | api | adk-go `llmagent` เรียก tool `add_node`, `update_props`, `move_node`, `remove_node`, `set_theme`, `create_frame`, `set_navigation` |
+| Facts | api | Gemini fast model สร้าง fact sheet ของธุรกิจหนึ่งครั้งต่อ turn (แบรนด์, ติดต่อ, คน, ราคา) ทุก block และทุกหน้าใน flow เติมจากชุดนี้ |
+| Illustrate | api | `GEMINI_IMAGE_MODEL` วาดภาพของ Hero, ImageText และ Gallery สูงสุด 7 ภาพต่อหน้า เก็บที่ `data/images/` |
+| Critique | api | ตรวจโครงหน้าหลัง fill ตามกฎ craft ของ impeccable โดยไม่เรียก model แสดงผลพร้อมปุ่ม "แก้ตามผลตรวจ" |
 | Validate | api | ทุก tool call และทุกผล Fill ตรวจกับ catalog ถ้าไม่ผ่านส่ง error กลับให้ model แก้ได้ `AGENT_MAX_RETRIES` ครั้ง เกินนั้น apply เฉพาะส่วนที่ผ่านและแจ้งในแชท |
 
 ทุก turn บันทึก snapshot ก่อนเริ่มลง SQLite ทำให้ Undo ได้ ระหว่าง turn เฟรมถูกล็อก ปุ่ม Stop ยกเลิกงานและ rollback กลับ snapshot
@@ -58,6 +61,7 @@ docs/                spec และ decision notes
 | `make test` | Go tests และตรวจ fixtures กับ catalog |
 | `make typecheck` | TypeScript ทุก package และ `go vet` |
 | `make eval` | รัน eval composer (ใช้ `.env` เดียวกัน) ผลอยู่ที่ `evals/results/latest.md` |
+| `make audit` | รัน detector ของ impeccable บนเฟรมที่ render แล้ว (ต้องรัน `make dev` ก่อน) ผลอยู่ที่ `evals/results/design-audit-latest.md` |
 
 ## ข้อจำกัดที่รู้แล้ว
 
@@ -73,3 +77,5 @@ docs/                spec และ decision notes
 - [001 Spike experimental_composeSpec กับ placeholder props](docs/decisions/001-jev-compose-spike.md)
 - [002 ผล eval composer jev เทียบกับ llm](docs/decisions/002-composer-eval.md)
 - [003 ยกระดับตามแนวทาง open-design](docs/decisions/003-open-design-uplift.md) (ส่วนที่ดัดแปลงจาก open-design ดู [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md))
+- [004 กฎ craft ของ impeccable](docs/decisions/004-impeccable-craft.md)
+- [005 แก้หน้าที่ generate ไม่ให้ดูเป็น AI slop](docs/decisions/005-anti-slop.md)

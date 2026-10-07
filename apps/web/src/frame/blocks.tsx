@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
 import { useState } from "react";
 import type { componentDefs } from "@ui-factory/catalog";
-import { Check, ChevronDown, ImageIcon, Sparkles } from "lucide-react";
-import { Bar, Heading, Section, SkCards, SkHeading, hasSlot, icons, type BlockProps, type PropsOf } from "./blocks-shared";
+import { Check, ChevronDown, Sparkles } from "lucide-react";
+import { Bar, Heading, Photo, Section, SkCards, SkHeading, hasSlot, icons, type BlockProps, type PropsOf } from "./blocks-shared";
 import { renders2, skeletons2 } from "./blocks2";
 import { cn } from "../lib/utils";
 import { Badge } from "./ui/badge";
@@ -34,12 +34,6 @@ export const Navbar = ({ props }: BlockProps<"Navbar">) => (
   </header>
 );
 
-const HeroImage = ({ className }: { className?: string }) => (
-  <div className={cn("grid place-items-center rounded-xl border bg-gradient-to-br from-muted via-accent to-muted text-muted-foreground", className)}>
-    <ImageIcon className="size-10 opacity-50" />
-  </div>
-);
-
 export const Hero = ({ props, slots }: BlockProps<"Hero">) => {
   const actions = hasSlot(slots.actions) ? slots.actions : null;
   switch (props.variant) {
@@ -48,20 +42,20 @@ export const Hero = ({ props, slots }: BlockProps<"Hero">) => {
         <Section>
           <div className="grid items-center gap-12 md:grid-cols-[1.1fr_1fr] md:gap-16">
             <div>
-              <div className="eyebrow text-primary">{props.eyebrow}</div>
-              <h1 className="mt-5 text-4xl md:text-[3.5rem]">{props.title}</h1>
+              {props.eyebrow && <div className="eyebrow mb-5 text-primary">{props.eyebrow}</div>}
+              <h1 className="text-4xl md:text-[3.5rem]">{props.title}</h1>
               <p className="measure mt-6 text-lg text-muted-foreground">{props.subtitle}</p>
               {actions && <div className="mt-8 flex flex-wrap gap-3">{actions}</div>}
             </div>
-            <HeroImage className="aspect-[4/3.4] shadow-sm" />
+            <Photo alt={props.imageAlt} image={props.image} className="aspect-[4/3.4]" />
           </div>
         </Section>
       );
     case "editorial":
       return (
         <Section className="md:pt-32">
-          <div className="eyebrow text-muted-foreground">{props.eyebrow}</div>
-          <h1 className="mt-6 max-w-5xl text-5xl md:text-[5.5rem]">{props.title}</h1>
+          {props.eyebrow && <div className="eyebrow mb-6 text-muted-foreground">{props.eyebrow}</div>}
+          <h1 className="max-w-5xl text-5xl md:text-[5.5rem]">{props.title}</h1>
           <div className="mt-10 grid gap-8 border-t pt-8 md:grid-cols-[2fr_1fr] md:items-end">
             <p className="measure text-xl text-muted-foreground">{props.subtitle}</p>
             {actions && <div className="flex flex-wrap gap-3 md:justify-end">{actions}</div>}
@@ -71,13 +65,12 @@ export const Hero = ({ props, slots }: BlockProps<"Hero">) => {
     case "immersive":
       return (
         <section className="relative isolate grid min-h-[620px] place-items-center overflow-hidden px-6 py-24 text-center text-white">
-          <div className="absolute inset-0 -z-10 bg-gradient-to-br from-neutral-700 via-neutral-500 to-neutral-800" />
-          <ImageIcon className="absolute top-1/2 left-1/2 -z-10 size-16 -translate-1/2 opacity-15" />
-          <div className="absolute inset-0 -z-10 bg-black/45" />
+          <Photo alt={props.imageAlt} image={props.image} tone="dark" className="absolute inset-0 -z-10 h-full rounded-none" />
+          <div className="absolute inset-0 -z-10 bg-gradient-to-t from-black/75 via-black/45 to-black/30" />
           <div className="mx-auto max-w-3xl">
-            <div className="eyebrow opacity-85">{props.eyebrow}</div>
-            <h1 className="mt-5 text-4xl md:text-6xl">{props.title}</h1>
-            <p className="mx-auto mt-6 max-w-2xl text-lg opacity-90">{props.subtitle}</p>
+            {props.eyebrow && <div className="eyebrow mb-5 opacity-85">{props.eyebrow}</div>}
+            <h1 className="text-4xl md:text-6xl">{props.title}</h1>
+            <p className="mx-auto mt-6 max-w-2xl text-lg">{props.subtitle}</p>
             {actions && <div className="mt-9 flex flex-wrap justify-center gap-3">{actions}</div>}
           </div>
         </section>
@@ -86,12 +79,12 @@ export const Hero = ({ props, slots }: BlockProps<"Hero">) => {
       return (
         <Section className="md:pt-28">
           <div className="mx-auto max-w-3xl text-center">
-            <Badge variant="secondary" className="mb-6">{props.eyebrow}</Badge>
+            {props.eyebrow && <Badge variant="secondary" className="mb-6">{props.eyebrow}</Badge>}
             <h1 className="text-4xl md:text-6xl">{props.title}</h1>
             <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground md:text-xl">{props.subtitle}</p>
             {actions && <div className="mt-9 flex flex-wrap justify-center gap-3">{actions}</div>}
           </div>
-          <HeroImage className="mx-auto mt-16 aspect-[16/8] w-full max-w-5xl shadow-sm" />
+          <Photo alt={props.imageAlt} image={props.image} className="mx-auto mt-16 aspect-[16/8] max-w-5xl" />
         </Section>
       );
   }
@@ -102,9 +95,11 @@ export const FeatureGrid = ({ props }: BlockProps<"FeatureGrid">) => {
     const Icon = icons[f.icon] ?? Sparkles;
     return (
       <>
-        <Icon className={cn("text-foreground/80", big ? "size-7" : "size-5")} strokeWidth={1.7} />
-        <h3 className={cn("mt-4", big ? "text-2xl" : "text-lg")}>{f.title}</h3>
-        <p className="mt-2 text-sm text-muted-foreground">{f.description}</p>
+        <div className="flex items-center gap-3">
+          <Icon className={cn("shrink-0 text-foreground/70", big ? "size-6" : "size-5")} strokeWidth={1.7} />
+          <h3 className={big ? "text-2xl" : "text-lg"}>{f.title}</h3>
+        </div>
+        <p className={cn("mt-3 text-muted-foreground", !big && "text-sm")}>{f.description}</p>
       </>
     );
   };
@@ -137,15 +132,23 @@ export const FeatureGrid = ({ props }: BlockProps<"FeatureGrid">) => {
       </Section>
     );
   }
+  // "cards": one ruled surface split into cells, not a row of floating cards.
   return (
     <Section>
       <Heading title={props.title} subtitle={props.subtitle} />
-      <div className="grid gap-[var(--gap)] sm:grid-cols-2 lg:grid-cols-3">
-        {props.features.map((f, i) => (
-          <div key={i} className="rounded-lg border bg-background p-7">
-            <Feature f={f} />
-          </div>
-        ))}
+      <div className="grid gap-px overflow-hidden rounded-xl border bg-border sm:grid-cols-2 lg:grid-cols-3">
+        {props.features.map((f, i) => {
+          const Icon = icons[f.icon] ?? Sparkles;
+          return (
+            <div key={i} className="bg-background p-7 md:p-8">
+              <div className="flex items-center gap-3">
+                <Icon className="size-5 shrink-0 text-foreground/70" strokeWidth={1.7} />
+                <h3 className="text-lg">{f.title}</h3>
+              </div>
+              <p className="mt-3 text-muted-foreground">{f.description}</p>
+            </div>
+          );
+        })}
       </div>
     </Section>
   );
@@ -167,18 +170,15 @@ export const Stats = ({ props }: BlockProps<"Stats">) => (
 export const Pricing = ({ props }: BlockProps<"Pricing">) => (
   <Section>
     <Heading title={props.title} />
-    <div className="grid gap-6 md:grid-cols-3">
+    <div className={cn("grid border-y md:divide-x", props.plans.length === 4 ? "md:grid-cols-4" : props.plans.length === 2 ? "md:grid-cols-2" : "md:grid-cols-3")}>
       {props.plans.map((p, i) => (
-        <div
-          key={i}
-          className={cn(
-            "flex flex-col rounded-xl border bg-background p-8 shadow-sm",
-            p.highlighted && "border-primary ring-2 ring-primary/30 md:-translate-y-2",
-          )}
-        >
-          <h3 className="font-semibold">{p.name}</h3>
-          <div className="mt-4 flex items-baseline gap-1">
-            <span className="text-4xl font-bold">{p.price}</span>
+        <div key={i} className={cn("flex flex-col border-t px-2 py-8 first:border-t-0 md:border-t-0 md:px-8", p.highlighted && "bg-muted")}>
+          <div className="flex items-center justify-between gap-3">
+            <h3 className="text-lg font-semibold">{p.name}</h3>
+            {p.highlighted && <span className="text-xs font-medium text-muted-foreground">แนะนำ</span>}
+          </div>
+          <div className="mt-6 flex items-baseline gap-1">
+            <span className="font-display tabular text-4xl font-semibold">{p.price}</span>
             <span className="text-sm text-muted-foreground">{p.period}</span>
           </div>
           <ul className="mt-6 flex-1 space-y-3 text-sm">
@@ -210,7 +210,7 @@ export const Testimonials = ({ props }: BlockProps<"Testimonials">) => {
     const [first, ...rest] = props.items;
     return (
       <Section className="bg-muted/50">
-        <div className="eyebrow mb-8 text-muted-foreground">{props.title}</div>
+        <h2 className="mb-8 text-xl text-muted-foreground">{props.title}</h2>
         <figure className="max-w-4xl">
           <blockquote className="font-display text-3xl leading-snug md:text-[2.6rem]">“{first.quote}”</blockquote>
           <Person t={first} />
@@ -231,10 +231,10 @@ export const Testimonials = ({ props }: BlockProps<"Testimonials">) => {
   return (
     <Section className="bg-muted/40">
       <Heading title={props.title} />
-      <div className="grid gap-[var(--gap)] md:grid-cols-3">
+      <div className={cn("grid gap-10 md:gap-12", props.items.length === 2 ? "md:grid-cols-2" : props.items.length === 1 ? "max-w-3xl" : "md:grid-cols-3")}>
         {props.items.map((t, i) => (
-          <figure key={i} className="rounded-lg border bg-background p-7">
-            <blockquote>“{t.quote}”</blockquote>
+          <figure key={i} className="flex flex-col border-t border-foreground/15 pt-6">
+            <blockquote className="flex-1 text-lg leading-relaxed">“{t.quote}”</blockquote>
             <Person t={t} />
           </figure>
         ))}
@@ -247,20 +247,22 @@ export const FAQ = ({ props }: BlockProps<"FAQ">) => {
   const [open, setOpen] = useState(0);
   return (
     <Section>
-      <Heading title={props.title} />
-      <div className="mx-auto max-w-3xl divide-y rounded-lg border">
+      <div className="grid gap-8 md:grid-cols-[1fr_1.7fr] md:gap-16">
+      <h2 className="max-w-[14ch] text-3xl font-semibold md:text-[2.5rem]">{props.title}</h2>
+      <div className="divide-y border-y">
         {props.items.map((q, i) => (
           <div key={i}>
             <button
-              className="flex w-full items-center justify-between gap-4 px-6 py-4 text-left font-medium"
+              className="flex w-full items-center justify-between gap-4 py-4 text-left font-medium"
               onClick={() => setOpen(open === i ? -1 : i)}
             >
               {q.question}
               <ChevronDown className={cn("size-4 shrink-0 transition-transform", open === i && "rotate-180")} />
             </button>
-            {open === i && <p className="px-6 pb-5 text-sm leading-relaxed text-muted-foreground">{q.answer}</p>}
+            {open === i && <p className="measure pb-5 leading-relaxed text-muted-foreground">{q.answer}</p>}
           </div>
         ))}
+      </div>
       </div>
     </Section>
   );
@@ -296,7 +298,7 @@ export const CTA = ({ props, slots }: BlockProps<"CTA">) => {
     <Section>
       <div className="rounded-2xl bg-primary px-8 py-16 text-center text-primary-foreground md:px-16 [&_button]:bg-primary-foreground [&_button]:text-primary">
         <h2 className="text-3xl md:text-4xl">{props.title}</h2>
-        <p className="mx-auto mt-4 max-w-2xl text-lg opacity-85">{props.subtitle}</p>
+        <p className="mx-auto mt-4 max-w-2xl text-lg">{props.subtitle}</p>
         {actions && <div className="mt-8 flex flex-wrap justify-center gap-3">{actions}</div>}
       </div>
     </Section>
@@ -305,11 +307,15 @@ export const CTA = ({ props, slots }: BlockProps<"CTA">) => {
 
 export const ContactForm = ({ props, slots }: BlockProps<"ContactForm">) => (
   <Section>
-    <div className="mx-auto max-w-xl rounded-xl border bg-background p-8 shadow-sm">
-      <h2 className="text-2xl font-semibold">{props.title}</h2>
-      <p className="mt-2 text-muted-foreground">{props.subtitle}</p>
-      <div className="mt-8 space-y-5">{slots.fields}</div>
-      {hasSlot(slots.actions) && <div className="mt-8 flex gap-3">{slots.actions}</div>}
+    <div className="grid gap-10 md:grid-cols-[1fr_1.15fr] md:gap-16">
+      <div>
+        <h2 className="max-w-[16ch] text-3xl font-semibold md:text-[2.5rem]">{props.title}</h2>
+        <p className="measure mt-4 text-lg text-muted-foreground">{props.subtitle}</p>
+      </div>
+      <div className="border-t pt-8 md:border-t-0 md:border-l md:pt-0 md:pl-16">
+        <div className="space-y-5">{slots.fields}</div>
+        {hasSlot(slots.actions) && <div className="mt-8 flex flex-wrap gap-3">{slots.actions}</div>}
+      </div>
     </div>
   </Section>
 );
@@ -380,7 +386,6 @@ export const skeletons: Record<keyof typeof componentDefs, (p: BlockProps<never>
   Hero: ({ slots }) => (
     <Section className="md:py-28">
       <div className="mx-auto flex max-w-3xl flex-col items-center gap-4">
-        <Bar className="h-5 w-24 rounded-full" />
         <Bar className="h-12 w-full" />
         <Bar className="h-12 w-3/4" />
         <Bar className="mt-2 w-2/3" />

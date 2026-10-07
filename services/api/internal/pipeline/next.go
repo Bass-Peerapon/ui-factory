@@ -12,7 +12,7 @@ import (
 // deterministically, so they cost no model call (pattern after open-design's next-step actions).
 func (r *Runner) withNext(s *hub.Session, frameID, text string) reply {
 	p, _ := s.Doc()
-	return reply{text: text, meta: map[string]any{"next": nextSteps(p, frameID)}}
+	return reply{text: text, meta: map[string]any{"next": nextSteps(p, frameID), "frames": []string{frameID}}}
 }
 
 func nextSteps(p *doc.Project, frameID string) []map[string]any {

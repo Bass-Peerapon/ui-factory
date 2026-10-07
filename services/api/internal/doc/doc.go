@@ -34,6 +34,9 @@ type Frame struct {
 	Y      float64 `json:"y"`
 	// Brief is the prompt that produced the frame; the Fill step reuses it.
 	Brief string `json:"brief,omitempty"`
+	// Facts is the shared fact sheet (brand, people, prices, contact) every block is filled from,
+	// so names and numbers agree across the page and across a flow.
+	Facts string `json:"facts,omitempty"`
 	// Flow labels frames generated together from one flow pattern.
 	Flow string `json:"flow,omitempty"`
 	Spec *Spec  `json:"spec"`

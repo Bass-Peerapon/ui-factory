@@ -63,6 +63,14 @@ body { line-height: 1.55; }
 .section-y { padding-top: var(--section-y-sm); padding-bottom: var(--section-y-sm); }
 @media (min-width: 768px) { .section-y { padding-top: var(--section-y); padding-bottom: var(--section-y); } }
 .tabular { font-variant-numeric: tabular-nums; }
+/* Browser surfaces carry the palette too (impeccable craft floor, rule skill-craft-browser-surfaces):
+   selection, caret, focus ring, scrollbar, link underline and table numerals. */
+::selection { background: color-mix(in srgb, var(--primary) 22%, transparent); color: var(--foreground); }
+input, textarea { caret-color: var(--primary); }
+:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+html { scrollbar-color: color-mix(in srgb, var(--foreground) 22%, transparent) transparent; scrollbar-width: thin; }
+a { text-underline-offset: 0.2em; text-decoration-thickness: 1px; }
+table { font-variant-numeric: tabular-nums; }
 /* Hover moves the surface, never greys out the text. */
 button:hover { filter: brightness(0.96); }
 :root[data-ds="neobrutalism"] .rounded-lg, :root[data-ds="neobrutalism"] .rounded-xl { border-width: 2px; border-color: var(--foreground); box-shadow: 4px 4px 0 var(--foreground); }

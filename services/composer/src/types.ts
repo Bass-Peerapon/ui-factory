@@ -40,7 +40,7 @@ export interface BriefChoice {
 /** Recommended defaults for the clarify form, inferred from the request. */
 export interface BriefResult {
   sufficient: number; // probability that the request is specific enough to build without asking
-  answers: Record<"pageType" | "platform" | "designSystem" | "density" | "tone", BriefChoice>;
+  answers: Record<"pageType" | "mode" | "platform" | "designSystem" | "density" | "tone", BriefChoice>;
   ms: number;
 }
 

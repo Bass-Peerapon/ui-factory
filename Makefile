@@ -1,4 +1,4 @@
-.PHONY: dev install gen test typecheck eval build
+.PHONY: dev install gen test typecheck eval audit build
 
 install: ## install JS deps and Go modules
 	pnpm install
@@ -20,6 +20,9 @@ typecheck:
 
 eval: ## run the jev vs llm composer evaluation (calls Jev and Gemini directly)
 	pnpm eval
+
+audit: ## run impeccable's detector on rendered fixtures (needs make dev); PROJECT=<id> audits a saved project
+	node scripts/design-audit.mjs $(if $(PROJECT),--project $(PROJECT))
 
 build:
 	pnpm --filter @ui-factory/web build

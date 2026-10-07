@@ -3,10 +3,13 @@ import "@xyflow/react/dist/style.css";
 import { useEffect, useMemo, useState } from "react";
 import { FRAME_MSG, type FromFrame } from "../shared/protocol";
 import { runOp } from "./api";
-import { FrameNode, frameHeight, frameWindows, type FrameNodeType } from "./FrameNode";
+import { LinkCount } from "./CanvasToolbar";
+import { FlowEdge } from "./FlowEdge";
+import { FRAME_HEADER, FrameNode, frameHeight, frameWindows, type FrameNodeType } from "./FrameNode";
 import { getState, setState, useEditor } from "./store";
 
 const nodeTypes = { frame: FrameNode };
+const edgeTypes = { flow: FlowEdge };
 
 export function Canvas() {
   const doc = useEditor((s) => s.doc);
@@ -23,7 +26,7 @@ export function Canvas() {
         const pos = dragging[id] ?? { x: f.x, y: f.y };
         return [{
           id, type: "frame", position: pos, data: { frameId: id }, dragHandle: ".frame-drag",
-          style: { height: frameHeight(heights[id]) + 32 },
+          style: { height: frameHeight(heights[id]) + FRAME_HEADER },
         }];
       }),
     [doc, dragging, heights],
@@ -42,9 +45,9 @@ export function Canvas() {
         if (!target || !doc.frames[target] || seen.has(id + target)) continue;
         seen.add(id + target);
         out.push({
-          id: `${id}->${target}`, source: id, target, type: "smoothstep", animated: true,
+          id: `${id}->${target}`, source: id, target, type: "flow", animated: true,
           label: String((el.props as { label?: string }).label ?? ""),
-          markerEnd: { type: MarkerType.ArrowClosed, width: 16, height: 16 },
+          markerEnd: { type: MarkerType.ArrowClosed, width: 18, height: 18, color: "var(--ed-brand)" },
         });
       }
     }
@@ -114,10 +117,13 @@ export function Canvas() {
   };
 
   return (
+    <>
+    <LinkCount count={edges.length} />
     <ReactFlow
       nodes={nodes}
       edges={edges}
       nodeTypes={nodeTypes}
+      edgeTypes={edgeTypes}
       onNodesChange={onNodesChange}
       onPaneClick={() => setState({ selection: { frameId: null, elementId: null }, commentDraft: null })}
       minZoom={0.05}
@@ -130,7 +136,8 @@ export function Canvas() {
       panOnScroll
       zoomOnPinch
     >
-      <Background gap={24} size={1} />
+      <Background gap={22} size={1.6} />
     </ReactFlow>
+    </>
   );
 }

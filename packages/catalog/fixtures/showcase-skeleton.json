@@ -56,10 +56,10 @@
    "type": "Hero",
    "props": {
     "variant": "centered",
-    "eyebrow": "…",
     "title": "…",
     "subtitle": "…",
-    "skeleton": true
+    "skeleton": true,
+    "imageAlt": "…"
    },
    "children": [],
    "slots": {
@@ -357,7 +357,6 @@
   "imagetext": {
    "type": "ImageText",
    "props": {
-    "eyebrow": "…",
     "title": "…",
     "description": "…",
     "bullets": [
@@ -366,7 +365,8 @@
      "…"
     ],
     "imageSide": "right",
-    "skeleton": true
+    "skeleton": true,
+    "imageAlt": "…"
    },
    "children": [],
    "slots": {

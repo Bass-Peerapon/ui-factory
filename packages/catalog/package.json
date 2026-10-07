@@ -6,7 +6,7 @@
   "exports": { ".": "./src/index.ts" },
   "scripts": {
     "gen": "tsx scripts/gen-schema.ts",
-    "check": "tsx scripts/check-fixtures.ts",
+    "check": "tsx scripts/check-fixtures.ts && tsx scripts/check-craft.ts && tsx scripts/check-contrast.ts",
     "typecheck": "tsc -p ."
   },
   "dependencies": {

@@ -52,11 +52,20 @@ export const jevEvaluator: Experimental_CompositionEvaluator = async ({ state, q
 
 const candidates = compositionCandidates();
 
-/** Page-composition guidance; the anti-template rule follows open-design's craft/anti-ai-slop.md. */
+/**
+ * Page-composition guidance. The anti-template rule follows open-design's craft/anti-ai-slop.md; the mode,
+ * card-grid and hero-metric rules follow impeccable's craft-floor.md and mode-*.md (both Apache-2.0).
+ */
 export const pageGuidance =
   "Build a focused page for the request with only the sections it needs. Marketing pages start with a Navbar and end with a Footer (4 to 7 sections in between). " +
   "Pick the layout variant that fits the domain. Avoid the default template rhythm Hero, FeatureGrid, Pricing, FAQ, CTA; " +
-  "include at least one distinctive section that suits the content, such as ImageText, Steps, Quote, LogoCloud, Gallery, Timeline or ComparisonTable. " +
+  "include at least one distinctive section that suits the content, such as ImageText, Steps, Quote, LogoCloud, Gallery, Timeline, PriceList or ComparisonTable. " +
+  "Restaurants, cafes, salons, spas and clinics list their menu or services with PriceList rather than Pricing plan cards. " +
+  "Every section must answer something in the request; cover every item the request names (menu, reviews, booking, map, team). " +
+  "Equal card grids are not the page structure: use the cards layout at most once and never next to another grid of cards. Do not put Stats directly under the Hero. " +
+  "Page mode persuade: the opening makes the offer clear and carries the action visitors came for (booking fields, an order button, a registration form), so put that action near the top, not only in a closing CTA. " +
+  "Page mode operate: only app sections (Navbar, KPIGrid, DataTable, AuthForm, ContactForm, EmptyState); no Hero, Testimonials, Pricing or CTA. " +
+  "Page mode read: the content leads (BlogList, Timeline, FAQ, Quote); keep sales sections to one closing CTA at most. " +
   "App screens (sign-in, sign-up, confirmations, dashboards, forms, settings) are not marketing pages: no Footer, no Hero, no marketing sections; dashboards and admin screens may start with a Navbar. " +
   "Put Button primitives into `actions` slots and Input, Textarea or Checkbox primitives into `fields` slots.";
 

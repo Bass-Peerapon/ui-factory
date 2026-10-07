@@ -43,11 +43,15 @@ type Gemini struct {
 	adk    model.LLM
 	main   tier
 	fast   tier
+	image  tier
 }
 
 type Options struct {
 	APIKey, Model, FastModel string
 	RPM, FastRPM             int
+	// ImageModel draws page photos; empty disables the image step.
+	ImageModel string
+	ImageRPM   int
 }
 
 func NewGemini(ctx context.Context, o Options) (*Gemini, error) {
@@ -68,6 +72,7 @@ func NewGemini(ctx context.Context, o Options) (*Gemini, error) {
 		adk:    am,
 		main:   tier{o.Model, newLimiter(o.RPM)},
 		fast:   tier{o.FastModel, newLimiter(o.FastRPM)},
+		image:  tier{o.ImageModel, newLimiter(o.ImageRPM)},
 	}, nil
 }
 

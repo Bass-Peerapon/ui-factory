@@ -1,4 +1,5 @@
 import { ReactFlowProvider } from "@xyflow/react";
+import { MessageCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { api, openProject } from "./api";
 import { Canvas } from "./Canvas";
@@ -38,8 +39,9 @@ export function App() {
                 <CanvasToolbar />
                 <VersionsPanel />
                 {mode === "comment" && (
-                  <div className="glass absolute bottom-4 left-1/2 z-20 -translate-x-1/2 rounded-full px-4 py-1.5 text-[12.5px]">
-                    โหมดคอมเมนต์: คลิก element บนเฟรมเพื่อปักหมุด · กด V หรือ Esc เพื่อออก
+                  <div className="canvas-hint glass">
+                    <span className="grid size-7 place-items-center rounded-full bg-[var(--ed-warn)] text-white"><MessageCircle size={14} /></span>
+                    <b className="text-[var(--ed-warn)]">โหมดคอมเมนต์:</b> คลิก element บนเฟรมเพื่อปักหมุด · กด <span className="kbd">V</span> หรือ <span className="kbd">Esc</span> เพื่อออก
                   </div>
                 )}
               </>
